@@ -220,64 +220,118 @@ function initEventsCarousel() {
     const track = document.getElementById('eventsTrack');
     const leftBtn = document.getElementById('eventsLeft');
     const rightBtn = document.getElementById('eventsRight');
+    const dotsContainer = document.getElementById('eventsDots');
     if (!track || !leftBtn || !rightBtn) return;
 
-    let scrollAmount = 0;
-    const cardWidth = 380; // min-width + gap
+    const cards = track.querySelectorAll('.event-card');
+    const dots = dotsContainer?.querySelectorAll('.events__dot') || [];
+    let currentIndex = 0;
+    const cardWidth = 436; // 420px card + 16px gap
+
+    function updateCarousel() {
+        const offset = currentIndex * cardWidth;
+        track.style.transform = `translateX(-${offset}px)`;
+        
+        // Update dots
+        dots.forEach((dot, index) => {
+            if (index === currentIndex) {
+                dot.classList.add('events__dot--active');
+            } else {
+                dot.classList.remove('events__dot--active');
+            }
+        });
+    }
+
+    function goToSlide(index) {
+        currentIndex = Math.max(0, Math.min(index, cards.length - 1));
+        updateCarousel();
+    }
 
     rightBtn.addEventListener('click', () => {
-        const maxScroll = track.scrollWidth - track.parentElement.clientWidth;
-        scrollAmount = Math.min(scrollAmount + cardWidth, maxScroll);
-        track.style.transform = `translateX(-${scrollAmount}px)`;
+        if (currentIndex < cards.length - 1) {
+            goToSlide(currentIndex + 1);
+        }
     });
 
     leftBtn.addEventListener('click', () => {
-        scrollAmount = Math.max(scrollAmount - cardWidth, 0);
-        track.style.transform = `translateX(-${scrollAmount}px)`;
+        if (currentIndex > 0) {
+            goToSlide(currentIndex - 1);
+        }
+    });
+
+    // Dots navigation
+    dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+            goToSlide(index);
+        });
     });
 
     // Touch/drag support
     let isDragging = false;
-    let startX, startScroll;
+    let startX, startTransform;
 
     track.addEventListener('mousedown', (e) => {
         isDragging = true;
         startX = e.clientX;
-        startScroll = scrollAmount;
+        startTransform = currentIndex * cardWidth;
         track.style.transition = 'none';
     });
 
     document.addEventListener('mousemove', (e) => {
         if (!isDragging) return;
         const dx = startX - e.clientX;
-        const maxScroll = track.scrollWidth - track.parentElement.clientWidth;
-        scrollAmount = Math.max(0, Math.min(startScroll + dx, maxScroll));
-        track.style.transform = `translateX(-${scrollAmount}px)`;
+        const offset = startTransform + dx;
+        track.style.transform = `translateX(-${offset}px)`;
     });
 
-    document.addEventListener('mouseup', () => {
-        if (isDragging) {
-            isDragging = false;
-            track.style.transition = 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+    document.addEventListener('mouseup', (e) => {
+        if (!isDragging) return;
+        isDragging = false;
+        track.style.transition = 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+        
+        const dx = startX - e.clientX;
+        if (Math.abs(dx) > 50) {
+            if (dx > 0 && currentIndex < cards.length - 1) {
+                goToSlide(currentIndex + 1);
+            } else if (dx < 0 && currentIndex > 0) {
+                goToSlide(currentIndex - 1);
+            } else {
+                updateCarousel();
+            }
+        } else {
+            updateCarousel();
         }
     });
 
     // Touch events
+    let touchStartX;
     track.addEventListener('touchstart', (e) => {
-        startX = e.touches[0].clientX;
-        startScroll = scrollAmount;
+        touchStartX = e.touches[0].clientX;
+        startTransform = currentIndex * cardWidth;
         track.style.transition = 'none';
     }, { passive: true });
 
     track.addEventListener('touchmove', (e) => {
-        const dx = startX - e.touches[0].clientX;
-        const maxScroll = track.scrollWidth - track.parentElement.clientWidth;
-        scrollAmount = Math.max(0, Math.min(startScroll + dx, maxScroll));
-        track.style.transform = `translateX(-${scrollAmount}px)`;
+        const dx = touchStartX - e.touches[0].clientX;
+        const offset = startTransform + dx;
+        track.style.transform = `translateX(-${offset}px)`;
     }, { passive: true });
 
-    track.addEventListener('touchend', () => {
-        track.style.transition = 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+    track.addEventListener('touchend', (e) => {
+        track.style.transition = 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+        const dx = touchStartX - e.changedTouches[0].clientX;
+        
+        if (Math.abs(dx) > 50) {
+            if (dx > 0 && currentIndex < cards.length - 1) {
+                goToSlide(currentIndex + 1);
+            } else if (dx < 0 && currentIndex > 0) {
+                goToSlide(currentIndex - 1);
+            } else {
+                updateCarousel();
+            }
+        } else {
+            updateCarousel();
+        }
     }, { passive: true });
 }
 
