@@ -200,6 +200,19 @@ h1, h2, h3, h4, h5, h6 {
   background: transparent;
 }
 
+.navbar--transparent .navbar__logo,
+.navbar--transparent .navbar__link {
+  color: var(--clr-white);
+}
+
+.navbar--transparent .navbar__logo-text span {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.navbar--transparent .navbar__toggle span {
+  background: var(--clr-white);
+}
+
 .navbar--scrolled {
   background: rgba(250, 246, 240, 0.92);
   backdrop-filter: blur(20px);
