@@ -200,6 +200,190 @@
             font-size: var(--fs-small);
             opacity: 0.7;
         }
+
+        /* Countdown Section */
+        .countdown-section {
+            background: linear-gradient(135deg, var(--clr-primary) 0%, var(--clr-primary-dark) 100%);
+            padding: var(--space-3xl) 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .countdown-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: rgba(59, 169, 156, 0.1);
+            border-radius: 50%;
+        }
+
+        .countdown-section::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 400px;
+            height: 400px;
+            background: rgba(212, 168, 67, 0.08);
+            border-radius: 50%;
+        }
+
+        .countdown-container {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .countdown__label {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: var(--radius-full);
+            color: var(--clr-accent-gold-light);
+            font-size: var(--fs-small);
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: var(--space-md);
+            backdrop-filter: blur(10px);
+        }
+
+        .countdown__title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            color: var(--clr-white);
+            margin-bottom: var(--space-sm);
+            line-height: 1.2;
+        }
+
+        .countdown__subtitle {
+            font-size: var(--fs-body-lg);
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: var(--space-2xl);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .countdown__timer {
+            display: flex;
+            gap: clamp(1rem, 3vw, 2rem);
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: var(--space-lg);
+        }
+
+        .countdown__box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-lg);
+            padding: clamp(1.5rem, 3vw, 2rem) clamp(1.2rem, 2.5vw, 1.8rem);
+            min-width: clamp(90px, 15vw, 140px);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .countdown__box::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .countdown__box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .countdown__box:hover::before {
+            opacity: 1;
+        }
+
+        .countdown__number {
+            font-family: var(--ff-numbers);
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 700;
+            color: var(--clr-white);
+            line-height: 1;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .countdown__unit {
+            font-size: clamp(0.75rem, 1.5vw, 0.9rem);
+            font-weight: 600;
+            color: var(--clr-accent-gold-light);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .countdown__info {
+            display: flex;
+            gap: var(--space-lg);
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: var(--space-xl);
+        }
+
+        .countdown__detail {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: var(--fs-body);
+        }
+
+        .countdown__detail svg {
+            width: 20px;
+            height: 20px;
+            color: var(--clr-accent-gold-light);
+        }
+
+        .countdown__register {
+            margin-top: var(--space-xl);
+        }
+
+        .countdown__register .btn {
+            background: var(--clr-secondary);
+            color: var(--clr-white);
+            padding: 1rem 2.5rem;
+            font-size: 1.05rem;
+            box-shadow: 0 6px 20px rgba(199, 91, 57, 0.3);
+        }
+
+        .countdown__register .btn:hover {
+            background: var(--clr-secondary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(199, 91, 57, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .countdown-section {
+                padding: var(--space-2xl) 0;
+            }
+
+            .countdown__timer {
+                gap: 0.75rem;
+            }
+
+            .countdown__box {
+                min-width: 75px;
+                padding: 1rem 0.8rem;
+            }
+
+            .countdown__info {
+                flex-direction: column;
+                gap: var(--space-sm);
+            }
+        }
     </style>
 </head>
 
@@ -235,6 +419,72 @@
                 meilleure nutrition.</p>
         </div>
     </header>
+
+    <!-- COUNTDOWN SECTION -->
+    <section class="countdown-section">
+        <div class="container countdown-container">
+            <span class="countdown__label">Prochain Événement</span>
+            <h2 class="countdown__title">Séminaire National de Nutrition</h2>
+            <p class="countdown__subtitle">Rejoignez-nous pour un séminaire enrichissant sur les dernières avancées en nutrition maghrébine</p>
+            
+            <div class="countdown__timer" id="countdown">
+                <div class="countdown__box">
+                    <span class="countdown__number" id="days">00</span>
+                    <span class="countdown__unit">Jours</span>
+                </div>
+                <div class="countdown__box">
+                    <span class="countdown__number" id="hours">00</span>
+                    <span class="countdown__unit">Heures</span>
+                </div>
+                <div class="countdown__box">
+                    <span class="countdown__number" id="minutes">00</span>
+                    <span class="countdown__unit">Minutes</span>
+                </div>
+                <div class="countdown__box">
+                    <span class="countdown__number" id="seconds">00</span>
+                    <span class="countdown__unit">Secondes</span>
+                </div>
+            </div>
+
+            <div class="countdown__info">
+                <div class="countdown__detail">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    <span>15 Mars 2026</span>
+                </div>
+                <div class="countdown__detail">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    <span>Alger, Algérie</span>
+                </div>
+                <div class="countdown__detail">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    <span>150 Participants</span>
+                </div>
+            </div>
+
+            <div class="countdown__register">
+                <a href="./contact.html" class="btn btn--primary">
+                    S'inscrire Maintenant
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
 
     <!-- ACTIVITIES -->
     <section class="section">
@@ -446,6 +696,54 @@
 
     <script src="./main.js" type="module"></script>
     <script>
+        // Countdown Timer
+        function initCountdown() {
+            // Set the target date (March 15, 2026)
+            const targetDate = new Date('2026-03-15T09:00:00').getTime();
+            
+            const daysEl = document.getElementById('days');
+            const hoursEl = document.getElementById('hours');
+            const minutesEl = document.getElementById('minutes');
+            const secondsEl = document.getElementById('seconds');
+            
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const distance = targetDate - now;
+                
+                if (distance < 0) {
+                    // Countdown finished
+                    daysEl.textContent = '00';
+                    hoursEl.textContent = '00';
+                    minutesEl.textContent = '00';
+                    secondsEl.textContent = '00';
+                    return;
+                }
+                
+                // Calculate time remaining
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                // Update DOM with zero-padding
+                daysEl.textContent = String(days).padStart(2, '0');
+                hoursEl.textContent = String(hours).padStart(2, '0');
+                minutesEl.textContent = String(minutes).padStart(2, '0');
+                secondsEl.textContent = String(seconds).padStart(2, '0');
+            }
+            
+            // Update immediately and then every second
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        }
+        
+        // Initialize countdown when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initCountdown);
+        } else {
+            initCountdown();
+        }
+        
         // Filter functionality
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.addEventListener('click', () => {
