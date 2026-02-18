@@ -203,183 +203,222 @@
 
         /* Countdown Section */
         .countdown-section {
-            background: linear-gradient(135deg, var(--clr-primary) 0%, var(--clr-primary-dark) 100%);
-            padding: var(--space-3xl) 0;
-            position: relative;
+            background: var(--clr-bg-alt);
+            padding: var(--space-2xl) 0;
+        }
+
+        .countdown-card {
+            background: var(--clr-white);
+            border-radius: var(--radius-xl);
             overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            max-width: 1100px;
+            margin: 0 auto;
         }
 
-        .countdown-section::before {
+        .countdown-card__image {
+            position: relative;
+            min-height: 400px;
+            background: linear-gradient(135deg, var(--clr-primary), var(--clr-primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-xl);
+        }
+
+        .countdown-card__image::before {
             content: '';
             position: absolute;
-            top: -50%;
-            right: -10%;
-            width: 500px;
-            height: 500px;
-            background: rgba(59, 169, 156, 0.1);
-            border-radius: 50%;
+            inset: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.5;
         }
 
-        .countdown-section::after {
-            content: '';
+        .countdown-card__badge {
             position: absolute;
-            bottom: -30%;
-            left: -10%;
-            width: 400px;
-            height: 400px;
-            background: rgba(212, 168, 67, 0.08);
-            border-radius: 50%;
+            top: var(--space-lg);
+            left: var(--space-lg);
+            background: var(--clr-secondary);
+            color: var(--clr-white);
+            padding: 0.4rem 1rem;
+            border-radius: var(--radius-full);
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
         }
 
-        .countdown-container {
+        .countdown-card__decorative {
             position: relative;
             z-index: 2;
             text-align: center;
         }
 
-        .countdown__label {
-            display: inline-block;
-            padding: 0.5rem 1.5rem;
+        .countdown-card__icon {
+            width: 80px;
+            height: 80px;
             background: rgba(255, 255, 255, 0.15);
-            border-radius: var(--radius-full);
-            color: var(--clr-accent-gold-light);
-            font-size: var(--fs-small);
-            font-weight: 700;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            margin-bottom: var(--space-md);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--space-md);
             backdrop-filter: blur(10px);
         }
 
-        .countdown__title {
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            font-weight: 700;
-            color: var(--clr-white);
-            margin-bottom: var(--space-sm);
-            line-height: 1.2;
+        .countdown-card__icon svg {
+            width: 40px;
+            height: 40px;
+            color: var(--clr-accent-gold-light);
         }
 
-        .countdown__subtitle {
-            font-size: var(--fs-body-lg);
-            color: rgba(255, 255, 255, 0.85);
-            margin-bottom: var(--space-2xl);
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .countdown__timer {
-            display: flex;
-            gap: clamp(1rem, 3vw, 2rem);
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: var(--space-lg);
-        }
-
-        .countdown__box {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: var(--radius-lg);
-            padding: clamp(1.5rem, 3vw, 2rem) clamp(1.2rem, 2.5vw, 1.8rem);
-            min-width: clamp(90px, 15vw, 140px);
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .countdown__box::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .countdown__box:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        .countdown__box:hover::before {
-            opacity: 1;
-        }
-
-        .countdown__number {
-            font-family: var(--ff-numbers);
-            font-size: clamp(2.5rem, 6vw, 4rem);
+        .countdown-card__date-large {
+            font-family: var(--ff-heading);
+            font-size: 3.5rem;
             font-weight: 700;
             color: var(--clr-white);
             line-height: 1;
-            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .countdown-card__month {
+            font-size: 1.2rem;
+            color: var(--clr-accent-gold-light);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .countdown-card__content {
+            padding: var(--space-2xl);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .countdown-card__label {
+            font-size: var(--fs-small);
+            font-weight: 700;
+            color: var(--clr-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
             margin-bottom: 0.5rem;
         }
 
-        .countdown__unit {
-            font-size: clamp(0.75rem, 1.5vw, 0.9rem);
-            font-weight: 600;
-            color: var(--clr-accent-gold-light);
+        .countdown-card__title {
+            font-family: var(--ff-heading);
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            font-weight: 700;
+            color: var(--clr-dark);
+            margin-bottom: var(--space-md);
+            line-height: 1.2;
+        }
+
+        .countdown-card__description {
+            font-size: var(--fs-body);
+            color: var(--clr-text-light);
+            line-height: 1.7;
+            margin-bottom: var(--space-lg);
+        }
+
+        .countdown-card__timer {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: var(--space-lg);
+            padding: var(--space-md) 0;
+        }
+
+        .countdown-card__time-unit {
+            text-align: center;
+        }
+
+        .countdown-card__number {
+            font-family: var(--ff-numbers);
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--clr-primary);
+            display: block;
+            line-height: 1;
+        }
+
+        .countdown-card__unit {
+            font-size: 0.75rem;
+            color: var(--clr-text-light);
             text-transform: uppercase;
             letter-spacing: 0.05em;
+            margin-top: 0.5rem;
+            font-weight: 600;
         }
 
-        .countdown__info {
+        .countdown-card__details {
             display: flex;
             gap: var(--space-lg);
-            justify-content: center;
-            align-items: center;
             flex-wrap: wrap;
-            margin-top: var(--space-xl);
+            padding: var(--space-md) 0;
+            border-top: 1px solid #E5E7EB;
+            margin-bottom: var(--space-lg);
         }
 
-        .countdown__detail {
+        .countdown-card__detail {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            color: rgba(255, 255, 255, 0.9);
-            font-size: var(--fs-body);
+            gap: 0.5rem;
+            font-size: var(--fs-small);
+            color: var(--clr-text);
         }
 
-        .countdown__detail svg {
-            width: 20px;
-            height: 20px;
-            color: var(--clr-accent-gold-light);
+        .countdown-card__detail svg {
+            width: 18px;
+            height: 18px;
+            color: var(--clr-primary);
+            flex-shrink: 0;
         }
 
-        .countdown__register {
-            margin-top: var(--space-xl);
+        .countdown-card__actions {
+            display: flex;
+            gap: 1rem;
         }
 
-        .countdown__register .btn {
-            background: var(--clr-secondary);
-            color: var(--clr-white);
-            padding: 1rem 2.5rem;
-            font-size: 1.05rem;
-            box-shadow: 0 6px 20px rgba(199, 91, 57, 0.3);
+        .countdown-card__actions .btn {
+            flex: 1;
         }
 
-        .countdown__register .btn:hover {
-            background: var(--clr-secondary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(199, 91, 57, 0.4);
-        }
-
-        @media (max-width: 768px) {
-            .countdown-section {
-                padding: var(--space-2xl) 0;
+        @media (max-width: 968px) {
+            .countdown-card {
+                grid-template-columns: 1fr;
             }
 
-            .countdown__timer {
+            .countdown-card__image {
+                min-height: 280px;
+            }
+
+            .countdown-card__content {
+                padding: var(--space-xl);
+            }
+
+            .countdown-card__timer {
                 gap: 0.75rem;
             }
 
-            .countdown__box {
-                min-width: 75px;
-                padding: 1rem 0.8rem;
+            .countdown-card__number {
+                font-size: 2rem;
             }
 
-            .countdown__info {
+            .countdown-card__actions {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .countdown-card__timer {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .countdown-card__details {
                 flex-direction: column;
                 gap: var(--space-sm);
             }
@@ -422,66 +461,89 @@
 
     <!-- COUNTDOWN SECTION -->
     <section class="countdown-section">
-        <div class="container countdown-container">
-            <span class="countdown__label">Prochain Événement</span>
-            <h2 class="countdown__title">Séminaire National de Nutrition</h2>
-            <p class="countdown__subtitle">Rejoignez-nous pour un séminaire enrichissant sur les dernières avancées en nutrition maghrébine</p>
-            
-            <div class="countdown__timer" id="countdown">
-                <div class="countdown__box">
-                    <span class="countdown__number" id="days">00</span>
-                    <span class="countdown__unit">Jours</span>
+        <div class="container">
+            <div class="countdown-card">
+                <div class="countdown-card__image">
+                    <span class="countdown-card__badge">Prochain Événement</span>
+                    <div class="countdown-card__decorative">
+                        <div class="countdown-card__icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                        </div>
+                        <div class="countdown-card__date-large">15</div>
+                        <div class="countdown-card__month">Mars 2026</div>
+                    </div>
                 </div>
-                <div class="countdown__box">
-                    <span class="countdown__number" id="hours">00</span>
-                    <span class="countdown__unit">Heures</span>
+                
+                <div class="countdown-card__content">
+                    <span class="countdown-card__label">Séminaire National</span>
+                    <h2 class="countdown-card__title">Nutrition & Santé Maghrébine</h2>
+                    <p class="countdown-card__description">
+                        Rejoignez-nous pour un séminaire enrichissant sur les dernières avancées en nutrition et leurs applications dans le contexte maghrébin.
+                    </p>
+                    
+                    <div class="countdown-card__timer">
+                        <div class="countdown-card__time-unit">
+                            <span class="countdown-card__number" id="days">00</span>
+                            <span class="countdown-card__unit">Jours</span>
+                        </div>
+                        <div class="countdown-card__time-unit">
+                            <span class="countdown-card__number" id="hours">00</span>
+                            <span class="countdown-card__unit">Heures</span>
+                        </div>
+                        <div class="countdown-card__time-unit">
+                            <span class="countdown-card__number" id="minutes">00</span>
+                            <span class="countdown-card__unit">Minutes</span>
+                        </div>
+                        <div class="countdown-card__time-unit">
+                            <span class="countdown-card__number" id="seconds">00</span>
+                            <span class="countdown-card__unit">Secondes</span>
+                        </div>
+                    </div>
+                    
+                    <div class="countdown-card__details">
+                        <div class="countdown-card__detail">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            <span>09:00 - 17:00</span>
+                        </div>
+                        <div class="countdown-card__detail">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                            <span>Alger, Algérie</span>
+                        </div>
+                        <div class="countdown-card__detail">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+                            <span>150 Places</span>
+                        </div>
+                    </div>
+                    
+                    <div class="countdown-card__actions">
+                        <a href="./contact.html" class="btn btn--primary">
+                            S'inscrire Maintenant
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </a>
+                        <a href="#" class="btn btn--outline-dark">
+                            En savoir plus
+                        </a>
+                    </div>
                 </div>
-                <div class="countdown__box">
-                    <span class="countdown__number" id="minutes">00</span>
-                    <span class="countdown__unit">Minutes</span>
-                </div>
-                <div class="countdown__box">
-                    <span class="countdown__number" id="seconds">00</span>
-                    <span class="countdown__unit">Secondes</span>
-                </div>
-            </div>
-
-            <div class="countdown__info">
-                <div class="countdown__detail">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                        <line x1="16" y1="2" x2="16" y2="6"></line>
-                        <line x1="8" y1="2" x2="8" y2="6"></line>
-                        <line x1="3" y1="10" x2="21" y2="10"></line>
-                    </svg>
-                    <span>15 Mars 2026</span>
-                </div>
-                <div class="countdown__detail">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                        <circle cx="12" cy="10" r="3"></circle>
-                    </svg>
-                    <span>Alger, Algérie</span>
-                </div>
-                <div class="countdown__detail">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                    </svg>
-                    <span>150 Participants</span>
-                </div>
-            </div>
-
-            <div class="countdown__register">
-                <a href="./contact.html" class="btn btn--primary">
-                    S'inscrire Maintenant
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                        <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
-                </a>
             </div>
         </div>
     </section>
