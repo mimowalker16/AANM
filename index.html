@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AANM — Association Algérienne de Nutrition Maghrébine</title>
+  <meta name="description" content="L'Association Algérienne de Nutrition Maghrébine se consacre à l'amélioration de la qualité de vie par la nutrition, l'éducation et la recherche en santé au Maghreb." />
+  <link rel="stylesheet" href="./style.css" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%231B5E3A'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' font-family='serif' font-size='14' font-weight='bold' fill='white'>A</text></svg>" />
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <div class="navbar__overlay" id="navOverlay"></div>
+  <nav class="navbar navbar--transparent" id="navbar">
+    <div class="navbar__inner">
+      <a href="/" class="navbar__logo">
+        <div class="navbar__logo-icon">AANM</div>
+        <div class="navbar__logo-text">
+          AANM
+          <span>Nutrition Maghrébine</span>
+        </div>
+      </a>
+      <div class="navbar__links" id="navLinks">
+        <a href="/" class="navbar__link navbar__link--active">Accueil</a>
+        <a href="./about.html" class="navbar__link">À Propos</a>
+        <a href="./activities.html" class="navbar__link">Activités</a>
+        <a href="./news.html" class="navbar__link">Actualités</a>
+        <a href="./contact.html" class="navbar__link">Contact</a>
+        <a href="./contact.html" class="navbar__cta">Nous Rejoindre →</a>
+      </div>
+      <button class="navbar__toggle" id="navToggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero" id="hero">
+    <div class="hero__carousel" id="heroCarousel">
+      <div class="hero__slide hero__slide--active">
+        <img src="https://images.unsplash.com/photo-1490818387583-1baba5e638af?w=1920&q=80" alt="Nutrition saine — fruits et légumes frais" />
+      </div>
+      <div class="hero__slide">
+        <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1920&q=80" alt="Alimentation méditerranéenne saine" />
+      </div>
+      <div class="hero__slide">
+        <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1920&q=80" alt="Communauté et santé ensemble" />
+      </div>
+    </div>
+    <div class="hero__overlay"></div>
+    <div class="hero__content">
+      <span class="hero__badge">🌿 Fondée pour une meilleure santé</span>
+      <h1 class="hero__title">Ensemble pour une <em>meilleure nutrition</em> au Maghreb</h1>
+      <p class="hero__description">L'AANM se consacre à l'éducation et à la sensibilisation concernant l'importance d'un régime alimentaire sain, en intégrant les techniques modernes aux pratiques traditionnelles.</p>
+      <div class="hero__buttons">
+        <a href="./activities.html" class="btn btn--primary">Nos Activités <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        <a href="./contact.html" class="btn btn--outline">Nous Contacter</a>
+      </div>
+    </div>
+    <div class="hero__indicators" id="heroIndicators">
+      <div class="hero__dot hero__dot--active" data-slide="0"></div>
+      <div class="hero__dot" data-slide="1"></div>
+      <div class="hero__dot" data-slide="2"></div>
+    </div>
+  </section>
+
+  <!-- ===== ABOUT / MISSION ===== -->
+  <section class="about section" id="about">
+    <div class="container">
+      <div class="about__grid">
+        <div class="reveal">
+          <span class="section-label">À Propos de Nous</span>
+          <h2 class="section-title">Améliorer la qualité de vie par la nutrition</h2>
+          <p class="section-subtitle">Fondée pour améliorer la qualité de vie par le biais de la nutrition, l'Association Algérienne de Nutrition Maghrébine se consacre à l'éducation et à la sensibilisation concernant l'importance d'un régime alimentaire sain.</p>
+          <p class="section-subtitle" style="margin-top: 1rem;">En intégrant les techniques modernes aux pratiques traditionnelles, nous visons à réduire les taux de malnutrition et de maladies liées à l'alimentation. Nos initiatives comprennent des programmes communautaires, des recherches et des partenariats avec des experts en santé.</p>
+          <a href="./about.html" class="btn btn--outline-dark" style="margin-top: 2rem;">En savoir plus →</a>
+        </div>
+        <div class="about__image reveal reveal--delay-2">
+          <img src="https://images.unsplash.com/photo-1607962837359-5e7e89f86776?w=800&q=80" alt="Nutrition et santé communautaire" />
+        </div>
+      </div>
+      <h2 class="about__statement reveal">« Une bonne nutrition est un droit fondamental pour tous. »</h2>
+    </div>
+  </section>
+
+  <!-- ===== IMAGE GALLERY ===== -->
+  <section class="gallery">
+    <div class="container">
+      <div class="gallery__grid">
+        <div class="gallery__item reveal">
+          <img src="https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=600&q=80" alt="Alimentation saine" />
+        </div>
+        <div class="gallery__item gallery__item--center reveal reveal--delay-1">
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=900&q=80" alt="Recherche nutritionnelle" />
+        </div>
+        <div class="gallery__item reveal reveal--delay-2">
+          <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80" alt="Cuisine méditerranéenne" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== KEY STATS ===== -->
+  <section class="stats section" id="stats">
+    <div class="container">
+      <div class="stats__grid">
+        <div class="stat reveal">
+          <div class="stat__number" data-target="15">0</div>
+          <div class="stat__label">années d'expérience</div>
+          <p class="stat__description">Depuis notre fondation, nous œuvrons sans relâche pour améliorer la nutrition à travers le Maghreb.</p>
+        </div>
+        <div class="stat reveal reveal--delay-1">
+          <div class="stat__number" data-target="200" data-suffix="+">0</div>
+          <div class="stat__label">événements organisés</div>
+          <p class="stat__description">Conférences, ateliers, séminaires et formations pour les professionnels de la santé et le grand public.</p>
+        </div>
+        <div class="stat reveal reveal--delay-2">
+          <div class="stat__number" data-target="50" data-suffix="k+">0</div>
+          <div class="stat__label">personnes sensibilisées</div>
+          <p class="stat__description">Nos programmes communautaires touchent des milliers de personnes chaque année à travers l'Algérie.</p>
+        </div>
+        <div class="stat reveal reveal--delay-3">
+          <div class="stat__number" data-target="30" data-suffix="+">0</div>
+          <div class="stat__label">partenaires de santé</div>
+          <p class="stat__description">Collaborations avec des institutions de santé, universités et organisations internationales.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PILLARS / OUR WORK ===== -->
+  <section class="pillars section" id="pillars">
+    <div class="container">
+      <span class="section-label reveal">Notre Mission</span>
+      <h2 class="section-title reveal">Comment nous créons l'impact</h2>
+      <p class="section-subtitle reveal">Notre vision est un monde où chaque personne au Maghreb a accès à une alimentation saine et équilibrée. Voici nos axes d'action :</p>
+      <div class="pillars__grid">
+        <div class="pillar-card pillar-card--gold reveal">
+          <div class="pillar-card__icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="16" cy="16" r="6"/><circle cx="32" cy="16" r="6"/><path d="M10 36c0-6 4-10 14-10s14 4 14 10"/>
+            </svg>
+          </div>
+          <h3 class="pillar-card__title">Éducation Nutritionnelle</h3>
+          <p class="pillar-card__text">Nous sensibilisons les communautés à l'importance d'une alimentation saine à travers des programmes éducatifs adaptés aux pratiques locales.</p>
+        </div>
+        <div class="pillar-card pillar-card--purple reveal reveal--delay-1">
+          <div class="pillar-card__icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M24 6v36M6 24h36"/><circle cx="24" cy="24" r="18"/>
+            </svg>
+          </div>
+          <h3 class="pillar-card__title">Recherche Scientifique</h3>
+          <p class="pillar-card__text">Nous menons des recherches appliquées sur les habitudes alimentaires au Maghreb et publions nos résultats pour le bénéfice de la communauté scientifique.</p>
+        </div>
+        <div class="pillar-card pillar-card--teal reveal reveal--delay-2">
+          <div class="pillar-card__icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 24c0-8 5-14 12-14s12 6 12 14-5 14-12 14"/><path d="M20 18l4 6-4 6"/><circle cx="24" cy="38" r="3"/>
+            </svg>
+          </div>
+          <h3 class="pillar-card__title">Programmes Communautaires</h3>
+          <p class="pillar-card__text">Nous concevons et gérons des programmes de terrain en partenariat avec les acteurs locaux, ciblant les communautés les plus vulnérables.</p>
+        </div>
+        <div class="pillar-card pillar-card--coral reveal reveal--delay-3">
+          <div class="pillar-card__icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M8 24l8-8 8 8 8-8 8 8"/><path d="M8 32l8-8 8 8 8-8 8 8"/>
+            </svg>
+          </div>
+          <h3 class="pillar-card__title">Partenariats Santé</h3>
+          <p class="pillar-card__text">Nous convoquons des partenariats stratégiques entre les secteurs public et privé pour maximiser l'impact de nos actions sur la santé nutritionnelle.</p>
+        </div>
+      </div>
+      <a href="./about.html" class="btn btn--secondary reveal" style="margin-top: 2.5rem;">En savoir plus sur notre modèle →</a>
+    </div>
+  </section>
+
+  <!-- ===== TESTIMONIALS ===== -->
+  <section class="testimonials section" id="testimonials">
+    <div class="container">
+      <div class="testimonials__carousel" id="testimonialCarousel">
+        <div class="testimonial-slide testimonial-slide--active">
+          <p class="testimonial__quote">« L'AANM a contribué de manière significative à améliorer la sensibilisation nutritionnelle dans notre région. Leur approche combine parfaitement science moderne et traditions locales. »</p>
+          <p class="testimonial__author">Dr. Amina Bouzid</p>
+          <p class="testimonial__role">Professeure de Nutrition, Université d'Alger</p>
+        </div>
+        <div class="testimonial-slide">
+          <p class="testimonial__quote">« Grâce aux programmes de l'AANM, notre communauté a adopté des habitudes alimentaires plus saines. Les résultats sont visibles sur la santé de nos enfants. »</p>
+          <p class="testimonial__author">Karim Medjdoub</p>
+          <p class="testimonial__role">Directeur de Centre de Santé, Oran</p>
+        </div>
+        <div class="testimonial-slide">
+          <p class="testimonial__quote">« La collaboration avec l'AANM nous a permis de développer des solutions nutritionnelles adaptées aux besoins spécifiques de la population maghrébine. »</p>
+          <p class="testimonial__author">Prof. Sarah Khelifi</p>
+          <p class="testimonial__role">Chercheuse en Sciences Alimentaires</p>
+        </div>
+        <div class="testimonial-slide">
+          <p class="testimonial__quote">« L'engagement de l'AANM dans la recherche et l'éducation nutritionnelle est exemplaire. Leur impact sur la santé publique est considérable. »</p>
+          <p class="testimonial__author">Dr. Youcef Hamidi</p>
+          <p class="testimonial__role">Responsable Santé, OMS Algérie</p>
+        </div>
+      </div>
+      <div class="testimonials__dots" id="testimonialDots">
+        <div class="testimonials__dot testimonials__dot--active" data-slide="0"></div>
+        <div class="testimonials__dot" data-slide="1"></div>
+        <div class="testimonials__dot" data-slide="2"></div>
+        <div class="testimonials__dot" data-slide="3"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== RECENT EVENTS ===== -->
+  <section class="events section" id="events">
+    <div class="container">
+      <span class="section-label reveal">Nos Événements</span>
+      <h2 class="section-title reveal">Activités récentes</h2>
+      <p class="section-subtitle reveal">Découvrez nos dernières activités et programmes en faveur d'une meilleure nutrition au Maghreb.</p>
+      <div class="events__carousel-wrapper">
+        <div class="events__track" id="eventsTrack">
+          <!-- Card 1 -->
+          <div class="event-card">
+            <div class="event-card__image">
+              <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&q=80" alt="Conférence nutrition" />
+            </div>
+            <div class="event-card__body">
+              <p class="event-card__date">15 Janvier 2026</p>
+              <h3 class="event-card__title">Conférence Internationale sur la Nutrition Maghrébine</h3>
+              <p class="event-card__text">Rassemblement d'experts internationaux pour discuter des défis nutritionnels spécifiques à la région du Maghreb et proposer des solutions innovantes.</p>
+              <a href="#" class="event-card__link">En savoir plus →</a>
+            </div>
+            <div class="event-card__bar event-card__bar--green"></div>
+          </div>
+          <!-- Card 2 -->
+          <div class="event-card">
+            <div class="event-card__image">
+              <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=600&q=80" alt="Atelier communautaire" />
+            </div>
+            <div class="event-card__body">
+              <p class="event-card__date">28 Décembre 2025</p>
+              <h3 class="event-card__title">Atelier de Cuisine Santé pour les Familles</h3>
+              <p class="event-card__text">Programme interactif aidant les familles algériennes à préparer des repas nutritifs et abordables avec des ingrédients locaux.</p>
+              <a href="#" class="event-card__link">En savoir plus →</a>
+            </div>
+            <div class="event-card__bar event-card__bar--coral"></div>
+          </div>
+          <!-- Card 3 -->
+          <div class="event-card">
+            <div class="event-card__image">
+              <img src="https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?w=600&q=80" alt="Recherche santé" />
+            </div>
+            <div class="event-card__body">
+              <p class="event-card__date">10 Novembre 2025</p>
+              <h3 class="event-card__title">Publication d'Étude sur les Habitudes Alimentaires</h3>
+              <p class="event-card__text">Résultats de notre étude sur les habitudes alimentaires des jeunes algériens et recommandations pour une meilleure nutrition scolaire.</p>
+              <a href="#" class="event-card__link">En savoir plus →</a>
+            </div>
+            <div class="event-card__bar event-card__bar--teal"></div>
+          </div>
+          <!-- Card 4 -->
+          <div class="event-card">
+            <div class="event-card__image">
+              <img src="https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=600&q=80" alt="Formation professionnels" />
+            </div>
+            <div class="event-card__body">
+              <p class="event-card__date">22 Octobre 2025</p>
+              <h3 class="event-card__title">Formation des Professionnels de Santé en Nutrition</h3>
+              <p class="event-card__text">Programme de formation continue pour les médecins et infirmiers sur les dernières avancées en nutrition clinique et préventive.</p>
+              <a href="#" class="event-card__link">En savoir plus →</a>
+            </div>
+            <div class="event-card__bar event-card__bar--gold"></div>
+          </div>
+          <!-- Card 5 -->
+          <div class="event-card">
+            <div class="event-card__image">
+              <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80" alt="Sensibilisation communautaire" />
+            </div>
+            <div class="event-card__body">
+              <p class="event-card__date">5 Septembre 2025</p>
+              <h3 class="event-card__title">Campagne de Sensibilisation dans les Écoles</h3>
+              <p class="event-card__text">Initiative nationale de sensibilisation aux bonnes pratiques nutritionnelles dans les établissements scolaires algériens.</p>
+              <a href="#" class="event-card__link">En savoir plus →</a>
+            </div>
+            <div class="event-card__bar event-card__bar--green"></div>
+          </div>
+        </div>
+      </div>
+      <div class="events__nav">
+        <button class="events__nav-btn" id="eventsLeft" aria-label="Précédent">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        </button>
+        <button class="events__nav-btn" id="eventsRight" aria-label="Suivant">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PARTNERS ===== -->
+  <section class="partners section" id="partners">
+    <div class="container">
+      <div class="partners__header">
+        <div>
+          <h2 class="section-title">Nos Partenaires</h2>
+          <p class="partners__description">Nous ne travaillons jamais seuls. Voici quelques-uns de nos partenaires qui partagent notre vision d'une meilleure nutrition pour tous.</p>
+        </div>
+        <a href="./contact.html" class="btn btn--outline-dark">Devenir partenaire</a>
+      </div>
+      <div class="partners__logos">
+        <!-- Using text-based partner logos since we can't generate images -->
+        <div style="font-family: var(--ff-heading); font-size: 1.4rem; font-weight: 700; opacity: 0.6;">Ministère de la Santé</div>
+        <div style="font-family: var(--ff-heading); font-size: 1.4rem; font-weight: 700; opacity: 0.6;">OMS Algérie</div>
+        <div style="font-family: var(--ff-heading); font-size: 1.4rem; font-weight: 700; opacity: 0.6;">UNICEF</div>
+        <div style="font-family: var(--ff-heading); font-size: 1.4rem; font-weight: 700; opacity: 0.6;">FAO</div>
+        <div style="font-family: var(--ff-heading); font-size: 1.4rem; font-weight: 700; opacity: 0.6;">Université d'Alger</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer" id="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <!-- Col 1: Info -->
+        <div>
+          <div class="footer__logo">
+            <div class="footer__logo-icon">AANM</div>
+            AANM
+          </div>
+          <span class="footer__label">Contact :</span>
+          <p class="footer__text">
+            <a href="tel:+213-541939878">+213 541 939 878</a><br />
+            <a href="tel:+213-554115452">+213 554 115 452</a><br />
+            <a href="tel:+213-770981355">+213 770 981 355</a>
+          </p>
+          <br />
+          <span class="footer__label">Email :</span>
+          <p class="footer__text"><a href="mailto:cabinet@aanm-assal.org">cabinet@aanm-assal.org</a></p>
+          <div class="footer__socials">
+            <a href="#" class="footer__social" aria-label="Facebook">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            </a>
+            <a href="#" class="footer__social" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            </a>
+            <a href="#" class="footer__social" aria-label="YouTube">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19.1c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.43z"/><polygon fill="white" points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>
+            </a>
+          </div>
+        </div>
+        <!-- Col 2: Links -->
+        <div>
+          <h4 class="footer__heading">Navigation</h4>
+          <a href="/" class="footer__link">Accueil</a>
+          <a href="./about.html" class="footer__link">À Propos</a>
+          <a href="./activities.html" class="footer__link">Activités</a>
+          <a href="./news.html" class="footer__link">Actualités</a>
+        </div>
+        <!-- Col 3: More Links -->
+        <div>
+          <h4 class="footer__heading">En savoir plus</h4>
+          <a href="./contact.html" class="footer__link">Contact</a>
+          <a href="#" class="footer__link">Adhérer</a>
+          <a href="#" class="footer__link">Faire un don</a>
+        </div>
+        <!-- Col 4: Newsletter -->
+        <div>
+          <h4 class="footer__heading">Newsletter AANM</h4>
+          <p class="footer__newsletter-text">Inscrivez-vous à notre newsletter pour rester informé de nos activités et actualités.</p>
+          <form class="footer__newsletter-form" onsubmit="event.preventDefault(); alert('Merci pour votre inscription !');">
+            <input type="email" class="footer__input" placeholder="Votre adresse email" required />
+            <button type="submit" class="footer__newsletter-btn">S'inscrire</button>
+          </form>
+          <p class="footer__newsletter-disclaimer">En vous inscrivant, vous acceptez notre politique de confidentialité et consentez à recevoir nos communications.</p>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <p class="footer__copyright">© 2026 Association Algérienne de Nutrition Maghrébine. Tous droits réservés.</p>
+        <a href="#" class="footer__bottom-link">Politique de Confidentialité</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="./main.js" type="module"></script>
+</body>
+</html>

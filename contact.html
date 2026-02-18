@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact — AANM</title>
+    <meta name="description"
+        content="Contactez l'Association Algérienne de Nutrition Maghrébine. Formulaire, adresse, téléphone et email." />
+    <link rel="stylesheet" href="./style.css" />
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%231B5E3A'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' font-family='serif' font-size='14' font-weight='bold' fill='white'>A</text></svg>" />
+    <style>
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: var(--space-xl);
+        }
+
+        .contact-info__cards {
+            display: grid;
+            gap: var(--space-md);
+        }
+
+        .info-card {
+            display: flex;
+            gap: var(--space-md);
+            padding: var(--space-md);
+            background: var(--clr-white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            align-items: flex-start;
+            transition: transform var(--transition-base), box-shadow var(--transition-base);
+        }
+
+        .info-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .info-card__icon {
+            flex-shrink: 0;
+            width: 52px;
+            height: 52px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .info-card__icon--green {
+            background: rgba(27, 94, 58, 0.1);
+            color: var(--clr-primary);
+        }
+
+        .info-card__icon--coral {
+            background: rgba(199, 91, 57, 0.1);
+            color: var(--clr-secondary);
+        }
+
+        .info-card__icon--teal {
+            background: rgba(59, 169, 156, 0.1);
+            color: var(--clr-accent-teal);
+        }
+
+        .info-card__icon--gold {
+            background: rgba(212, 168, 67, 0.1);
+            color: var(--clr-accent-gold);
+        }
+
+        .info-card__icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .info-card__title {
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            font-size: var(--fs-body);
+        }
+
+        .info-card__text {
+            font-size: var(--fs-small);
+            color: var(--clr-text-light);
+            line-height: 1.6;
+        }
+
+        .info-card__text a {
+            color: var(--clr-primary);
+        }
+
+        .info-card__text a:hover {
+            color: var(--clr-secondary);
+        }
+
+        .contact-form {
+            background: var(--clr-white);
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+            box-shadow: var(--shadow-md);
+        }
+
+        .contact-form h3 {
+            font-size: var(--fs-h3);
+            margin-bottom: var(--space-md);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-md);
+        }
+
+        .form-group {
+            margin-bottom: var(--space-md);
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: var(--fs-small);
+            margin-bottom: 0.5rem;
+            color: var(--clr-text);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.85rem 1.2rem;
+            border: 2px solid var(--clr-bg-alt);
+            border-radius: var(--radius-md);
+            font-family: var(--ff-body);
+            font-size: var(--fs-body);
+            background: var(--clr-bg);
+            color: var(--clr-text);
+            outline: none;
+            transition: border-color var(--transition-fast);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: var(--clr-primary);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        .map-section {
+            margin-top: var(--space-xl);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            height: 400px;
+            background: var(--clr-bg-alt);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .map-placeholder {
+            text-align: center;
+            padding: var(--space-xl);
+        }
+
+        .map-placeholder svg {
+            width: 60px;
+            height: 60px;
+            color: var(--clr-primary);
+            opacity: 0.4;
+            margin-bottom: var(--space-sm);
+        }
+
+        .map-placeholder p {
+            color: var(--clr-text-light);
+        }
+
+        .join-banner {
+            background: linear-gradient(135deg, var(--clr-primary), var(--clr-accent-teal-dark));
+            border-radius: var(--radius-xl);
+            padding: var(--space-2xl);
+            color: var(--clr-white);
+            margin-top: var(--space-2xl);
+            text-align: center;
+        }
+
+        .join-banner h3 {
+            font-size: var(--fs-h2);
+            color: var(--clr-white);
+            margin-bottom: var(--space-md);
+        }
+
+        .join-banner p {
+            font-size: var(--fs-body-lg);
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto var(--space-lg);
+        }
+
+        @media (max-width: 768px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar__overlay" id="navOverlay"></div>
+    <nav class="navbar navbar--scrolled" id="navbar">
+        <div class="navbar__inner">
+            <a href="/" class="navbar__logo">
+                <div class="navbar__logo-icon">AANM</div>
+                <div class="navbar__logo-text">AANM<span>Nutrition Maghrébine</span></div>
+            </a>
+            <div class="navbar__links" id="navLinks">
+                <a href="/" class="navbar__link">Accueil</a>
+                <a href="./about.html" class="navbar__link">À Propos</a>
+                <a href="./activities.html" class="navbar__link">Activités</a>
+                <a href="./news.html" class="navbar__link">Actualités</a>
+                <a href="./contact.html" class="navbar__link navbar__link--active">Contact</a>
+                <a href="./contact.html" class="navbar__cta">Nous Rejoindre →</a>
+            </div>
+            <button class="navbar__toggle" id="navToggle"
+                aria-label="Menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <!-- PAGE HEADER -->
+    <header class="page-header">
+        <div class="container">
+            <span class="section-label">Contactez-Nous</span>
+            <h1 class="page-header__title">Nous sommes à votre écoute</h1>
+            <p class="page-header__subtitle">Vous pouvez nous contacter par téléphone, email ou en remplissant le
+                formulaire ci-dessous.</p>
+        </div>
+    </header>
+
+    <!-- CONTACT CONTENT -->
+    <section class="section">
+        <div class="container">
+            <div class="contact-grid">
+                <!-- LEFT: Info Cards -->
+                <div class="contact-info__cards">
+                    <div class="info-card reveal">
+                        <div class="info-card__icon info-card__icon--green">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path
+                                    d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="info-card__title">Téléphone</h4>
+                            <p class="info-card__text">
+                                <a href="tel:+213-541939878">+213 541 939 878</a><br />
+                                <a href="tel:+213-554115452">+213 554 115 452</a><br />
+                                <a href="tel:+213-770981355">+213 770 981 355</a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="info-card reveal reveal--delay-1">
+                        <div class="info-card__icon info-card__icon--coral">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                                <polyline points="22,6 12,13 2,6" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="info-card__title">Email</h4>
+                            <p class="info-card__text"><a
+                                    href="mailto:cabinet@aanm-assal.org">cabinet@aanm-assal.org</a></p>
+                        </div>
+                    </div>
+                    <div class="info-card reveal reveal--delay-2">
+                        <div class="info-card__icon info-card__icon--teal">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+                                <circle cx="12" cy="10" r="3" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="info-card__title">Adresse</h4>
+                            <p class="info-card__text">Alger, Algérie</p>
+                        </div>
+                    </div>
+                    <div class="info-card reveal reveal--delay-3">
+                        <div class="info-card__icon info-card__icon--gold">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="info-card__title">Horaires</h4>
+                            <p class="info-card__text">Dimanche - Jeudi : 8h00 - 16h00<br />Vendredi - Samedi : Fermé
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT: Contact Form -->
+                <div class="contact-form reveal">
+                    <h3>Envoyez-nous un message</h3>
+                    <form id="contactForm"
+                        onsubmit="event.preventDefault(); document.getElementById('contactForm').innerHTML = '<div style=\'text-align:center; padding: 3rem;\'><div style=\'font-size: 3rem; margin-bottom: 1rem;\'>✅</div><h3>Message envoyé !</h3><p style=\'color: var(--clr-text-light); margin-top: 0.5rem;\'>Nous vous répondrons dans les meilleurs délais.</p></div>'">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="nom">Nom complet *</label>
+                                <input type="text" id="nom" name="nom" required placeholder="Votre nom" />
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email *</label>
+                                <input type="email" id="email" name="email" required
+                                    placeholder="votremail@exemple.com" />
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="telephone">Téléphone</label>
+                                <input type="tel" id="telephone" name="telephone" placeholder="+213 555 123 456" />
+                            </div>
+                            <div class="form-group">
+                                <label for="sujet">Sujet</label>
+                                <select id="sujet" name="sujet">
+                                    <option value="">Sélectionnez un sujet</option>
+                                    <option value="info">Demande d'information</option>
+                                    <option value="adhesion">Adhésion</option>
+                                    <option value="partenariat">Partenariat</option>
+                                    <option value="programmee">Programmes</option>
+                                    <option value="autre">Autre</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message *</label>
+                            <textarea id="message" name="message" required placeholder="Votre message..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn--primary"
+                            style="width: 100%; justify-content: center;">Envoyer le message →</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- MAP -->
+            <div class="map-section reveal">
+                <div class="map-placeholder">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+                        <circle cx="12" cy="10" r="3" />
+                    </svg>
+                    <p><strong>AANM</strong> — Alger, Algérie</p>
+                    <p>Carte interactive disponible prochainement</p>
+                </div>
+            </div>
+
+            <!-- JOIN BANNER -->
+            <div class="join-banner reveal">
+                <h3>Rejoignez notre réseau</h3>
+                <p>Devenez membre de l'AANM et contribuez à l'amélioration de la nutrition au Maghreb. Ensemble, nous
+                    pouvons faire la différence.</p>
+                <a href="#" class="btn btn--primary">Adhérer maintenant →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__grid">
+                <div>
+                    <div class="footer__logo">
+                        <div class="footer__logo-icon">AANM</div>AANM
+                    </div>
+                    <span class="footer__label">Contact :</span>
+                    <p class="footer__text"><a href="tel:+213-541939878">+213 541 939 878</a><br /><a
+                            href="tel:+213-554115452">+213 554 115 452</a><br /><a href="tel:+213-770981355">+213 770
+                            981 355</a></p>
+                    <br /><span class="footer__label">Email :</span>
+                    <p class="footer__text"><a href="mailto:cabinet@aanm-assal.org">cabinet@aanm-assal.org</a></p>
+                    <div class="footer__socials">
+                        <a href="#" class="footer__social" aria-label="Facebook"><svg viewBox="0 0 24 24"
+                                fill="currentColor">
+                                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+                            </svg></a>
+                        <a href="#" class="footer__social" aria-label="LinkedIn"><svg viewBox="0 0 24 24"
+                                fill="currentColor">
+                                <path
+                                    d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                                <rect x="2" y="9" width="4" height="12" />
+                                <circle cx="4" cy="4" r="2" />
+                            </svg></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="footer__heading">Navigation</h4><a href="/" class="footer__link">Accueil</a><a
+                        href="./about.html" class="footer__link">À Propos</a><a href="./activities.html"
+                        class="footer__link">Activités</a><a href="./news.html" class="footer__link">Actualités</a>
+                </div>
+                <div>
+                    <h4 class="footer__heading">En savoir plus</h4><a href="./contact.html"
+                        class="footer__link">Contact</a><a href="#" class="footer__link">Adhérer</a><a href="#"
+                        class="footer__link">Faire un don</a>
+                </div>
+                <div>
+                    <h4 class="footer__heading">Newsletter AANM</h4>
+                    <p class="footer__newsletter-text">Restez informé de nos activités.</p>
+                    <form class="footer__newsletter-form" onsubmit="event.preventDefault(); alert('Merci !')"><input
+                            type="email" class="footer__input" placeholder="Votre email" required /><button
+                            type="submit" class="footer__newsletter-btn">S'inscrire</button></form>
+                </div>
+            </div>
+            <div class="footer__bottom">
+                <p class="footer__copyright">© 2026 AANM. Tous droits réservés.</p><a href="#"
+                    class="footer__bottom-link">Politique de Confidentialité</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="./main.js" type="module"></script>
+</body>
+
+</html>

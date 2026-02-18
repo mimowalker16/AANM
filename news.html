@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Actualités — AANM</title>
+    <meta name="description"
+        content="Les dernières actualités et articles de l'Association Algérienne de Nutrition Maghrébine." />
+    <link rel="stylesheet" href="./style.css" />
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%231B5E3A'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' font-family='serif' font-size='14' font-weight='bold' fill='white'>A</text></svg>" />
+    <style>
+        .featured {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: var(--space-lg);
+            margin-bottom: var(--space-2xl);
+            align-items: stretch;
+        }
+
+        .featured__image {
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            min-height: 400px;
+        }
+
+        .featured__image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .featured__content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .featured__tag {
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            border-radius: var(--radius-full);
+            background: rgba(27, 94, 58, 0.1);
+            color: var(--clr-primary);
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: var(--space-md);
+            width: fit-content;
+        }
+
+        .featured__title {
+            font-size: var(--fs-h2);
+            font-weight: 700;
+            margin-bottom: var(--space-md);
+            line-height: 1.3;
+        }
+
+        .featured__excerpt {
+            font-size: var(--fs-body-lg);
+            color: var(--clr-text-light);
+            margin-bottom: var(--space-lg);
+            line-height: 1.8;
+        }
+
+        .featured__meta {
+            font-size: var(--fs-small);
+            color: var(--clr-text-light);
+        }
+
+        .featured__meta strong {
+            color: var(--clr-text);
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: var(--space-md);
+        }
+
+        .news-card {
+            background: var(--clr-white);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: transform var(--transition-base), box-shadow var(--transition-base);
+        }
+
+        .news-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .news-card__image {
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .news-card__image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform var(--transition-slow);
+        }
+
+        .news-card:hover .news-card__image img {
+            transform: scale(1.05);
+        }
+
+        .news-card__body {
+            padding: var(--space-md);
+        }
+
+        .news-card__date {
+            font-size: 0.8rem;
+            color: var(--clr-text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .news-card__title {
+            font-size: var(--fs-h4);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        .news-card__excerpt {
+            font-size: var(--fs-small);
+            color: var(--clr-text-light);
+            line-height: 1.6;
+            margin-bottom: var(--space-sm);
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .news-card__link {
+            font-size: var(--fs-small);
+            font-weight: 600;
+            color: var(--clr-primary);
+        }
+
+        .news-card__link:hover {
+            color: var(--clr-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .featured {
+                grid-template-columns: 1fr;
+            }
+
+            .featured__image {
+                min-height: 280px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar__overlay" id="navOverlay"></div>
+    <nav class="navbar navbar--scrolled" id="navbar">
+        <div class="navbar__inner">
+            <a href="/" class="navbar__logo">
+                <div class="navbar__logo-icon">AANM</div>
+                <div class="navbar__logo-text">AANM<span>Nutrition Maghrébine</span></div>
+            </a>
+            <div class="navbar__links" id="navLinks">
+                <a href="/" class="navbar__link">Accueil</a>
+                <a href="./about.html" class="navbar__link">À Propos</a>
+                <a href="./activities.html" class="navbar__link">Activités</a>
+                <a href="./news.html" class="navbar__link navbar__link--active">Actualités</a>
+                <a href="./contact.html" class="navbar__link">Contact</a>
+                <a href="./contact.html" class="navbar__cta">Nous Rejoindre →</a>
+            </div>
+            <button class="navbar__toggle" id="navToggle"
+                aria-label="Menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <!-- PAGE HEADER -->
+    <header class="page-header">
+        <div class="container">
+            <span class="section-label">Blog & Actualités</span>
+            <h1 class="page-header__title">Nos Dernières Nouvelles</h1>
+            <p class="page-header__subtitle">Articles, publications et mises à jour de l'AANM sur la nutrition et la
+                santé publique.</p>
+        </div>
+    </header>
+
+    <!-- FEATURED ARTICLE -->
+    <section class="section">
+        <div class="container">
+            <div class="featured reveal">
+                <div class="featured__image">
+                    <img src="https://images.unsplash.com/photo-1490818387583-1baba5e638af?w=900&q=80"
+                        alt="Article vedette" />
+                </div>
+                <div class="featured__content">
+                    <span class="featured__tag">Article Vedette</span>
+                    <h2 class="featured__title">La nutrition méditerranéenne : un modèle pour le Maghreb</h2>
+                    <p class="featured__excerpt">Les recherches récentes confirment les bienfaits exceptionnels du
+                        régime méditerranéen, largement pratiqué dans la région maghrébine. Découvrez comment les
+                        traditions alimentaires locales constituent une base solide pour une alimentation saine.</p>
+                    <p class="featured__meta">Par <strong>Dr. Amina Bouzid</strong> — 8 Février 2026</p>
+                    <a href="#" class="btn btn--secondary" style="margin-top: 1.5rem; width: fit-content;">Lire
+                        l'article →</a>
+                </div>
+            </div>
+
+            <!-- NEWS GRID -->
+            <h3 class="section-title reveal" style="margin-top: var(--space-2xl);">Articles récents</h3>
+            <div class="news-grid">
+                <div class="news-card reveal">
+                    <div class="news-card__image"><img
+                            src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&q=80"
+                            alt="Article" /></div>
+                    <div class="news-card__body">
+                        <p class="news-card__date">1 Février 2026</p>
+                        <h3 class="news-card__title">L'AANM lance un nouveau programme de nutrition scolaire</h3>
+                        <p class="news-card__excerpt">Un programme ambitieux visant à améliorer la qualité
+                            nutritionnelle des repas scolaires dans les établissements algériens.</p>
+                        <a href="#" class="news-card__link">Lire la suite →</a>
+                    </div>
+                </div>
+                <div class="news-card reveal reveal--delay-1">
+                    <div class="news-card__image"><img
+                            src="https://images.unsplash.com/photo-1607962837359-5e7e89f86776?w=600&q=80"
+                            alt="Article" /></div>
+                    <div class="news-card__body">
+                        <p class="news-card__date">25 Janvier 2026</p>
+                        <h3 class="news-card__title">Résultats de l'enquête nationale sur les habitudes alimentaires
+                        </h3>
+                        <p class="news-card__excerpt">Les résultats préliminaires de notre grande enquête révèlent des
+                            tendances encourageantes mais aussi des défis importants.</p>
+                        <a href="#" class="news-card__link">Lire la suite →</a>
+                    </div>
+                </div>
+                <div class="news-card reveal reveal--delay-2">
+                    <div class="news-card__image"><img
+                            src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80"
+                            alt="Article" /></div>
+                    <div class="news-card__body">
+                        <p class="news-card__date">18 Janvier 2026</p>
+                        <h3 class="news-card__title">5 conseils pour une alimentation équilibrée en hiver</h3>
+                        <p class="news-card__excerpt">Nos spécialistes partagent leurs recommandations pour maintenir
+                            une alimentation saine pendant les mois d'hiver.</p>
+                        <a href="#" class="news-card__link">Lire la suite →</a>
+                    </div>
+                </div>
+                <div class="news-card reveal">
+                    <div class="news-card__image"><img
+                            src="https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?w=600&q=80"
+                            alt="Article" /></div>
+                    <div class="news-card__body">
+                        <p class="news-card__date">10 Janvier 2026</p>
+                        <h3 class="news-card__title">Partenariat avec l'Université de Constantine</h3>
+                        <p class="news-card__excerpt">Un nouveau partenariat scientifique renforce nos capacités de
+                            recherche en nutrition dans l'Est algérien.</p>
+                        <a href="#" class="news-card__link">Lire la suite →</a>
+                    </div>
+                </div>
+                <div class="news-card reveal reveal--delay-1">
+                    <div class="news-card__image"><img
+                            src="https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=600&q=80"
+                            alt="Article" /></div>
+                    <div class="news-card__body">
+                        <p class="news-card__date">2 Janvier 2026</p>
+                        <h3 class="news-card__title">Bilan de l'année 2025 : nos réalisations</h3>
+                        <p class="news-card__excerpt">Retour complet sur nos activités, programmes et résultats de
+                            l'année écoulée.</p>
+                        <a href="#" class="news-card__link">Lire la suite →</a>
+                    </div>
+                </div>
+                <div class="news-card reveal reveal--delay-2">
+                    <div class="news-card__image"><img
+                            src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&q=80" alt="Article" />
+                    </div>
+                    <div class="news-card__body">
+                        <p class="news-card__date">20 Décembre 2025</p>
+                        <h3 class="news-card__title">L'importance du petit-déjeuner dans la culture maghrébine</h3>
+                        <p class="news-card__excerpt">Analyse des pratiques traditionnelles du petit-déjeuner au Maghreb
+                            et leur valeur nutritionnelle.</p>
+                        <a href="#" class="news-card__link">Lire la suite →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__grid">
+                <div>
+                    <div class="footer__logo">
+                        <div class="footer__logo-icon">AANM</div>AANM
+                    </div>
+                    <span class="footer__label">Contact :</span>
+                    <p class="footer__text"><a href="tel:+213-541939878">+213 541 939 878</a><br /><a
+                            href="tel:+213-554115452">+213 554 115 452</a><br /><a href="tel:+213-770981355">+213 770
+                            981 355</a></p>
+                    <br /><span class="footer__label">Email :</span>
+                    <p class="footer__text"><a href="mailto:cabinet@aanm-assal.org">cabinet@aanm-assal.org</a></p>
+                    <div class="footer__socials">
+                        <a href="#" class="footer__social" aria-label="Facebook"><svg viewBox="0 0 24 24"
+                                fill="currentColor">
+                                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+                            </svg></a>
+                        <a href="#" class="footer__social" aria-label="LinkedIn"><svg viewBox="0 0 24 24"
+                                fill="currentColor">
+                                <path
+                                    d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                                <rect x="2" y="9" width="4" height="12" />
+                                <circle cx="4" cy="4" r="2" />
+                            </svg></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="footer__heading">Navigation</h4><a href="/" class="footer__link">Accueil</a><a
+                        href="./about.html" class="footer__link">À Propos</a><a href="./activities.html"
+                        class="footer__link">Activités</a><a href="./news.html" class="footer__link">Actualités</a>
+                </div>
+                <div>
+                    <h4 class="footer__heading">En savoir plus</h4><a href="./contact.html"
+                        class="footer__link">Contact</a><a href="#" class="footer__link">Adhérer</a><a href="#"
+                        class="footer__link">Faire un don</a>
+                </div>
+                <div>
+                    <h4 class="footer__heading">Newsletter AANM</h4>
+                    <p class="footer__newsletter-text">Restez informé de nos activités.</p>
+                    <form class="footer__newsletter-form" onsubmit="event.preventDefault(); alert('Merci !')"><input
+                            type="email" class="footer__input" placeholder="Votre email" required /><button
+                            type="submit" class="footer__newsletter-btn">S'inscrire</button></form>
+                </div>
+            </div>
+            <div class="footer__bottom">
+                <p class="footer__copyright">© 2026 AANM. Tous droits réservés.</p><a href="#"
+                    class="footer__bottom-link">Politique de Confidentialité</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="./main.js" type="module"></script>
+</body>
+
+</html>
