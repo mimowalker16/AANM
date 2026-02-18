@@ -153,6 +153,8 @@ function initStatsCounter() {
 function initTestimonials() {
     const carousel = document.getElementById('testimonialCarousel');
     const dotsContainer = document.getElementById('testimonialDots');
+    const prevBtn = document.getElementById('testimonialPrev');
+    const nextBtn = document.getElementById('testimonialNext');
     if (!carousel || !dotsContainer) return;
 
     const slides = carousel.querySelectorAll('.testimonial-slide');
@@ -172,6 +174,10 @@ function initTestimonials() {
         goToSlide((currentSlide + 1) % slides.length);
     }
 
+    function prevSlide() {
+        goToSlide((currentSlide - 1 + slides.length) % slides.length);
+    }
+
     function startAutoplay() {
         autoplayInterval = setInterval(nextSlide, 6000);
     }
@@ -181,12 +187,28 @@ function initTestimonials() {
         startAutoplay();
     }
 
+    // Dots navigation
     dots.forEach((dot, index) => {
         dot.addEventListener('click', () => {
             goToSlide(index);
             resetAutoplay();
         });
     });
+
+    // Arrow buttons
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            prevSlide();
+            resetAutoplay();
+        });
+    }
+
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            nextSlide();
+            resetAutoplay();
+        });
+    }
 
     startAutoplay();
 }

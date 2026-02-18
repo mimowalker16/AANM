@@ -1,6 +1,6 @@
 # Dependencies
 node_modules/
-frames/
+
 # Build output
 dist/
 dist-ssr/
