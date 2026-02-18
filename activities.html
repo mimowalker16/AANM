@@ -367,54 +367,79 @@
     </section>
 
     <!-- FOOTER -->
-    <footer class="footer">
+    <footer class="footer" id="footer">
         <div class="container">
-            <div class="footer__grid">
-                <div>
+            <div class="footer__main">
+                <!-- Left: Brand & Newsletter -->
+                <div class="footer__brand">
                     <div class="footer__logo">
-                        <div class="footer__logo-icon">AANM</div>AANM
+                        <div class="footer__logo-icon">AANM</div>
+                        <span class="footer__logo-text">AANM</span>
                     </div>
-                    <span class="footer__label">Contact :</span>
-                    <p class="footer__text"><a href="tel:+213-541939878">+213 541 939 878</a><br /><a
-                            href="tel:+213-554115452">+213 554 115 452</a><br /><a href="tel:+213-770981355">+213 770
-                            981 355</a></p>
-                    <br /><span class="footer__label">Email :</span>
-                    <p class="footer__text"><a href="mailto:cabinet@aanm-assal.org">cabinet@aanm-assal.org</a></p>
-                    <div class="footer__socials">
-                        <a href="#" class="footer__social" aria-label="Facebook"><svg viewBox="0 0 24 24"
-                                fill="currentColor">
-                                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-                            </svg></a>
-                        <a href="#" class="footer__social" aria-label="LinkedIn"><svg viewBox="0 0 24 24"
-                                fill="currentColor">
-                                <path
-                                    d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-                                <rect x="2" y="9" width="4" height="12" />
-                                <circle cx="4" cy="4" r="2" />
-                            </svg></a>
+                    <p class="footer__tagline">Pour une meilleure nutrition au Maghreb.<br />Alliance scientifique et traditions locales.</p>
+                    <form class="footer__newsletter" onsubmit="event.preventDefault(); alert('Merci pour votre inscription !');">
+                        <input type="email" class="footer__input" placeholder="Entrez votre email..." required />
+                        <button type="submit" class="footer__submit" aria-label="S'inscrire">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Right: Link Columns -->
+                <div class="footer__links">
+                    <div class="footer__column">
+                        <h4 class="footer__heading">NAVIGATION</h4>
+                        <a href="/" class="footer__link">Accueil</a>
+                        <a href="./about.html" class="footer__link">À Propos</a>
+                        <a href="./activities.html" class="footer__link">Activités</a>
+                        <a href="./news.html" class="footer__link">Actualités</a>
                     </div>
-                </div>
-                <div>
-                    <h4 class="footer__heading">Navigation</h4><a href="/" class="footer__link">Accueil</a><a
-                        href="./about.html" class="footer__link">À Propos</a><a href="./activities.html"
-                        class="footer__link">Activités</a><a href="./news.html" class="footer__link">Actualités</a>
-                </div>
-                <div>
-                    <h4 class="footer__heading">En savoir plus</h4><a href="./contact.html"
-                        class="footer__link">Contact</a><a href="#" class="footer__link">Adhérer</a><a href="#"
-                        class="footer__link">Faire un don</a>
-                </div>
-                <div>
-                    <h4 class="footer__heading">Newsletter AANM</h4>
-                    <p class="footer__newsletter-text">Restez informé de nos activités.</p>
-                    <form class="footer__newsletter-form" onsubmit="event.preventDefault(); alert('Merci !')"><input
-                            type="email" class="footer__input" placeholder="Votre email" required /><button
-                            type="submit" class="footer__newsletter-btn">S'inscrire</button></form>
+                    
+                    <div class="footer__column">
+                        <h4 class="footer__heading">EN SAVOIR PLUS</h4>
+                        <a href="./contact.html" class="footer__link">Contact</a>
+                        <a href="#" class="footer__link">Adhérer</a>
+                        <a href="#" class="footer__link">Légal</a>
+                        <a href="#" class="footer__link">Publications</a>
+                    </div>
+                    
+                    <div class="footer__column">
+                        <h4 class="footer__heading">CONTACT</h4>
+                        <a href="tel:+213541939878" class="footer__link">Téléphone</a>
+                        <a href="https://github.com/mimowalker16/AANM" target="_blank" rel="noopener" class="footer__link">GitHub</a>
+                        <a href="mailto:cabinet@aanm-assal.org" class="footer__link">Email</a>
+                        <a href="#" class="footer__link">LinkedIn</a>
+                    </div>
                 </div>
             </div>
+            
+            <!-- Bottom Bar -->
             <div class="footer__bottom">
-                <p class="footer__copyright">© 2026 AANM. Tous droits réservés.</p><a href="#"
-                    class="footer__bottom-link">Politique de Confidentialité</a>
+                <p class="footer__copyright">// PUBLIÉ_PAR_AANM.ORG</p>
+                <div class="footer__bottom-right">
+                    <a href="#" class="footer__social" aria-label="GitHub">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
+                        </svg>
+                    </a>
+                    <a href="#" class="footer__social" aria-label="Twitter">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/>
+                        </svg>
+                    </a>
+                    <a href="#" class="footer__social" aria-label="LinkedIn">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                        </svg>
+                    </a>
+                    <span class="footer__divider">|</span>
+                    <div class="footer__status">
+                        <span class="footer__status-dot"></span>
+                        TOUS SYSTÈMES NORMAUX
+                    </div>
+                </div>
             </div>
         </div>
     </footer>
