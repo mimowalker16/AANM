@@ -4,7 +4,17 @@
    ============================================ */
 
 /* --- Google Fonts --- */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Degular:wght@400;700&family=Reckless:wght@400&family=Outfit:wght@300;400;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Outfit:wght@300;400;600;700;800;900&display=swap');
+
+/* Local fonts (Reckless) */
+@font-face {
+  font-family: 'Reckless';
+  src: url('./assets/fonts/reckless-regular.woff2') format('woff2'),
+       url('./assets/fonts/reckless-regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
 
 /* --- CSS Custom Properties (Design Tokens) --- */
 :root {
