@@ -33,23 +33,26 @@
   --clr-bg: #FAF6F0;
   --clr-bg-alt: #F2EDE5;
   --clr-dark: #0E2F1C;
-  --clr-text: #2D2D2D;
+  --clr-text: #000000;
   --clr-text-light: #6B6B6B;
   --clr-text-on-dark: #F5F0E8;
   --clr-white: #FFFFFF;
 
   /* Typography */
   --ff-heading: 'Degular', Georgia, serif;
-  --ff-body: 'Reckless', -apple-system, BlinkMacSystemFont, sans-serif;
+  --ff-body: 'Reckless', serif;
   --ff-numbers: 'Outfit', sans-serif;
   --ff-hero: 'Playfair Display', Georgia, serif;
+
+  /* Reckless (body) — spec: 16px / 19px / 400 */
+  --fs-body: 1rem; /* 16px */
+  --lh-body: 1.1875; /* 19px / 16px */
 
   --fs-hero: clamp(2.8rem, 5vw, 4.5rem);
   --fs-h1: clamp(2.2rem, 4vw, 3.5rem);
   --fs-h2: clamp(1.8rem, 3vw, 2.8rem);
   --fs-h3: clamp(1.3rem, 2vw, 1.8rem);
   --fs-h4: clamp(1.1rem, 1.5vw, 1.4rem);
-  --fs-body: clamp(0.95rem, 1.1vw, 1.1rem);
   --fs-body-lg: clamp(1.05rem, 1.3vw, 1.25rem);
   --fs-small: 0.875rem;
   --fs-stat: clamp(4rem, 8vw, 8rem);
@@ -103,10 +106,11 @@ html {
 
 body {
   font-family: var(--ff-body);
-  font-size: var(--fs-body);
+  font-size: var(--fs-body); /* Reckless Regular — 16px */
+  line-height: var(--lh-body); /* 19px */
+  font-weight: 400;
   color: var(--clr-text);
   background-color: var(--clr-bg);
-  line-height: 1.7;
   overflow-x: hidden;
 }
 
