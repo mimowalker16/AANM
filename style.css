@@ -4,7 +4,7 @@
    ============================================ */
 
 /* --- Google Fonts --- */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,700&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Degular:wght@400;700&family=Reckless:wght@400&family=Outfit:wght@300;400;600;700;800;900&display=swap');
 
 /* --- CSS Custom Properties (Design Tokens) --- */
 :root {
@@ -29,9 +29,10 @@
   --clr-white: #FFFFFF;
 
   /* Typography */
-  --ff-heading: 'Playfair Display', Georgia, serif;
-  --ff-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --ff-heading: 'Degular', Georgia, serif;
+  --ff-body: 'Reckless', -apple-system, BlinkMacSystemFont, sans-serif;
   --ff-numbers: 'Outfit', sans-serif;
+  --ff-hero: 'Playfair Display', Georgia, serif;
 
   --fs-hero: clamp(2.8rem, 5vw, 4.5rem);
   --fs-h1: clamp(2.2rem, 4vw, 3.5rem);
@@ -450,6 +451,7 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--clr-white);
   margin-bottom: var(--space-md);
   line-height: 1.1;
+  font-family: var(--ff-hero);
 }
 
 .hero__title em {
