@@ -28,6 +28,14 @@ lerna-debug.log*
 .env
 .env.local
 .env.*.local
+.env.development
+.env.production
+
+# Database files
+server/database/*.db
+server/database/*.db-journal
+*.sqlite
+*.sqlite3
 
 # OS files
 Thumbs.db
