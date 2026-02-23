@@ -48,14 +48,14 @@ cp server/.env.example server/.env
 # Edit server/.env with your settings
 ```
 
-### **2. Google Maps API Key**
-Get your API key from [Google Cloud Console](https://console.cloud.google.com/):
-1. Enable Maps JavaScript API + Geocoding API
-2. Add your key to `server/.env`:
-   ```bash
-   GOOGLE_MAPS_API_KEY=your_actual_api_key_here
-   ```
-3. Replace `YOUR_API_KEY` in [lab-submission.html](lab-submission.html)
+### **2. No API Keys Required! 🎉**
+We use **OpenStreetMap + Leaflet** (completely free):
+- ✅ No Google Maps API costs
+- ✅ No usage limits or quotas  
+- ✅ No API keys to manage
+- ✅ Same functionality as Google Maps
+
+The map works immediately after installation!
 
 ### **3. Run the Application**
 ```bash
@@ -133,12 +133,18 @@ ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
 ## 🗺️ **Location System**
 
 ### **How It Works**
-1. **User clicks map** → Places draggable marker
-2. **Reverse geocoding** → Converts coordinates to address
+1. **User clicks map** → Places draggable marker on OpenStreetMap
+2. **Reverse geocoding** → Converts coordinates to address (via Nominatim - free!)
 3. **Database storage**:
    - **Primary**: `coordinates_lat`, `coordinates_lng` (precise)
    - **Secondary**: `address`, `city`, `country` (human-readable)
 4. **Validation** → Both coordinates and address required
+
+### **Technology Stack**
+- **Maps**: OpenStreetMap (free, open source)
+- **Map Library**: Leaflet.js (free, lightweight)
+- **Geocoding**: Nominatim (free OpenStreetMap service)
+- **No API keys**: Zero cost, no limits!
 
 ### **Benefits**
 - ✅ Precise location data for mapping
@@ -198,9 +204,10 @@ ls -la server/database/  # Ensure write access
 ```
 
 ### **Maps not loading?**
-- Verify Google Maps API key in both `.env` and `lab-submission.html`
-- Check console for API errors
-- Ensure Maps JavaScript API + Geocoding API are enabled
+- Check internet connection (needs to fetch OpenStreetMap tiles)
+- Verify Leaflet.js CDN is accessible
+- Check browser console for JavaScript errors
+- No API keys needed!
 
 ### **Database errors?**
 - Database auto-creates on first run

@@ -22,8 +22,6 @@ export const config = {
     },
     cors: {
         allowedOrigins: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:5173', 'http://127.0.0.1:5173']
-    },
-    googleMaps: {
-        apiKey: process.env.GOOGLE_MAPS_API_KEY
     }
+    // Note: No API keys needed! Using free OpenStreetMap + Leaflet
 };
