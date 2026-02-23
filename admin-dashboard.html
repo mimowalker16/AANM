@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - AANM</title>
+    <link rel="stylesheet" href="./style.css">
+    <link rel="icon" type="image/png" href="./assets/images/logo.png">
+    <style>
+        .admin-dashboard {
+            padding: var(--space-xl) 0;
+            min-height: 80vh;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-xl);
+            padding: var(--space-lg);
+            background: var(--clr-bg-alt);
+            border-radius: var(--radius-lg);
+        }
+
+        .admin-title {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            color: var(--clr-primary);
+        }
+
+        .admin-title .icon {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        .admin-stats {
+            display: flex;
+            gap: var(--space-lg);
+            font-size: var(--fs-small);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            display: block;
+            font-size: var(--fs-h4);
+            font-weight: 700;
+            color: var(--clr-primary);
+        }
+
+        .stat-label {
+            color: var(--clr-text-muted);
+            font-size: var(--fs-small);
+        }
+
+        .admin-tabs {
+            display: flex;
+            gap: var(--space-xs);
+            margin-bottom: var(--space-lg);
+            border-bottom: 2px solid var(--clr-bg-alt);
+        }
+
+        .tab-button {
+            padding: var(--space-md) var(--space-lg);
+            border: none;
+            background: transparent;
+            color: var(--clr-text-muted);
+            font-weight: 600;
+            font-size: var(--fs-body);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab-button.active {
+            color: var(--clr-primary);
+            border-bottom-color: var(--clr-primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .labs-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--clr-bg);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .labs-table th,
+        .labs-table td {
+            padding: var(--space-md);
+            text-align: left;
+            border-bottom: 1px solid var(--clr-bg-alt);
+        }
+
+        .labs-table th {
+            background: var(--clr-bg-alt);
+            font-weight: 700;
+            color: var(--clr-primary);
+            font-size: var(--fs-small);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .labs-table tr:hover {
+            background: rgba(var(--clr-primary-rgb), 0.05);
+        }
+
+        .lab-name {
+            font-weight: 600;
+            color: var(--clr-primary);
+        }
+
+        .lab-institution {
+            color: var(--clr-text-muted);
+            font-size: var(--fs-small);
+            font-style: italic;
+        }
+
+        .lab-location {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            font-size: var(--fs-small);
+            color: var(--clr-text-muted);
+        }
+
+        .lab-location .icon {
+            width: 12px;
+            height: 12px;
+            fill: currentColor;
+        }
+
+        .research-area-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .research-area-tag {
+            background: var(--clr-primary);
+            color: white;
+            padding: 2px 6px;
+            border-radius: var(--radius-full);
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        .lab-actions {
+            display: flex;
+            gap: var(--space-xs);
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: var(--fs-small);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .action-btn.approve {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .action-btn.approve:hover {
+            background: #45a049;
+        }
+
+        .action-btn.reject {
+            background: #f44336;
+            color: white;
+        }
+
+        .action-btn.reject:hover {
+            background: #da190b;
+        }
+
+        .action-btn.view {
+            background: var(--clr-primary);
+            color: white;
+        }
+
+        .action-btn.view:hover {
+            background: color-mix(in srgb, var(--clr-primary) 85%, black);
+        }
+
+        .action-btn.edit {
+            background: transparent;
+            color: var(--clr-primary);
+            border: 1px solid var(--clr-primary);
+        }
+
+        .action-btn.edit:hover {
+            background: var(--clr-primary);
+            color: white;
+        }
+
+        .action-btn .icon {
+            width: 12px;
+            height: 12px;
+            fill: currentColor;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: var(--radius-full);
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-badge.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-badge.approved {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--space-xl);
+            color: var(--clr-text-muted);
+            background: var(--clr-bg-alt);
+            border-radius: var(--radius-lg);
+        }
+
+        .empty-state .icon {
+            width: 48px;
+            height: 48px;
+            fill: currentColor;
+            margin-bottom: var(--space-md);
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: var(--space-xl);
+            color: var(--clr-text-muted);
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--clr-bg-alt);
+            border-top: 3px solid var(--clr-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto var(--space-md);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-state {
+            text-align: center;
+            padding: var(--space-xl);
+            color: #d32f2f;
+            background: #ffebee;
+            border-radius: var(--radius-lg);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: var(--space-md);
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .notification.error {
+            background: #f44336;
+            color: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--clr-bg);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-lg);
+        }
+
+        .modal-title {
+            font-size: var(--fs-h4);
+            font-weight: 700;
+            color: var(--clr-primary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--clr-text-muted);
+            cursor: pointer;
+        }
+
+        .modal-body {
+            margin-bottom: var(--space-lg);
+        }
+
+        .modal-body p {
+            margin-bottom: var(--space-md);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: var(--space-sm);
+            justify-content: flex-end;
+        }
+
+        @media (max-width: 768px) {
+            .admin-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: var(--space-md);
+            }
+
+            .admin-stats {
+                justify-content: space-around;
+            }
+
+            .labs-table {
+                font-size: var(--fs-small);
+            }
+
+            .labs-table th,
+            .labs-table td {
+                padding: var(--space-sm);
+            }
+
+            .lab-actions {
+                flex-direction: column;
+            }
+
+            .modal-content {
+                width: 95%;
+                padding: var(--space-lg);
+            }
+        }
+
+        /* Hide scrollbar for better UX */
+        .modal-content::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .modal-content::-webkit-scrollbar-track {
+            background: var(--clr-bg-alt);
+        }
+
+        .modal-content::-webkit-scrollbar-thumb {
+            background: var(--clr-primary);
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar__container">
+            <div class="navbar__logo-container">
+                <a href="/" class="navbar__logo" aria-label="Visit home page">
+                    <img src="./assets/images/logo.png" alt="AANM Logo" class="navbar__logo-img">
+                </a>
+            </div>
+            <ul class="navbar__menu">
+                <li class="navbar__item">
+                    <a href="/" class="navbar__link">Home</a>
+                </li>
+                <li class="navbar__item">
+                    <a href="/lab-directory.html" class="navbar__link">Lab Directory</a>
+                </li>
+                <li class="navbar__item">
+                    <a href="/lab-map.html" class="navbar__link">Lab Map</a>
+                </li>
+                <li class="navbar__item">
+                    <a href="/admin-dashboard.html" class="navbar__link navbar__link--active">Admin</a>
+                </li>
+            </ul>
+            <div class="navbar__hamburger">
+                <span class="navbar__bar"></span>
+                <span class="navbar__bar"></span>
+                <span class="navbar__bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero hero--small">
+            <div class="hero__container">
+                <h1 class="hero__title">Admin Dashboard</h1>
+                <p class="hero__description">Manage laboratory submissions and approvals</p>
+            </div>
+        </section>
+
+        <section class="section admin-dashboard">
+            <div class="container">
+                <!-- Admin Header with Stats -->
+                <div class="admin-header">
+                    <div class="admin-title">
+                        <svg class="icon" viewBox="0 0 20 20">
+                            <path d="M10 2L3 7v11h4v-6h6v6h4V7l-7-5z"/>
+                        </svg>
+                        <h2>Laboratory Management</h2>
+                    </div>
+                    <div class="admin-stats">
+                        <div class="stat-item">
+                            <span id="pendingCount" class="stat-number">-</span>
+                            <span class="stat-label">Pending</span>
+                        </div>
+                        <div class="stat-item">
+                            <span id="approvedCount" class="stat-number">-</span>
+                            <span class="stat-label">Approved</span>
+                        </div>
+                        <div class="stat-item">
+                            <span id="totalCount" class="stat-number">-</span>
+                            <span class="stat-label">Total</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <div class="admin-tabs">
+                    <button class="tab-button active" data-tab="pending">
+                        Pending Submissions
+                    </button>
+                    <button class="tab-button" data-tab="approved">
+                        Approved Labs
+                    </button>
+                </div>
+
+                <!-- Pending Submissions Tab -->
+                <div id="pendingTab" class="tab-content active">
+                    <div id="pendingLoading" class="loading-state">
+                        <div class="loading-spinner"></div>
+                        <p>Loading pending submissions...</p>
+                    </div>
+                    <div id="pendingError" class="error-state" style="display: none;"></div>
+                    <div id="pendingEmpty" class="empty-state" style="display: none;">
+                        <svg class="icon" viewBox="0 0 20 20">
+                            <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>
+                        </svg>
+                        <h3>No pending submissions</h3>
+                        <p>All laboratory submissions have been reviewed.</p>
+                    </div>
+                    <div id="pendingTable" style="display: none;">
+                        <table class="labs-table">
+                            <thead>
+                                <tr>
+                                    <th>Laboratory</th>
+                                    <th>Location</th>
+                                    <th>Contact</th>
+                                    <th>Research Areas</th>
+                                    <th>Submitted</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pendingTableBody">
+                                <!-- Pending lab rows will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Approved Labs Tab -->
+                <div id="approvedTab" class="tab-content">
+                    <div id="approvedLoading" class="loading-state">
+                        <div class="loading-spinner"></div>
+                        <p>Loading approved laboratories...</p>
+                    </div>
+                    <div id="approvedError" class="error-state" style="display: none;"></div>
+                    <div id="approvedEmpty" class="empty-state" style="display: none;">
+                        <svg class="icon" viewBox="0 0 20 20">
+                            <path d="M10 2C6.69 2 4 4.69 4 8c0 5.25 6 12 6 12s6-6.75 6-12c0-3.31-2.69-6-6-6zm0 8c-1.1 0-2-0.9-2-2s0.9-2 2-2 2 0.9 2 2-0.9 2-2 2z"/>
+                        </svg>
+                        <h3>No approved laboratories</h3>
+                        <p>No laboratories have been approved yet.</p>
+                    </div>
+                    <div id="approvedTable" style="display: none;">
+                        <table class="labs-table">
+                            <thead>
+                                <tr>
+                                    <th>Laboratory</th>
+                                    <th>Location</th>
+                                    <th>Contact</th>
+                                    <th>Research Areas</th>
+                                    <th>Approved</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="approvedTableBody">
+                                <!-- Approved lab rows will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle" class="modal-title">Confirm Action</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="modalMessage">Are you sure you want to perform this action?</p>
+            </div>
+            <div class="modal-actions">
+                <button class="action-btn" onclick="closeModal()">Cancel</button>
+                <button id="modalConfirmBtn" class="action-btn approve">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
+
+    <footer class="footer">
+        <div class="footer__container">
+            <div class="footer__content">
+                <div class="footer__section">
+                    <img src="./assets/images/logo.png" alt="AANM Logo" class="footer__logo">
+                    <p class="footer__description">
+                        The African Association for Natural Medicines is dedicated to advancing research and education in traditional and natural medicine across Africa.
+                    </p>
+                </div>
+                <div class="footer__section">
+                    <h3 class="footer__title">Quick Links</h3>
+                    <ul class="footer__links">
+                        <li><a href="/" class="footer__link">Home</a></li>
+                        <li><a href="/about.html" class="footer__link">About</a></li>
+                        <li><a href="/activities.html" class="footer__link">Activities</a></li>
+                        <li><a href="/news.html" class="footer__link">News</a></li>
+                        <li><a href="/contact.html" class="footer__link">Contact</a></li>
+                        <li><a href="/lab-directory.html" class="footer__link">Lab Directory</a></li>
+                        <li><a href="/lab-map.html" class="footer__link">Lab Map</a></li>
+                    </ul>
+                </div>
+                <div class="footer__section">
+                    <h3 class="footer__title">Contact Info</h3>
+                    <div class="footer__contact">
+                        <p>Email: info@aanm.org</p>
+                        <p>Phone: +123 456 7890</p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer__bottom">
+                <p>&copy; 2026 African Association for Natural Medicines. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="./main.js"></script>
+    <script>
+        class AdminDashboard {
+            constructor() {
+                this.pendingLabs = [];
+                this.approvedLabs = [];
+                this.init();
+            }
+
+            async init() {
+                this.setupEventListeners();
+                await this.loadData();
+            }
+
+            setupEventListeners() {
+                // Tab switching
+                document.querySelectorAll('.tab-button').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        this.switchTab(e.target.dataset.tab);
+                    });
+                });
+
+                // Modal close on background click
+                document.getElementById('confirmModal').addEventListener('click', (e) => {
+                    if (e.target.id === 'confirmModal') {
+                        this.closeModal();
+                    }
+                });
+            }
+
+            switchTab(tab) {
+                // Update tab buttons
+                document.querySelectorAll('.tab-button').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+
+                // Update tab content
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(`${tab}Tab`).classList.add('active');
+
+                // Load data for the active tab
+                if (tab === 'pending') {
+                    this.loadPendingLabs();
+                } else if (tab === 'approved') {
+                    this.loadApprovedLabs();
+                }
+            }
+
+            async loadData() {
+                await Promise.all([
+                    this.loadPendingLabs(),
+                    this.loadApprovedLabs()
+                ]);
+                this.updateStats();
+            }
+
+            async loadPendingLabs() {
+                try {
+                    this.showLoading('pending');
+                    const response = await fetch('http://localhost:3001/api/admin/labs/pending');
+                    const result = await response.json();
+
+                    if (result.success) {
+                        this.pendingLabs = result.data.labs;
+                        this.renderPendingLabs();
+                    } else {
+                        throw new Error(result.message || 'Failed to load pending labs');
+                    }
+                } catch (error) {
+                    console.error('Error loading pending labs:', error);
+                    this.showError('pending', 'Failed to load pending submissions. Please check your connection and try again.');
+                }
+            }
+
+            async loadApprovedLabs() {
+                try {
+                    this.showLoading('approved');
+                    const response = await fetch('http://localhost:3001/api/labs');
+                    const result = await response.json();
+
+                    if (result.success) {
+                        this.approvedLabs = result.data.labs;
+                        this.renderApprovedLabs();
+                    } else {
+                        throw new Error(result.message || 'Failed to load approved labs');
+                    }
+                } catch (error) {
+                    console.error('Error loading approved labs:', error);
+                    this.showError('approved', 'Failed to load approved laboratories. Please check your connection and try again.');
+                }
+            }
+
+            renderPendingLabs() {
+                const tableBody = document.getElementById('pendingTableBody');
+                const tableContainer = document.getElementById('pendingTable');
+                const emptyState = document.getElementById('pendingEmpty');
+                const loadingState = document.getElementById('pendingLoading');
+                const errorState = document.getElementById('pendingError');
+
+                // Hide loading and error states
+                loadingState.style.display = 'none';
+                errorState.style.display = 'none';
+
+                if (this.pendingLabs.length === 0) {
+                    tableContainer.style.display = 'none';
+                    emptyState.style.display = 'block';
+                    return;
+                }
+
+                emptyState.style.display = 'none';
+                tableContainer.style.display = 'block';
+
+                tableBody.innerHTML = this.pendingLabs.map(lab => this.createLabRow(lab, 'pending')).join('');
+            }
+
+            renderApprovedLabs() {
+                const tableBody = document.getElementById('approvedTableBody');
+                const tableContainer = document.getElementById('approvedTable');
+                const emptyState = document.getElementById('approvedEmpty');
+                const loadingState = document.getElementById('approvedLoading');
+                const errorState = document.getElementById('approvedError');
+
+                // Hide loading and error states
+                loadingState.style.display = 'none';
+                errorState.style.display = 'none';
+
+                if (this.approvedLabs.length === 0) {
+                    tableContainer.style.display = 'none';
+                    emptyState.style.display = 'block';
+                    return;
+                }
+
+                emptyState.style.display = 'none';
+                tableContainer.style.display = 'block';
+
+                tableBody.innerHTML = this.approvedLabs.map(lab => this.createLabRow(lab, 'approved')).join('');
+            }
+
+            createLabRow(lab, type) {
+                const researchTags = lab.researchAreas.map(area => 
+                    `<span class="research-area-tag">${this.formatResearchArea(area)}</span>`
+                ).join('');
+
+                const submittedDate = new Date(lab.submitted_at).toLocaleDateString();
+
+                return `
+                    <tr>
+                        <td>
+                            <div class="lab-name">${this.escapeHtml(lab.lab_name)}</div>
+                            ${lab.institution_name ? `<div class="lab-institution">${this.escapeHtml(lab.institution_name)}</div>` : ''}
+                        </td>
+                        <td>
+                            <div class="lab-location">
+                                <svg class="icon" viewBox="0 0 20 20">
+                                    <path d="M10 2C6.69 2 4 4.69 4 8c0 5.25 6 12 6 12s6-6.75 6-12c0-3.31-2.69-6-6-6zm0 8c-1.1 0-2-0.9-2-2s0.9-2 2-2 2 0.9 2 2-0.9 2-2 2z"/>
+                                </svg>
+                                <span>${this.escapeHtml(lab.city)}, ${this.escapeHtml(lab.country)}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div>${this.escapeHtml(lab.contact_person)}</div>
+                            <div style="font-size: 0.8rem; color: var(--clr-text-muted);">
+                                ${this.escapeHtml(lab.contact_email)}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="research-area-tags">${researchTags}</div>
+                        </td>
+                        <td>
+                            <div>${submittedDate}</div>
+                            ${type === 'pending' ? `<span class="status-badge pending">Pending</span>` : `<span class="status-badge approved">Approved</span>`}
+                        </td>
+                        <td>
+                            <div class="lab-actions">
+                                ${type === 'pending' ? 
+                                    `<button class="action-btn approve" onclick="adminDashboard.approveLab(${lab.id})">
+                                        <svg class="icon" viewBox="0 0 20 20">
+                                            <path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/>
+                                        </svg>
+                                        Approve
+                                    </button>
+                                    <button class="action-btn reject" onclick="adminDashboard.rejectLab(${lab.id})">
+                                        <svg class="icon" viewBox="0 0 20 20">
+                                            <path d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"/>
+                                        </svg>
+                                        Reject
+                                    </button>` : 
+                                    `<a class="action-btn view" href="/lab-directory.html#lab-${lab.id}">
+                                        <svg class="icon" viewBox="0 0 20 20">
+                                            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                                            <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"/>
+                                        </svg>
+                                        View
+                                    </a>`
+                                }
+                                <a class="action-btn view" href="mailto:${lab.contact_email}">
+                                    <svg class="icon" viewBox="0 0 20 20">
+                                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+                                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+                                    </svg>
+                                    Contact
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }
+
+            async approveLab(labId) {
+                this.showConfirmModal(
+                    'Approve Laboratory',
+                    'Are you sure you want to approve this laboratory submission? Once approved, it will be visible to the public.',
+                    'Approve',
+                    'approve',
+                    async () => {
+                        try {
+                            const response = await fetch(`http://localhost:3001/api/admin/labs/${labId}/approve`, {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    adminNotes: 'Approved via admin dashboard'
+                                })
+                            });
+
+                            const result = await response.json();
+
+                            if (result.success) {
+                                this.showNotification('Laboratory approved successfully!', 'success');
+                                await this.loadData();
+                            } else {
+                                throw new Error(result.message || 'Failed to approve lab');
+                            }
+                        } catch (error) {
+                            console.error('Error approving lab:', error);
+                            this.showNotification('Failed to approve laboratory. Please try again.', 'error');
+                        }
+                    }
+                );
+            }
+
+            async rejectLab(labId) {
+                this.showConfirmModal(
+                    'Reject Laboratory',
+                    'Are you sure you want to reject this laboratory submission? This will permanently delete the submission.',
+                    'Reject',
+                    'reject',
+                    async () => {
+                        try {
+                            const response = await fetch(`http://localhost:3001/api/admin/labs/${labId}`, {
+                                method: 'DELETE'
+                            });
+
+                            const result = await response.json();
+
+                            if (result.success) {
+                                this.showNotification('Laboratory submission rejected and deleted.', 'success');
+                                await this.loadData();
+                            } else {
+                                throw new Error(result.message || 'Failed to reject lab');
+                            }
+                        } catch (error) {
+                            console.error('Error rejecting lab:', error);
+                            this.showNotification('Failed to reject laboratory. Please try again.', 'error');
+                        }
+                    }
+                );
+            }
+
+            showConfirmModal(title, message, confirmText, confirmClass, onConfirm) {
+                const modal = document.getElementById('confirmModal');
+                const modalTitle = document.getElementById('modalTitle');
+                const modalMessage = document.getElementById('modalMessage');
+                const confirmBtn = document.getElementById('modalConfirmBtn');
+
+                modalTitle.textContent = title;
+                modalMessage.textContent = message;
+                confirmBtn.textContent = confirmText;
+                confirmBtn.className = `action-btn ${confirmClass}`;
+
+                // Remove existing event listeners
+                const newConfirmBtn = confirmBtn.cloneNode(true);
+                confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+
+                // Add new event listener
+                newConfirmBtn.addEventListener('click', () => {
+                    this.closeModal();
+                    onConfirm();
+                });
+
+                modal.classList.add('show');
+            }
+
+            closeModal() {
+                document.getElementById('confirmModal').classList.remove('show');
+            }
+
+            showLoading(type) {
+                document.getElementById(`${type}Loading`).style.display = 'block';
+                document.getElementById(`${type}Error`).style.display = 'none';
+                document.getElementById(`${type}Empty`).style.display = 'none';
+                document.getElementById(`${type}Table`).style.display = 'none';
+            }
+
+            showError(type, message) {
+                document.getElementById(`${type}Loading`).style.display = 'none';
+                document.getElementById(`${type}Error`).style.display = 'block';
+                document.getElementById(`${type}Empty`).style.display = 'none';
+                document.getElementById(`${type}Table`).style.display = 'none';
+                document.getElementById(`${type}Error`).textContent = message;
+            }
+
+            updateStats() {
+                document.getElementById('pendingCount').textContent = this.pendingLabs.length;
+                document.getElementById('approvedCount').textContent = this.approvedLabs.length;
+                document.getElementById('totalCount').textContent = this.pendingLabs.length + this.approvedLabs.length;
+            }
+
+            showNotification(message, type = 'success') {
+                const notification = document.getElementById('notification');
+                notification.textContent = message;
+                notification.className = `notification ${type}`;
+                notification.classList.add('show');
+
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 4000);
+            }
+
+            formatResearchArea(area) {
+                return area.split('-').map(word => 
+                    word.charAt(0).toUpperCase() + word.slice(1)
+                ).join(' ');
+            }
+
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+        }
+
+        // Initialize the admin dashboard
+        let adminDashboard;
+        document.addEventListener('DOMContentLoaded', () => {
+            adminDashboard = new AdminDashboard();
+        });
+
+        // Global function for closing modal (used in HTML onclick)
+        function closeModal() {
+            adminDashboard.closeModal();
+        }
+    </script>
+</body>
+</html>
