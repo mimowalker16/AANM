@@ -46,6 +46,30 @@
             font-size: var(--fs-body);
         }
 
+        .advanced-search-link {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            padding: var(--space-sm) var(--space-md);
+            background: var(--clr-primary);
+            color: white;
+            text-decoration: none;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: var(--fs-body);
+            transition: background-color 0.3s ease;
+        }
+
+        .advanced-search-link:hover {
+            background: color-mix(in srgb, var(--clr-primary) 85%, black);
+        }
+
+        .advanced-search-link .icon {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
         .lab-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -311,6 +335,13 @@
                         <select id="researchAreaFilter" class="filter-select">
                             <option value="">All Research Areas</option>
                         </select>
+                        <a href="/advanced-search.html" class="advanced-search-link">
+                            <svg class="icon" viewBox="0 0 20 20">
+                                <path d="M9 9a2 2 0 114 0 2 2 0 01-4 0z"/>
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a4 4 0 00-3.446 6.032l-2.261 2.26a1 1 0 101.414 1.415l2.261-2.261A4 4 0 1011 5z"/>
+                            </svg>
+                            Advanced Search
+                        </a>
                     </div>
                 </div>
 
@@ -389,25 +420,49 @@
             async init() {
                 await this.loadLabs();
                 this.setupEventListeners();
-                this.populateFilters();
                 this.renderLabs();
             }
 
-            async loadLabs() {
+            async loadLabs(searchParams = {}) {
                 try {
-                    const response = await fetch('http://localhost:3001/api/labs');
+                    // Build query parameters
+                    const params = new URLSearchParams();
+                    
+                    // Add search parameters if provided
+                    Object.entries(searchParams).forEach(([key, value]) => {
+                        if (value !== undefined && value !== null && value !== '') {
+                            params.append(key, value);
+                        }
+                    });
+                    
+                    // Default pagination
+                    if (!params.has('limit')) {
+                        params.append('limit', '50');
+                    }
+                    
+                    const url = `http://localhost:3001/api/labs?${params.toString()}`;
+                    const response = await fetch(url);
                     const result = await response.json();
                     
                     if (result.success) {
                         this.labs = result.data.labs;
                         this.filteredLabs = [...this.labs];
+                        this.searchParams = result.data.searchParams || {};
                         console.log(`Loaded ${this.labs.length} laboratories`);
+                        
+                        // Populate filters if this is the initial load
+                        if (Object.keys(searchParams).length === 0) {
+                            await this.populateFilters();
+                        }
+                        
+                        return result.data;
                     } else {
                         throw new Error(result.message || 'Failed to load laboratories');
                     }
                 } catch (error) {
                     console.error('Error loading labs:', error);
                     this.showError('Failed to load laboratories. Please check your connection and try again.');
+                    return null;
                 }
             }
 
@@ -421,8 +476,47 @@
                 researchAreaFilter.addEventListener('change', () => this.filterLabs());
             }
 
-            populateFilters() {
-                // Populate country filter
+            async populateFilters() {
+                try {
+                    // Get suggestions for countries and research areas
+                    const [countriesResponse, researchAreasResponse] = await Promise.all([
+                        fetch('http://localhost:3001/api/labs/suggestions?field=country&limit=20'),
+                        fetch('http://localhost:3001/api/labs/suggestions?field=research_areas&limit=30')
+                    ]);
+                    
+                    const countriesResult = await countriesResponse.json();
+                    const researchAreasResult = await researchAreasResponse.json();
+                    
+                    // Populate country filter
+                    if (countriesResult.success) {
+                        const countrySelect = document.getElementById('countryFilter');
+                        countriesResult.data.suggestions.forEach(country => {
+                            const option = document.createElement('option');
+                            option.value = country;
+                            option.textContent = country;
+                            countrySelect.appendChild(option);
+                        });
+                    }
+                    
+                    // Populate research area filter
+                    if (researchAreasResult.success) {
+                        const researchAreaSelect = document.getElementById('researchAreaFilter');
+                        researchAreasResult.data.suggestions.forEach(area => {
+                            const option = document.createElement('option');
+                            option.value = area;
+                            option.textContent = this.formatResearchArea(area);
+                            researchAreaSelect.appendChild(option);
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error populating filters:', error);
+                    // Fallback to basic filter population if API fails
+                    this.populateFiltersFromData();
+                }
+            }
+
+            populateFiltersFromData() {
+                // Fallback method using loaded data
                 const countries = [...new Set(this.labs.map(lab => lab.country))].sort();
                 const countrySelect = document.getElementById('countryFilter');
                 countries.forEach(country => {
@@ -444,28 +538,29 @@
                 });
             }
 
-            filterLabs() {
-                const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            async filterLabs() {
+                const searchTerm = document.getElementById('searchInput').value.trim();
                 const selectedCountry = document.getElementById('countryFilter').value;
                 const selectedResearchArea = document.getElementById('researchAreaFilter').value;
 
-                this.filteredLabs = this.labs.filter(lab => {
-                    const matchesSearch = !searchTerm || 
-                        lab.lab_name.toLowerCase().includes(searchTerm) ||
-                        lab.institution_name?.toLowerCase().includes(searchTerm) ||
-                        lab.city.toLowerCase().includes(searchTerm) ||
-                        lab.address.toLowerCase().includes(searchTerm);
-
-                    const matchesCountry = !selectedCountry || lab.country === selectedCountry;
-                    
-                    const matchesResearchArea = !selectedResearchArea || 
-                        lab.researchAreas.includes(selectedResearchArea);
-
-                    return matchesSearch && matchesCountry && matchesResearchArea;
-                });
-
-                this.currentPage = 1; // Reset to first page when filtering
-                this.renderLabs();
+                // Build search parameters
+                const searchParams = {};
+                if (searchTerm) searchParams.search = searchTerm;
+                if (selectedCountry) searchParams.country = selectedCountry;
+                if (selectedResearchArea) searchParams.researchArea = selectedResearchArea;
+                
+                // Show loading state
+                this.showLoading();
+                
+                // Perform server-side search
+                const result = await this.loadLabs(searchParams);
+                
+                if (result) {
+                    this.currentPage = 1; // Reset to first page when filtering
+                    this.renderLabs();
+                } else {
+                    this.showError('Search failed. Please try again.');
+                }
             }
 
             renderLabs() {
@@ -613,6 +708,19 @@
                     clearTimeout(timeout);
                     timeout = setTimeout(later, wait);
                 };
+            }
+
+            showLoading() {
+                const loadingState = document.getElementById('loadingState');
+                const labGrid = document.getElementById('labGrid');
+                const noResults = document.getElementById('noResults');
+                const pagination = document.getElementById('pagination');
+                
+                loadingState.style.display = 'block';
+                loadingState.innerHTML = '<p>Loading laboratories...</p>';
+                labGrid.style.display = 'none';
+                noResults.style.display = 'none';
+                pagination.style.display = 'none';
             }
 
             showError(message) {

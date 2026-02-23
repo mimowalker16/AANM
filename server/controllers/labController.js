@@ -61,17 +61,39 @@ export const submitLab = asyncHandler(async (req, res) => {
     }
 });
 
-// Get all approved labs
-export const getApprovedLabs = asyncHandler(async (req, res) => {
+// Get all approved labs with enhanced search and filtering
+export const getLabs = asyncHandler(async (req, res) => {
     try {
-        const labs = await database.getApprovedLabs();
+        const searchParams = {
+            search: req.query.search,
+            country: req.query.country,
+            city: req.query.city,
+            institution: req.query.institution,
+            researchArea: req.query.researchArea,
+            yearFrom: req.query.yearFrom,
+            yearTo: req.query.yearTo,
+            sortBy: req.query.sortBy,
+            sortOrder: req.query.sortOrder,
+            limit: req.query.limit,
+            offset: req.query.offset
+        };
+
+        // Remove undefined values
+        Object.keys(searchParams).forEach(key => {
+            if (searchParams[key] === undefined) {
+                delete searchParams[key];
+            }
+        });
+
+        const labs = await database.getApprovedLabs(searchParams);
         
         res.json({
             success: true,
             message: 'Labs retrieved successfully',
             data: {
                 labs,
-                count: labs.length
+                count: labs.length,
+                searchParams: searchParams
             }
         });
     } catch (error) {
@@ -95,4 +117,47 @@ export const getLabById = asyncHandler(async (req, res) => {
         success: false,
         message: 'Feature not implemented yet'
     });
+});
+
+// Get search suggestions for autocomplete
+export const getSearchSuggestions = asyncHandler(async (req, res) => {
+    const { field, query, limit } = req.query;
+    
+    if (!field || !query) {
+        return res.status(400).json({
+            success: false,
+            message: 'Field and query parameters are required'
+        });
+    }
+
+    try {
+        const suggestions = await database.getSearchSuggestions(field, query, limit);
+        
+        res.json({
+            success: true,
+            message: 'Search suggestions retrieved successfully',
+            data: {
+                suggestions,
+                field,
+                query
+            }
+        });
+    } catch (error) {
+        throw error;
+    }
+});
+
+// Get search statistics
+export const getSearchStats = asyncHandler(async (req, res) => {
+    try {
+        const stats = await database.getSearchStats();
+        
+        res.json({
+            success: true,
+            message: 'Search statistics retrieved successfully',
+            data: stats
+        });
+    } catch (error) {
+        throw error;
+    }
 });
