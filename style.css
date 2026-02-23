@@ -153,7 +153,21 @@ h1, h2, h3, h4, h5, h6 {
 
 @media (max-width: 480px) {
   .section {
-    padding: var(--space-lg) 0;
+    padding: var(--space-xl) 0;
+  }
+
+  .section-title {
+    margin-bottom: var(--space-lg);
+    line-height: 1.2;
+  }
+
+  .section-subtitle {
+    margin-bottom: var(--space-md);
+    font-size: var(--fs-body);
+  }
+
+  .section-label {
+    margin-bottom: var(--space-xs);
   }
 }
 
@@ -606,6 +620,12 @@ h1, h2, h3, h4, h5, h6 {
 @media (max-width: 768px) {
   .about__grid {
     grid-template-columns: 1fr;
+    gap: var(--space-xl);
+  }
+}
+
+@media (max-width: 480px) {
+  .about__grid {
     gap: var(--space-lg);
   }
 }
@@ -747,6 +767,10 @@ h1, h2, h3, h4, h5, h6 {
     grid-template-columns: 1fr;
     gap: var(--space-xl);
   }
+
+  .stat {
+    padding-left: var(--space-md);
+  }
 }
 
 /* ============================================
@@ -832,11 +856,11 @@ h1, h2, h3, h4, h5, h6 {
 @media (max-width: 600px) {
   .pillars__grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-sm);
+    gap: var(--space-md);
   }
   
   .pillar-card {
-    min-height: 280px;
+    min-height: 260px;
     padding: var(--space-md);
   }
   
@@ -852,10 +876,11 @@ h1, h2, h3, h4, h5, h6 {
 @media (max-width: 480px) {
   .pillars__grid {
     grid-template-columns: 1fr;
+    gap: var(--space-md);
   }
   
   .pillar-card {
-    min-height: 240px;
+    min-height: 200px;
   }
 }
 
