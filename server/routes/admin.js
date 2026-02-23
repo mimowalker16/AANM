@@ -1,14 +1,30 @@
 import express from 'express';
 import { getPendingLabs, approveLab, deleteLab, getAdminStats } from '../controllers/adminController.js';
+import { requireAdminAuth, createAdminToken } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// Note: In production, these routes would be protected with authentication middleware
-// For now, they are open but should be secured before deployment
+// ─── Public: Admin Login ────────────────────────────────────────────────────
+router.post('/login', (req, res) => {
+    const { username, password } = req.body;
 
-router.get('/labs/pending', getPendingLabs);
-router.put('/labs/:id/approve', approveLab);
-router.delete('/labs/:id', deleteLab);
-router.get('/stats', getAdminStats);
+    if (!username || !password) {
+        return res.status(400).json({ success: false, message: 'Username and password required.' });
+    }
+
+    const token = createAdminToken(username, password);
+
+    if (!token) {
+        return res.status(401).json({ success: false, message: 'Invalid credentials.' });
+    }
+
+    res.json({ success: true, token, message: 'Login successful.' });
+});
+
+// ─── Protected: Admin Operations ────────────────────────────────────────────
+router.get('/labs/pending', requireAdminAuth, getPendingLabs);
+router.put('/labs/:id/approve', requireAdminAuth, approveLab);
+router.delete('/labs/:id', requireAdminAuth, deleteLab);
+router.get('/stats', requireAdminAuth, getAdminStats);
 
 export default router;

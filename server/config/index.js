@@ -22,6 +22,12 @@ export const config = {
     },
     cors: {
         allowedOrigins: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:5173', 'http://127.0.0.1:5173']
+    },
+    auth: {
+        adminUsername: process.env.ADMIN_USERNAME || 'admin',
+        adminPassword: process.env.ADMIN_PASSWORD || 'aanm-admin-2026',
+        jwtSecret: process.env.JWT_SECRET || 'aanm-jwt-super-secret-key-change-in-production',
+        jwtExpiresIn: process.env.JWT_EXPIRES_IN || '8h'
     }
     // Note: No API keys needed! Using free OpenStreetMap + Leaflet
 };
