@@ -363,14 +363,16 @@
     </style>
 </head>
 <body>
+    <!-- Navbar Overlay -->
+    <div class="navbar__overlay" id="navOverlay"></div>
     <nav class="navbar">
-        <div class="navbar__container">
+        <div class="navbar__inner">
             <div class="navbar__logo-container">
                 <a href="/" class="navbar__logo" aria-label="Visit home page">
                     <img src="./assets/images/logo.png" alt="AANM Logo" class="navbar__logo-img">
                 </a>
             </div>
-            <ul class="navbar__menu">
+            <div class="navbar__links" id="navLinks">
                 <li class="navbar__item">
                     <a href="/" class="navbar__link">Home</a>
                 </li>
@@ -399,11 +401,11 @@
                     <a href="/advanced-search.html" class="navbar__link">Search</a>
                 </li>
             </ul>
-            <div class="navbar__hamburger">
-                <span class="navbar__bar"></span>
-                <span class="navbar__bar"></span>
-                <span class="navbar__bar"></span>
-            </div>
+            <button class="navbar__toggle" id="navToggle" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
     </nav>
 
@@ -602,7 +604,7 @@
         </div>
     </footer>
 
-    <script src="./main.js"></script>
+    <script src="./main.js" type="module"></script>
     
     <!-- Leaflet JavaScript for mini map -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 

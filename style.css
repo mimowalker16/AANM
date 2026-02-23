@@ -1762,3 +1762,584 @@ h1, h2, h3, h4, h5, h6 {
 .page-header .section-label {
   color: var(--clr-accent-gold);
 }
+
+/* ============================================
+   MOBILE OPTIMIZATIONS & ENHANCEMENTS
+   ============================================ */
+
+/* Enhanced Mobile Navigation */
+@media (max-width: 900px) {
+  .navbar {
+    padding: 0 var(--space-md);
+  }
+
+  .navbar__links {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .navbar__link {
+    padding: var(--space-md) 0;
+    border-bottom: 1px solid rgba(var(--clr-primary-rgb), 0.1);
+    display: block;
+    width: 100%;
+  }
+
+  .navbar__link:last-child {
+    border-bottom: none;
+  }
+
+  /* Touch-friendly button sizes */
+  .navbar__toggle {
+    padding: var(--space-sm);
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* Touch Interactions */
+@media (hover: none) and (pointer: coarse) {
+  /* Disable hover effects on touch devices */
+  .btn:hover,
+  .card:hover,
+  .lab-card:hover,
+  .result-card:hover {
+    transform: none;
+    box-shadow: inherit;
+  }
+
+  /* Enhanced touch targets */
+  .btn,
+  .lab-contact,
+  .action-btn,
+  .search-btn {
+    min-height: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-md) var(--space-lg);
+  }
+
+  /* Touch-friendly form inputs */
+  input,
+  select,
+  textarea {
+    min-height: 44px;
+    padding: var(--space-md);
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}
+
+/* Small Mobile Devices (320px - 480px) */
+@media (max-width: 480px) {
+  :root {
+    --space-sm: 0.75rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2.5rem;
+    --space-2xl: 3.5rem;
+    --space-3xl: 4.5rem;
+  }
+
+  .container {
+    padding: 0 var(--space-md);
+  }
+
+  /* Hero adjustments for small screens */
+  .hero {
+    min-height: 70vh;
+  }
+
+  .hero__content {
+    padding: var(--space-lg);
+    text-align: center;
+  }
+
+  .hero__buttons {
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Form optimizations */
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+
+  .filter-group {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-sm);
+  }
+
+  .filter-input,
+  .filter-select {
+    width: 100%;
+    font-size: 16px;
+  }
+
+  /* Card layouts for mobile */
+  .lab-grid,
+  .results-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+
+  /* Stats grid mobile optimization */
+  .stats__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+  }
+
+  /* Pagination mobile optimization */
+  .pagination {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-xs);
+  }
+
+  .pagination button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+/* Medium Mobile Devices (481px - 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  .lab-grid,
+  .results-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stats__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Tablet Devices (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .lab-grid,
+  .results-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .profile-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Performance Optimizations */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Dark Mode Support (System Preference) */
+@media (prefers-color-scheme: dark) {
+  .lab-card,
+  .result-card,
+  .profile-section {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .btn,
+  .lab-contact,
+  .action-btn {
+    border: 2px solid currentColor;
+  }
+}
+
+/* Loading States for Mobile */
+.mobile-loading {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-loading {
+    display: block;
+    text-align: center;
+    padding: var(--space-xl);
+    background: var(--clr-bg-alt);
+    border-radius: var(--radius-lg);
+    margin: var(--space-lg) 0;
+  }
+
+  .mobile-loading::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--clr-bg-alt);
+    border-radius: 50%;
+    border-top: 2px solid var(--clr-primary);
+    animation: spin 1s linear infinite;
+    margin-right: var(--space-sm);
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Map Mobile Optimizations */
+@media (max-width: 768px) {
+  .mini-map {
+    height: 200px;
+  }
+
+  .map-wrapper {
+    height: 400px;
+  }
+
+  .map-controls {
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .map-filters {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .map-filter-select {
+    flex: 1;
+  }
+}
+
+/* Accessibility Enhancements for Mobile */
+@media (max-width: 768px) {
+  /* Focus indicators for keyboard navigation on mobile */
+  .navbar__toggle:focus-visible,
+  .btn:focus-visible,
+  .lab-contact:focus-visible {
+    outline: 2px solid var(--clr-primary);
+    outline-offset: 2px;
+  }
+
+  /* Skip to main content link for screen readers */
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: var(--clr-primary);
+    color: white;
+    padding: 8px;
+    text-decoration: none;
+    border-radius: 4px;
+    z-index: 1000;
+  }
+
+  .skip-link:focus {
+    top: 6px;
+  }
+}
+
+/* =============================================
+   PERFORMANCE OPTIMIZATIONS
+   ============================================= */
+
+/* CSS Containment for better performance */
+.lab-card,
+.result-card,
+.testimonial-slide,
+.pillar-card {
+  contain: layout style paint;
+}
+
+/* Will-change for animated elements */
+.btn,
+.lab-contact,
+.action-btn,
+.search-btn {
+  will-change: transform;
+}
+
+.btn:hover,
+.lab-contact:hover,
+.action-btn:hover,
+.search-btn:hover {
+  will-change: auto;
+}
+
+/* GPU acceleration for smooth animations */
+.reveal,
+.navbar__links,
+.navbar__overlay {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Optimized loading states */
+.loading-skeleton {
+  background: linear-gradient(90deg, var(--clr-bg-alt) 25%, var(--clr-bg) 50%, var(--clr-bg-alt) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-md);
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Image optimization for lazy loading */
+img[data-src] {
+  background: var(--clr-bg-alt);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23f8f9fa'%3E%3Cpath d='M8 5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H2zm12 1a1 1 0 0 1 1 1v.5l-3.777 1.947a.5.5 0 0 1-.577-.093L8.71 6.06a.5.5 0 0 0-.577.093L6.586 6.93A.5.5 0 0 1 6 6.5V4a1 1 0 0 1 1-1h7z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 48px 48px;
+}
+
+img.lazy-loaded {
+  background: none;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reveal {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
+
+/* Critical resource hints */
+.prefetch-dns {
+  display: none;
+}
+
+/* Optimized focus styles for better accessibility */
+:focus-visible {
+  outline: 2px solid var(--clr-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Remove default focus for mouse users */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Better font loading */
+@font-face {
+  font-family: 'Inter-fallback';
+  src: local('system-ui'), local('-apple-system'), local('BlinkMacSystemFont');
+  font-display: swap;
+  size-adjust: 95%;
+}
+
+@font-face {
+  font-family: 'Playfair-fallback';
+  src: local('Georgia'), local('Times New Roman'), local('serif');
+  font-display: swap;
+  size-adjust: 110%;
+}
+
+/* Critical font loading optimization */
+.font-loading body {
+  font-family: 'Inter-fallback', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.font-loading h1,
+.font-loading h2,
+.font-loading h3,
+.font-loading h4,
+.font-loading h5,
+.font-loading h6 {
+  font-family: 'Playfair-fallback', Georgia, serif;
+}
+
+/* Performance monitoring styles */
+.performance-overlay {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: var(--space-sm);
+  border-radius: var(--radius-md);
+  font-size: var(--fs-small);
+  z-index: var(--z-tooltip);
+  display: none;
+}
+
+.performance-overlay.show {
+  display: block;
+}
+
+/* Memory-efficient animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 40px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Optimized scrollbar for Webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--clr-bg-alt);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--clr-primary);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--clr-primary-dark);
+}
+
+/* Enhanced CSS Grid performance */
+.lab-grid,
+.results-grid,
+.form-grid {
+  container-type: inline-size;
+}
+
+/* Container queries for better responsive design */
+@container (min-width: 768px) {
+  .lab-card {
+    grid-template-columns: 1fr 2fr;
+  }
+}
+
+/* Print styles for better performance */
+@media print {
+  *,
+  *::before,
+  *::after {
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  
+  .navbar,
+  .footer,
+  .btn,
+  .loading-spinner {
+    display: none !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .btn,
+  .lab-contact,
+  .action-btn {
+    border: 2px solid currentColor;
+  }
+  
+  .lab-card,
+  .result-card {
+    border: 1px solid currentColor;
+  }
+}
+
+/* Forced colors mode support */
+@media (forced-colors: active) {
+  .btn {
+    border: 1px solid ButtonText;
+  }
+  
+  .lab-card,
+  .result-card {
+    border: 1px solid CanvasText;
+  }
+}
+
+/* Resource optimization classes */
+.preload-image {
+  content: '';
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+/* Efficient CSS for mobile performance */
+@media (max-width: 768px) {
+  .hero,
+  .section {
+    contain: layout;
+  }
+  
+  .mobile-optimized {
+    will-change: transform;
+  }
+}
+
+/* Critical loading indicator */
+.critical-loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--clr-primary);
+  z-index: 9999;
+  animation: loadingBar 2s ease-in-out;
+}
+
+@keyframes loadingBar {
+  0% {
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  50% {
+    transform: scaleX(0.7);
+  }
+  100% {
+    transform: scaleX(1);
+  }
+}

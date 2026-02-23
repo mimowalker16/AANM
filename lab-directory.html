@@ -282,44 +282,31 @@
     </style>
 </head>
 <body>
+    <!-- Navbar Overlay -->
+    <div class="navbar__overlay" id="navOverlay"></div>
     <nav class="navbar">
-        <div class="navbar__container">
+        <div class="navbar__inner">
             <div class="navbar__logo-container">
                 <a href="/" class="navbar__logo" aria-label="Visit home page">
                     <img src="./assets/images/logo.png" alt="AANM Logo" class="navbar__logo-img">
                 </a>
             </div>
-            <ul class="navbar__menu">
-                <li class="navbar__item">
-                    <a href="/" class="navbar__link">Home</a>
-                </li>
-                <li class="navbar__item">
-                    <a href="/about.html" class="navbar__link">About</a>
-                </li>
-                <li class="navbar__item">
-                    <a href="/activities.html" class="navbar__link">Activities</a>
-                </li>
-                <li class="navbar__item">
-                    <a href="/news.html" class="navbar__link">News</a>
-                </li>
-                <li class="navbar__item">
-                    <a href="/contact.html" class="navbar__link">Contact</a>
-                </li>
-                <li class="navbar__item">
-                    <a href="/lab-submission.html" class="navbar__link">Submit Lab</a>
-                </li>
-                <li class="navbar__item">
-                    <a href="/lab-directory.html" class="navbar__link navbar__link--active">Lab Directory</a>
-                </li>
-                <li class="navbar__item">
-                    <a href="/lab-map.html" class="navbar__link">Lab Map</a>
-                </li>
-            </ul>
-            <div class="navbar__hamburger">
-                <span class="navbar__bar"></span>
-                <span class="navbar__bar"></span>
-                <span class="navbar__bar"></span>
+            <div class="navbar__links" id="navLinks">
+                <a href="/" class="navbar__link">Home</a>
+                <a href="/about.html" class="navbar__link">About</a>
+                <a href="/activities.html" class="navbar__link">Activities</a>
+                <a href="/news.html" class="navbar__link">News</a>
+                <a href="/contact.html" class="navbar__link">Contact</a>
+                <a href="/lab-submission.html" class="navbar__link">Submit Lab</a>
+                <a href="/lab-directory.html" class="navbar__link navbar__link--active">Lab Directory</a>
+                <a href="/lab-map.html" class="navbar__link">Lab Map</a>
+                <a href="/advanced-search.html" class="navbar__link">Search</a>
             </div>
+            <button class="navbar__toggle" id="navToggle" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
     </nav>
 
@@ -420,7 +407,7 @@
         </div>
     </footer>
 
-    <script src="./main.js"></script>
+    <script src="./main.js" type="module"></script>
     <script>
         class LabDirectory {
             constructor() {

@@ -2,11 +2,51 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>AANM — Association Algérienne de Nutrition Maghrébine</title>
   <meta name="description" content="L'Association Algérienne de Nutrition Maghrébine se consacre à l'amélioration de la qualité de vie par la nutrition, l'éducation et la recherche en santé au Maghreb." />
-  <link rel="stylesheet" href="./style.css" />
-  <link rel="icon" type="image/png" href="./assets/images/logo.png" />
+  
+  <!-- Performance Optimizations -->
+  <meta name="theme-color" content="#2e7d32" />
+  <meta name="color-scheme" content="light" />
+  
+  <!-- Preconnect to external domains -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+  <link rel="preconnect" href="https://unpkg.com" crossorigin>
+  
+  <!-- Critical CSS (inlined for performance) -->
+  <link rel="preload" href="./critical.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="./critical.css" /></noscript>
+  
+  <!-- Main CSS with optimized loading -->
+  <link rel="preload" href="./style.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="./style.css" /></noscript>
+  
+  <!-- Favicon and app icons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/logo.png" />
+  <link rel="apple-touch-icon" href="./assets/images/logo.png" />
+  
+  <!-- Prefetch critical pages -->
+  <link rel="prefetch" href="/lab-directory.html" />
+  <link rel="prefetch" href="/lab-map.html" />
+  <link rel="prefetch" href="/advanced-search.html" />
+  
+  <!-- Performance monitoring -->
+  <script>
+    // Early performance measurement
+    window.performanceStart = performance.now();
+    
+    // Critical loading indicator
+    document.documentElement.insertAdjacentHTML('beforeend', '<div class="critical-loading"></div>');
+    
+    // Remove loading indicator after load
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.querySelector('.critical-loading')?.remove();
+      }, 500);
+    });
+  </script>
 </head>
 <body>
 

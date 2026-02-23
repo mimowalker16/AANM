@@ -2,20 +2,37 @@
     "name": "aanm-website",
     "private": true,
     "version": "1.0.0",
-    "description": "Association Algérienne de Nutrition Maghrébine - Website",
+    "description": "Association Algérienne de Nutrition Maghrébine - Laboratory Directory Platform",
     "type": "module",
     "scripts": {
-        "dev": "vite",
-        "build": "vite build",
-        "preview": "vite preview",
+        "dev": "vite --open",
+        "build": "npm run clean && npm run optimize && vite build",
+        "build:prod": "npm run clean && npm run optimize && NODE_ENV=production vite build",
+        "preview": "vite preview --open",
         "server": "node server/index.js",
         "server:dev": "nodemon server/index.js",
-        "full-dev": "concurrently \"npm run dev\" \"npm run server:dev\""
+        "server:prod": "NODE_ENV=production node server/index.js",
+        "full-dev": "concurrently --names \"CLIENT,SERVER\" --prefix-colors \"blue,green\" \"npm run dev\" \"npm run server:dev\"",
+        "clean": "rimraf dist",
+        "optimize": "npm run optimize:images && npm run optimize:css",
+        "optimize:images": "echo 'Image optimization placeholder - add imagemin later'",
+        "optimize:css": "echo 'CSS optimization included in build process'",
+        "analyze": "npm run build && npx vite-bundle-analyzer dist",
+        "test": "echo 'Testing framework to be added'",
+        "lint": "echo 'Linting to be configured'",
+        "format": "prettier --write .",
+        "check:performance": "lighthouse http://localhost:4173 --output=html --output-path=./lighthouse-report.html",
+        "db:init": "node server/database/init.js",
+        "db:seed": "node server/database/seed.js",
+        "postbuild": "echo 'Build completed successfully! 🚀'"
     },
     "devDependencies": {
         "vite": "^6.0.0",
         "concurrently": "^8.2.2",
-        "nodemon": "^3.0.3"
+        "nodemon": "^3.0.3",
+        "rimraf": "^5.0.5",
+        "prettier": "^3.1.1",
+        "terser": "^5.24.0"
     },
     "dependencies": {
         "express": "^4.18.2",
@@ -25,5 +42,34 @@
         "express-rate-limit": "^7.1.5",
         "express-validator": "^7.0.1",
         "dotenv": "^16.3.1"
-    }
+    },
+    "engines": {
+        "node": ">=18.0.0",
+        "npm": ">=9.0.0"
+    },
+    "keywords": [
+        "laboratory",
+        "directory",
+        "africa",
+        "medicine",
+        "research",
+        "aanm",
+        "healthcare"
+    ],
+    "author": "AANM Development Team",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/aanm/laboratory-directory.git"
+    },
+    "bugs": {
+        "url": "https://github.com/aanm/laboratory-directory/issues"
+    },
+    "homepage": "https://aanm.org",
+    "browserslist": [
+        "> 1%",
+        "last 2 versions",
+        "not dead",
+        "not ie 11"
+    ]
 }
