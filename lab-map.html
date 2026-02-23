@@ -407,9 +407,9 @@
     </style>
 </head>
 <body>
-    <!-- Navbar Overlay -->
+    <!-- Navbar -->
     <div class="navbar__overlay" id="navOverlay"></div>
-    <nav class="navbar">
+    <nav class="navbar navbar--transparent" id="navbar">
         <div class="navbar__inner">
             <div class="navbar__logo-container">
                 <a href="/" class="navbar__logo" aria-label="Visit home page">
@@ -417,31 +417,30 @@
                 </a>
             </div>
             <div class="navbar__links" id="navLinks">
-                <a href="/" class="navbar__link">Home</a>
-                <a href="/about.html" class="navbar__link">About</a>
-                <a href="/activities.html" class="navbar__link">Activities</a>
-                <a href="/news.html" class="navbar__link">News</a>
-                <a href="/contact.html" class="navbar__link">Contact</a>
-                <a href="/lab-submission.html" class="navbar__link">Submit Lab</a>
-                <a href="/lab-directory.html" class="navbar__link">Lab Directory</a>
-                <a href="/lab-map.html" class="navbar__link navbar__link--active">Lab Map</a>
-                <a href="/advanced-search.html" class="navbar__link">Search</a>
+                <a href="/" class="navbar__link">Accueil</a>
+                <a href="./about.html" class="navbar__link">À Propos</a>
+                <a href="./activities.html" class="navbar__link">Activités</a>
+                <a href="./news.html" class="navbar__link">Actualités</a>
+                <a href="./contact.html" class="navbar__link">Contact</a>
+                <a href="./lab-submission.html" class="navbar__link">Submit Lab</a>
+                <a href="./lab-directory.html" class="navbar__link">Lab Directory</a>
+                <a href="./lab-map.html" class="navbar__link navbar__link--active">Lab Map</a>
+                <a href="./contact.html" class="navbar__cta">Nous Rejoindre →</a>
             </div>
             <button class="navbar__toggle" id="navToggle" aria-label="Menu">
-                <span></span>
-                <span></span>
-                <span></span>
+                <span></span><span></span><span></span>
             </button>
         </div>
     </nav>
 
     <main>
-        <section class="hero hero--small">
-            <div class="hero__container">
-                <h1 class="hero__title">Laboratory Map</h1>
-                <p class="hero__description">Explore research laboratories across North Africa on an interactive map</p>
+        <header class="page-header">
+            <div class="container">
+                <span class="section-label">Lab Map</span>
+                <h1 class="page-header__title">Laboratory Map</h1>
+                <p class="page-header__subtitle">Explore research laboratories across North Africa on an interactive map</p>
             </div>
-        </section>
+        </header>
 
         <section class="section map-container">
             <div class="container">
@@ -533,37 +532,65 @@
         </section>
     </main>
 
-    <footer class="footer">
-        <div class="footer__container">
-            <div class="footer__content">
-                <div class="footer__section">
-                    <img src="./assets/images/logo.png" alt="AANM Logo" class="footer__logo">
-                    <p class="footer__description">
-                        The African Association for Natural Medicines is dedicated to advancing research and education in traditional and natural medicine across Africa.
-                    </p>
+    <footer class="footer" id="footer">
+        <div class="container">
+            <div class="footer__main">
+                <div class="footer__brand">
+                    <div class="footer__logo">
+                        <img src="./assets/images/logo.png" alt="AANM Logo" class="footer__logo-img">
+                    </div>
+                    <p class="footer__tagline">Pour une meilleure nutrition au Maghreb.<br />Alliance scientifique et traditions locales.</p>
+                    <form class="footer__newsletter" onsubmit="event.preventDefault(); alert('Merci pour votre inscription !');">
+                        <input type="email" class="footer__input" placeholder="Entrez votre email..." required />
+                        <button type="submit" class="footer__submit" aria-label="S'inscrire">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                    </form>
                 </div>
-                <div class="footer__section">
-                    <h3 class="footer__title">Quick Links</h3>
-                    <ul class="footer__links">
-                        <li><a href="/" class="footer__link">Home</a></li>
-                        <li><a href="/about.html" class="footer__link">About</a></li>
-                        <li><a href="/activities.html" class="footer__link">Activities</a></li>
-                        <li><a href="/news.html" class="footer__link">News</a></li>
-                        <li><a href="/contact.html" class="footer__link">Contact</a></li>
-                        <li><a href="/lab-directory.html" class="footer__link">Lab Directory</a></li>
-                        <li><a href="/lab-map.html" class="footer__link">Lab Map</a></li>
-                    </ul>
-                </div>
-                <div class="footer__section">
-                    <h3 class="footer__title">Contact Info</h3>
-                    <div class="footer__contact">
-                        <p>Email: info@aanm.org</p>
-                        <p>Phone: +123 456 7890</p>
+                <div class="footer__links">
+                    <div class="footer__column">
+                        <h4 class="footer__heading">NAVIGATION</h4>
+                        <a href="/" class="footer__link">Accueil</a>
+                        <a href="./about.html" class="footer__link">À Propos</a>
+                        <a href="./activities.html" class="footer__link">Activités</a>
+                        <a href="./news.html" class="footer__link">Actualités</a>
+                    </div>
+                    <div class="footer__column">
+                        <h4 class="footer__heading">EN SAVOIR PLUS</h4>
+                        <a href="./contact.html" class="footer__link">Contact</a>
+                        <a href="#" class="footer__link">Adhérer</a>
+                        <a href="#" class="footer__link">Légal</a>
+                        <a href="#" class="footer__link">Publications</a>
+                    </div>
+                    <div class="footer__column">
+                        <h4 class="footer__heading">CONTACT</h4>
+                        <a href="tel:+213541939878" class="footer__link">Téléphone</a>
+                        <a href="https://github.com/mimowalker16/AANM" target="_blank" rel="noopener" class="footer__link">GitHub</a>
+                        <a href="mailto:cabinet@aanm-assal.org" class="footer__link">Email</a>
+                        <a href="#" class="footer__link">LinkedIn</a>
                     </div>
                 </div>
             </div>
             <div class="footer__bottom">
-                <p>&copy; 2026 African Association for Natural Medicines. All rights reserved.</p>
+                <p class="footer__copyright">// PUBLIÉ_PAR_AANM.ORG</p>
+                <div class="footer__bottom-right">
+                    <a href="#" class="footer__social" aria-label="GitHub">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+                    </a>
+                    <a href="#" class="footer__social" aria-label="Twitter">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/></svg>
+                    </a>
+                    <a href="#" class="footer__social" aria-label="LinkedIn">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                    </a>
+                    <span class="footer__divider">|</span>
+                    <div class="footer__status">
+                        <span class="footer__status-dot"></span>
+                        TOUS SYSTÈMES NORMAUX
+                    </div>
+                </div>
             </div>
         </div>
     </footer>
