@@ -1,162 +1,49 @@
 /**
  * AANM Website — Main JavaScript
- * Handles: Performance, Navbar, Hero Carousel, Stats Counter, Testimonials, Events Carousel, Scroll Reveals, Mobile Optimizations
+ * Handles: Navbar, Hero Carousel, Stats Counter, Testimonials, Events Carousel, Scroll Reveals, Mobile Optimizations
  */
 
 import './style.css';
 
-/* =============================================
-   PERFORMANCE OPTIMIZATION & LAZY LOADING
-   ============================================= */
-// Performance monitoring
-const performanceMetrics = {
-    navigationStart: performance.timing?.navigationStart || Date.now(),
-    initialisationTime: null,
-    firstContentfulPaint: null,
-    largestContentfulPaint: null
-};
-
-// Lazy loading for images and iframes
-function initLazyLoading() {
-    if ('IntersectionObserver' in window) {
-        const imageObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const img = entry.target;
-                    const src = img.dataset.src || img.dataset.lazySrc;
-                    if (src) {
-                        img.src = src;
-                        img.classList.remove('lazy');
-                        img.classList.add('lazy-loaded');
-                        observer.unobserve(img);
-                    }
-                }
-            });
-        }, {
-            rootMargin: '50px 0px',
-            threshold: 0.01
-        });
-
-        // Observer all lazy images
-        document.querySelectorAll('img[data-src], img[data-lazy-src], img.lazy').forEach(img => {
-            imageObserver.observe(img);
-        });
-
-        // Observer iframes for videos
-        document.querySelectorAll('iframe[data-src]').forEach(iframe => {
-            imageObserver.observe(iframe);
-        });
-    } else {
-        // Fallback for browsers without IntersectionObserver
-        document.querySelectorAll('img[data-src], img[data-lazy-src]').forEach(img => {
-            img.src = img.dataset.src || img.dataset.lazySrc;
-        });
-    }
-}
-
-// Resource prefetching for critical pages
-function prefetchCriticalResources() {
-    const criticalPages = [
-        '/lab-directory.html',
-        '/lab-map.html',
-        '/advanced-search.html'
-    ];
-
-    if ('requestIdleCallback' in window) {
-        requestIdleCallback(() => {
-            criticalPages.forEach(page => {
-                const link = document.createElement('link');
-                link.rel = 'prefetch';
-                link.href = page;
-                document.head.appendChild(link);
-            });
-        });
-    }
-}
-
-// Critical CSS injection for above-the-fold content
-function injectCriticalCSS() {
-    const criticalCSS = `
-        .hero{display:flex;align-items:center;min-height:100vh;position:relative;overflow:hidden}
-        .navbar{position:fixed;top:0;left:0;right:0;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);z-index:1000}
-        .hero__title{font-size:clamp(2.2rem,4vw,3.5rem);font-weight:700;margin-bottom:var(--space-md)}
-        .btn{padding:var(--space-md) var(--space-lg);border-radius:var(--radius-full);font-weight:600;text-decoration:none;transition:all var(--transition-fast)}
-    `;
+/* ============================================
+   MAIN INITIALIZATION
+   ============================================ */
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('🎯 AANM: Starting initialization...');
     
-    if (!document.querySelector('#critical-css')) {
-        const style = document.createElement('style');
-        style.id = 'critical-css';
-        style.textContent = criticalCSS;
-        document.head.insertBefore(style, document.querySelector('link[rel="stylesheet"]'));
-    }
-}
-
-// Web Vitals tracking
-if ('PerformanceObserver' in window) {
-    // Largest Contentful Paint
-    new PerformanceObserver((list) => {
-        for (const entry of list.getEntries()) {
-            performanceMetrics.largestContentfulPaint = entry.startTime;
-        }
-    }).observe({ entryTypes: ['largest-contentful-paint'] });
-
-    // First Contentful Paint
-    new PerformanceObserver((list) => {
-        for (const entry of list.getEntries()) {
-            if (entry.name === 'first-contentful-paint') {
-                performanceMetrics.firstContentfulPaint = entry.startTime;
-            }
-        }
-    }).observe({ entryTypes: ['paint'] });
-}
-
-// Page Visibility API for performance optimization
-document.addEventListener('visibilitychange', function() {
-    if (document.hidden) {
-        // Pause animations and non-essential processes
-        document.querySelectorAll('.loading-spinner, .pulse').forEach(el => {
-            el.style.animationPlayState = 'paused';
-        });
-    } else {
-        // Resume animations
-        document.querySelectorAll('.loading-spinner, .pulse').forEach(el => {
-            el.style.animationPlayState = 'running';
-        });
-    }
+    // Initialize all components
+    initNavbar();
+    initHeroCarousel();
+    initStatsCounter();
+    initTestimonials();
+    initEventsCarousel();
+    initScrollReveal();
+    initMobileOptimizations();
+    
+    // Test animations
+    testAnimations();
+    
+    console.log('✅ AANM: Initialization complete!');
 });
 
 /* ============================================
-   OPTIMIZED INITIALIZATION
+   ANIMATION TEST
    ============================================ */
-document.addEventListener('DOMContentLoaded', () => {
-    const startTime = performance.now();
-
-    // Critical initializations first
-    initNavbar();
-    injectCriticalCSS();
-
-    // Defer non-critical initializations
-    requestAnimationFrame(() => {
-        initHeroCarousel();
-        initStatsCounter();
-        initTestimonials();
-        initEventsCarousel();
-        initScrollReveal();
-        initMobileOptimizations();
-    });
-
-    // Lazy load after main content
+function testAnimations() {
+    // Test if reveal elements exist
+    const revealElements = document.querySelectorAll('.reveal');
+    console.log('🎬 Found', revealElements.length, 'reveal elements');
+    
+    // Test if scroll reveal is working after 2 seconds
     setTimeout(() => {
-        initLazyLoading();
-        prefetchCriticalResources();
-    }, 100);
-
-    // Performance tracking
-    performanceMetrics.initialisationTime = performance.now() - startTime;
-    if (process.env.NODE_ENV === 'development') {
-        console.log('🚀 AANM initialized in', performanceMetrics.initialisationTime.toFixed(2), 'ms');
-    }
-});
+        const visibleElements = document.querySelectorAll('.reveal--visible');
+        console.log('✨ Animated', visibleElements.length, 'elements visible');
+    }, 2000);
+    
+    // Test button hover animations
+    const buttons = document.querySelectorAll('.btn');
+    console.log('🔘 Found', buttons.length, 'buttons for hover animations');
+}
 
 /* ============================================
    NAVBAR

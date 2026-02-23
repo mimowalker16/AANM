@@ -1811,17 +1811,14 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: inherit;
   }
 
-  /* Enhanced touch targets */
+  /* Enhanced touch targets - MOBILE ONLY */
   .btn,
   .lab-contact,
   .action-btn,
   .search-btn {
     min-height: 44px;
     min-width: 44px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: var(--space-md) var(--space-lg);
+    /* Keep original padding, just ensure min-height */
   }
 
   /* Touch-friendly form inputs */
@@ -1937,7 +1934,7 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-/* Performance Optimizations */
+/* Performance Optimizations - Proper reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -1945,6 +1942,12 @@ h1, h2, h3, h4, h5, h6 {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reveal {
+    transform: none !important;
+    opacity: 1 !important;
   }
 }
 
@@ -2115,23 +2118,6 @@ img[data-src] {
 
 img.lazy-loaded {
   background: none;
-}
-
-/* Reduce motion for users who prefer it */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-
-  .reveal {
-    transform: none !important;
-    opacity: 1 !important;
-  }
 }
 
 /* Critical resource hints */
