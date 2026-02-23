@@ -373,19 +373,40 @@ function initScrollReveal() {
     const elements = document.querySelectorAll('.reveal');
     if (!elements.length) return;
 
+    const revealEl = (el) => {
+        // requestAnimationFrame ensures the browser has painted opacity:0
+        // before we add the class — without this, fast-firing observers
+        // batch start+end state into one frame and the transition never plays
+        requestAnimationFrame(() => {
+            el.classList.add('reveal--visible');
+        });
+    };
+
+    if (!('IntersectionObserver' in window)) {
+        elements.forEach(revealEl);
+        return;
+    }
+
     const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
             if (entry.isIntersecting) {
-                entry.target.classList.add('reveal--visible');
+                revealEl(entry.target);
                 observer.unobserve(entry.target);
             }
         });
     }, {
         threshold: 0.1,
-        rootMargin: '0px 0px -60px 0px',
+        // No negative rootMargin — it was preventing elements near the
+        // viewport bottom from ever triggering
     });
 
     elements.forEach((el) => observer.observe(el));
+
+    // Safety net: after 4s, reveal anything still hidden
+    // (guards against edge cases where observer never fires)
+    setTimeout(() => {
+        document.querySelectorAll('.reveal:not(.reveal--visible)').forEach(revealEl);
+    }, 4000);
 }
 
 /* ============================================

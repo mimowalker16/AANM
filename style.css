@@ -2083,10 +2083,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* GPU acceleration for smooth animations */
-.reveal,
 .navbar__links,
 .navbar__overlay {
   transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.reveal {
   backface-visibility: hidden;
 }
 
