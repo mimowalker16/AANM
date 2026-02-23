@@ -186,7 +186,6 @@ class Database {
             });
         });
     }
-    }
 
     getPendingLabs() {
         return new Promise((resolve, reject) => {
@@ -205,6 +204,39 @@ class Database {
                         researchAreas: JSON.parse(lab.research_areas)
                     }));
                     resolve(labs);
+                }
+            });
+        });
+    }
+
+    getLabById(labId, includeUnapproved = false) {
+        return new Promise((resolve, reject) => {
+            let sql = `
+                SELECT 
+                    id, lab_name, institution_name, contact_person, contact_email, 
+                    phone, website, address, city, country, coordinates_lat, 
+                    coordinates_lng, research_areas, description, established_year, 
+                    submitted_at, approved, admin_notes
+                FROM labs 
+                WHERE id = ?
+            `;
+            
+            // Only include approved labs unless specifically requested
+            if (!includeUnapproved) {
+                sql += ` AND approved = 1`;
+            }
+
+            this.db.get(sql, [labId], (err, row) => {
+                if (err) {
+                    reject(err);
+                } else if (!row) {
+                    resolve(null);
+                } else {
+                    const lab = {
+                        ...row,
+                        researchAreas: JSON.parse(row.research_areas)
+                    };
+                    resolve(lab);
                 }
             });
         });

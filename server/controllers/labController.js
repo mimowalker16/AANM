@@ -112,11 +112,26 @@ export const getLabById = asyncHandler(async (req, res) => {
         });
     }
 
-    // This would need to be implemented in database module
-    res.status(501).json({
-        success: false,
-        message: 'Feature not implemented yet'
-    });
+    try {
+        const lab = await database.getLabById(labId);
+        
+        if (!lab) {
+            return res.status(404).json({
+                success: false,
+                message: 'Laboratory not found or not approved'
+            });
+        }
+
+        res.json({
+            success: true,
+            message: 'Laboratory retrieved successfully',
+            data: {
+                lab
+            }
+        });
+    } catch (error) {
+        throw error;
+    }
 });
 
 // Get search suggestions for autocomplete

@@ -167,8 +167,9 @@
         .lab-actions {
             display: flex;
             gap: var(--space-sm);
-            justify-content: space-between;
+            justify-content: flex-start;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .lab-contact {
@@ -180,10 +181,23 @@
             font-size: var(--fs-small);
             font-weight: 600;
             transition: background-color 0.3s ease;
+            display: inline-flex;
+            align-items: center;
         }
 
         .lab-contact:hover {
             background: color-mix(in srgb, var(--clr-primary) 85%, black);
+        }
+
+        .lab-view-profile {
+            background: transparent;
+            color: var(--clr-primary);
+            border: 2px solid var(--clr-primary);
+        }
+
+        .lab-view-profile:hover {
+            background: var(--clr-primary);
+            color: white;
         }
 
         .lab-established {
@@ -624,6 +638,12 @@
                         ${lab.description ? `<p class="lab-description">${this.escapeHtml(lab.description)}</p>` : ''}
 
                         <div class="lab-actions">
+                            <a href="/lab-profile.html?id=${lab.id}" class="lab-contact lab-view-profile">
+                                <svg class="icon" viewBox="0 0 20 20" style="width: 16px; height: 16px; fill: currentColor; margin-right: 4px;">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"/>
+                                </svg>
+                                View Profile
+                            </a>
                             <a href="mailto:${lab.contact_email}" class="lab-contact">Contact Lab</a>
                             ${lab.established_year ? `<span class="lab-established">Est. ${lab.established_year}</span>` : ''}
                         </div>
