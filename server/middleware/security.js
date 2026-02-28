@@ -21,8 +21,14 @@ export const securityHeaders = helmet({
 });
 
 // CORS configuration
+// In development: allow any origin on the local network.
+// In production: restrict to the explicit allowlist.
+const corsOriginFn = config.server.nodeEnv === 'production'
+    ? config.cors.allowedOrigins
+    : (origin, callback) => callback(null, true); // allow all in dev
+
 export const corsOptions = cors({
-    origin: config.cors.allowedOrigins,
+    origin: corsOriginFn,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']

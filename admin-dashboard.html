@@ -647,6 +647,7 @@
 
     <script src="./main.js" type="module"></script>
     <script>
+        const API_BASE = location.protocol + '//' + location.hostname + ':3001';
         // ─── Auth Guard ────────────────────────────────────────────────────────────
         (function() {
             const token = sessionStorage.getItem('adminToken');
@@ -734,7 +735,7 @@
             async loadPendingLabs() {
                 try {
                     this.showLoading('pending');
-                    const response = await fetch('http://localhost:3001/api/admin/labs/pending', {
+                    const response = await fetch(`${API_BASE}/api/admin/labs/pending`, {
                         headers: adminHeaders()
                     });
                     const result = await response.json();
@@ -754,7 +755,7 @@
             async loadApprovedLabs() {
                 try {
                     this.showLoading('approved');
-                    const response = await fetch('http://localhost:3001/api/labs');
+                    const response = await fetch(`${API_BASE}/api/labs`);
                     const result = await response.json();
 
                     if (result.success) {
@@ -893,7 +894,7 @@
                     'approve',
                     async () => {
                         try {
-                            const response = await fetch(`http://localhost:3001/api/admin/labs/${labId}/approve`, {
+                            const response = await fetch(`${API_BASE}/api/admin/labs/${labId}/approve`, {
                                 method: 'PUT',
                                 headers: adminHeaders({ 'Content-Type': 'application/json' }),
                                 body: JSON.stringify({
@@ -925,7 +926,7 @@
                     'reject',
                     async () => {
                         try {
-                            const response = await fetch(`http://localhost:3001/api/admin/labs/${labId}`, {
+                            const response = await fetch(`${API_BASE}/api/admin/labs/${labId}`, {
                                 method: 'DELETE',
                                 headers: adminHeaders()
                             });
