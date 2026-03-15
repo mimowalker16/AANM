@@ -769,30 +769,27 @@
 
         function startCountdown(targetDate) {
             if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
-            const daysEl    = document.getElementById('days');
-            const hoursEl   = document.getElementById('hours');
-            const minutesEl = document.getElementById('minutes');
-            const secondsEl = document.getElementById('seconds');
-            // If already past on entry, trigger the switch immediately without
-            // creating any interval (prevents stale setInterval from racing).
+            const els = ['days','hours','minutes','seconds'].map(id => document.getElementById(id));
+            // Already past — show static 00, no interval, no re-fetch (avoids infinite loop
+            // when displaying the most recent past seminar as a fallback).
             if (new Date(targetDate) - Date.now() <= 0) {
-                daysEl.textContent = hoursEl.textContent = minutesEl.textContent = secondsEl.textContent = '00';
-                initSeminarSection();
+                els.forEach(el => el.textContent = '00');
                 return;
             }
             function tick() {
                 const diff = new Date(targetDate) - Date.now();
                 if (diff <= 0) {
-                    daysEl.textContent = hoursEl.textContent = minutesEl.textContent = secondsEl.textContent = '00';
+                    els.forEach(el => el.textContent = '00');
                     clearInterval(countdownInterval);
                     countdownInterval = null;
+                    // Seminar just expired — re-fetch to switch to the next one
                     initSeminarSection();
                     return;
                 }
-                daysEl.textContent    = String(Math.floor(diff / 86400000)).padStart(2, '0');
-                hoursEl.textContent   = String(Math.floor((diff % 86400000) / 3600000)).padStart(2, '0');
-                minutesEl.textContent = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
-                secondsEl.textContent = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
+                els[0].textContent = String(Math.floor(diff / 86400000)).padStart(2, '0');
+                els[1].textContent = String(Math.floor((diff % 86400000) / 3600000)).padStart(2, '0');
+                els[2].textContent = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
+                els[3].textContent = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
             }
             tick();
             countdownInterval = setInterval(tick, 1000);
@@ -848,15 +845,18 @@
                 if (!res.ok) throw new Error();
                 const { data } = await res.json();
                 if (!data || data.length === 0) throw new Error('no seminars');
-                // Only look at upcoming seminars — never fall back to a past one
+                // Prefer nearest upcoming; fall back to most recent past so the card
+                // always shows real data (past seminar renders static 00 countdown).
                 const now = Date.now();
                 const upcoming = data
                     .filter(s => new Date(s.date) > now)
                     .sort((a, b) => new Date(a.date) - new Date(b.date));
-                if (!upcoming.length) throw new Error('no upcoming');
-                const nearest = upcoming[0];
-                // Guard: already showing the correct seminar, nothing to do
-                if (nearest.id === currentSeminarId) return;
+                const nearest = upcoming.length
+                    ? upcoming[0]
+                    : data.slice().sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+                // Only skip if a live countdown is already running for this exact seminar.
+                // (Avoids restarting mid-countdown, but allows polling to pick up changes.)
+                if (nearest.id === currentSeminarId && countdownInterval !== null) return;
                 currentSeminarId = nearest.id;
                 populateCard(nearest);
             } catch {
@@ -878,8 +878,8 @@
         }
 
         initSeminarSection();
-
-        // Filter functionality
+        // Poll every 30 s so newly-created future seminars appear without a page refresh.
+        setInterval(initSeminarSection, 30000);
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('filter-btn--active'));
