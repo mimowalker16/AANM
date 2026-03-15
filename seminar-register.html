@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inscription au Séminaire — AANM</title>
+    <meta name="description" content="Inscrivez-vous au séminaire organisé par l'Association Algérienne de Nutrition Maghrébine." />
+    <link rel="stylesheet" href="./style.css" />
+    <link rel="icon" type="image/png" href="./assets/images/logo.png" />
+    <style>
+        .reg-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .reg-hero {
+            background: linear-gradient(135deg, var(--clr-primary-dark) 0%, var(--clr-primary) 100%);
+            color: var(--clr-white);
+            padding: calc(var(--space-xl) * 2) 0 var(--space-xl);
+        }
+        .reg-hero__label {
+            display: inline-block;
+            background: rgba(255,255,255,0.15);
+            color: rgba(255,255,255,0.9);
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 0.3rem 0.9rem;
+            border-radius: var(--radius-full);
+            margin-bottom: var(--space-sm);
+        }
+        .reg-hero__title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: var(--space-sm);
+        }
+        .reg-hero__meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-md);
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+        .reg-hero__meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .reg-hero__meta-item svg {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+        }
+        .reg-countdown {
+            display: flex;
+            gap: var(--space-md);
+            margin-top: var(--space-md);
+            flex-wrap: wrap;
+        }
+        .countdown-unit {
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: var(--radius-md);
+            padding: 0.6rem 1rem;
+            text-align: center;
+            min-width: 64px;
+        }
+        .countdown-unit__num {
+            font-size: 1.6rem;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+            line-height: 1;
+        }
+        .countdown-unit__label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            opacity: 0.7;
+            margin-top: 0.2rem;
+        }
+        .reg-body {
+            flex: 1;
+            padding: var(--space-xl) 0;
+            background: var(--clr-surface);
+        }
+        .reg-layout {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: var(--space-xl);
+            align-items: start;
+        }
+        @media (max-width: 768px) {
+            .reg-layout { grid-template-columns: 1fr; }
+        }
+        .reg-card {
+            background: var(--clr-white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+        .reg-card__header {
+            background: linear-gradient(90deg, var(--clr-accent-teal) 0%, var(--clr-accent-teal-dark) 100%);
+            color: var(--clr-white);
+            padding: var(--space-md) var(--space-lg);
+        }
+        .reg-card__header h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 0;
+        }
+        .reg-card__body {
+            padding: var(--space-lg);
+        }
+        .form-field {
+            margin-bottom: var(--space-md);
+        }
+        .form-field label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--clr-text);
+            margin-bottom: 0.4rem;
+        }
+        .form-field label .req {
+            color: #e53e3e;
+            margin-left: 2px;
+        }
+        .form-field input {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border: 2px solid var(--clr-border, #e2e8f0);
+            border-radius: var(--radius-md);
+            font-size: 0.95rem;
+            font-family: inherit;
+            color: var(--clr-text);
+            background: var(--clr-white);
+            transition: border-color 0.2s, box-shadow 0.2s;
+            box-sizing: border-box;
+        }
+        .form-field input:focus {
+            outline: none;
+            border-color: var(--clr-accent-teal);
+            box-shadow: 0 0 0 3px rgba(59,169,156,0.15);
+        }
+        .form-field input.error {
+            border-color: #e53e3e;
+        }
+        .form-field__error {
+            color: #e53e3e;
+            font-size: 0.78rem;
+            margin-top: 0.3rem;
+            display: none;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 0.85rem;
+            background: linear-gradient(135deg, var(--clr-primary) 0%, var(--clr-accent-teal) 100%);
+            color: var(--clr-white);
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: var(--space-md);
+        }
+        .submit-btn:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
+        .submit-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+        .submit-btn .spinner {
+            width: 18px; height: 18px;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            display: none;
+        }
+        .submit-btn.loading .spinner { display: block; }
+        .submit-btn.loading .btn-text { display: none; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .state-panel {
+            display: none;
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            text-align: center;
+        }
+        .state-panel.is-visible { display: block; }
+        .state-panel--success {
+            background: #f0fdf4;
+            border: 2px solid #86efac;
+        }
+        .state-panel--closed, .state-panel--full {
+            background: #fefce8;
+            border: 2px solid #fde047;
+        }
+        .state-panel--error {
+            background: #fef2f2;
+            border: 2px solid #fca5a5;
+        }
+        .state-panel__icon {
+            width: 56px; height: 56px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto var(--space-sm);
+        }
+        .state-panel--success .state-panel__icon { background: #bbf7d0; }
+        .state-panel--closed .state-panel__icon,
+        .state-panel--full .state-panel__icon { background: #fef08a; }
+        .state-panel--error .state-panel__icon { background: #fecaca; }
+        .state-panel__icon svg { width: 28px; height: 28px; }
+        .state-panel--success .state-panel__icon svg { stroke: #16a34a; }
+        .state-panel--closed .state-panel__icon svg,
+        .state-panel--full .state-panel__icon svg { stroke: #854d0e; }
+        .state-panel--error .state-panel__icon svg { stroke: #dc2626; }
+        .state-panel__title { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.4rem; }
+        .state-panel--success .state-panel__title { color: #166534; }
+        .state-panel--closed .state-panel__title,
+        .state-panel--full .state-panel__title { color: #854d0e; }
+        .state-panel--error .state-panel__title { color: #991b1b; }
+        .state-panel__text { font-size: 0.9rem; color: var(--clr-text-muted, #6b7280); line-height: 1.5; }
+        .sidebar-info {
+            background: var(--clr-white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            padding: var(--space-lg);
+        }
+        .sidebar-info__title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--clr-text-muted, #6b7280);
+            margin-bottom: var(--space-sm);
+        }
+        .info-row {
+            display: flex;
+            gap: 0.6rem;
+            align-items: flex-start;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid var(--clr-border, #e2e8f0);
+            font-size: 0.9rem;
+        }
+        .info-row:last-child { border-bottom: none; }
+        .info-row svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px; stroke: var(--clr-accent-teal); }
+        .info-row__label { font-weight: 600; color: var(--clr-text); }
+        .info-row__value { color: var(--clr-text-muted, #6b7280); }
+        .capacity-bar {
+            margin-top: var(--space-sm);
+        }
+        .capacity-bar__track {
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 99px;
+            overflow: hidden;
+            margin-top: 0.4rem;
+        }
+        .capacity-bar__fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--clr-primary), var(--clr-accent-teal));
+            border-radius: 99px;
+            transition: width 0.6s ease;
+        }
+        .capacity-bar__text { font-size: 0.8rem; color: var(--clr-text-muted, #6b7280); margin-top: 0.3rem; }
+        .loading-skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.4s infinite;
+            border-radius: 6px;
+        }
+        @keyframes shimmer { to { background-position: -200% 0; } }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 0.25rem 0.6rem;
+            border-radius: var(--radius-full);
+        }
+        .badge--open { background: #dcfce7; color: #166534; }
+        .badge--closed { background: #fee2e2; color: #991b1b; }
+        .badge--full { background: #fef9c3; color: #854d0e; }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            margin-bottom: var(--space-sm);
+            transition: color 0.2s;
+        }
+        .back-link:hover { color: #fff; }
+        #loadingOverlay {
+            padding: var(--space-xl);
+            text-align: center;
+        }
+        #notFoundState {
+            display: none;
+            text-align: center;
+            padding: var(--space-xl);
+        }
+    </style>
+</head>
+
+<body class="reg-page">
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar--transparent" id="navbar">
+        <div class="navbar__inner">
+            <div class="navbar__logo-container">
+                <a href="/" class="navbar__logo" aria-label="Accueil">
+                    <img src="./assets/images/logo.png" alt="AANM Logo" class="navbar__logo-img">
+                </a>
+            </div>
+            <div class="navbar__links" id="navLinks">
+                <a href="/" class="navbar__link">Accueil</a>
+                <a href="./about.html" class="navbar__link">À Propos</a>
+                <a href="./activities.html" class="navbar__link">Activités</a>
+                <a href="./news.html" class="navbar__link">Actualités</a>
+                <a href="./contact.html" class="navbar__link">Contact</a>
+                <a href="./contact.html" class="navbar__cta">Nous Rejoindre →</a>
+            </div>
+            <button class="navbar__toggle" id="navToggle" aria-label="Menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <!-- HERO (dynamically populated) -->
+    <div id="heroSection" class="reg-hero" style="display:none;">
+        <div class="container">
+            <a href="./activities.html" class="back-link">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+                Retour aux activités
+            </a>
+            <span class="reg-hero__label">Séminaire</span>
+            <h1 class="reg-hero__title" id="heroTitle">Chargement…</h1>
+            <div class="reg-hero__meta">
+                <span class="reg-hero__meta-item" id="heroDate">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                    <span>—</span>
+                </span>
+                <span class="reg-hero__meta-item" id="heroLocation">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <span>—</span>
+                </span>
+            </div>
+            <div class="reg-countdown" id="countdown"></div>
+        </div>
+    </div>
+
+    <!-- LOADING -->
+    <div id="loadingOverlay">
+        <div class="loading-skeleton" style="width:300px;height:28px;margin:0 auto 1rem;"></div>
+        <div class="loading-skeleton" style="width:200px;height:18px;margin:0 auto;"></div>
+    </div>
+
+    <!-- NOT FOUND -->
+    <div id="notFoundState">
+        <div class="state-panel state-panel--error is-visible" style="max-width:420px;margin:auto;">
+            <div class="state-panel__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+            </div>
+            <p class="state-panel__title">Séminaire introuvable</p>
+            <p class="state-panel__text">Ce séminaire n'existe pas ou a été supprimé.</p>
+            <a href="./activities.html" class="btn btn--primary" style="margin-top:1rem;display:inline-block;">Retour aux activités</a>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <main class="reg-body" id="mainContent" style="display:none;">
+        <div class="container">
+            <div class="reg-layout">
+
+                <!-- LEFT: Form or State Panel -->
+                <div>
+                    <!-- Closed state -->
+                    <div class="state-panel state-panel--closed" id="stateClosed">
+                        <div class="state-panel__icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                        </div>
+                        <p class="state-panel__title">Inscriptions fermées</p>
+                        <p class="state-panel__text">Les inscriptions pour ce séminaire sont actuellement fermées. Consultez nos prochaines activités.</p>
+                        <a href="./activities.html" class="btn btn--outline" style="margin-top:1rem;display:inline-block;">Voir les activités</a>
+                    </div>
+
+                    <!-- Full state -->
+                    <div class="state-panel state-panel--full" id="stateFull">
+                        <div class="state-panel__icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+                        </div>
+                        <p class="state-panel__title">Séminaire complet</p>
+                        <p class="state-panel__text">Toutes les places disponibles ont été réservées pour ce séminaire.</p>
+                        <a href="./activities.html" class="btn btn--outline" style="margin-top:1rem;display:inline-block;">Voir les activités</a>
+                    </div>
+
+                    <!-- Success state -->
+                    <div class="state-panel state-panel--success" id="stateSuccess">
+                        <div class="state-panel__icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+                        </div>
+                        <p class="state-panel__title">Inscription confirmée !</p>
+                        <p class="state-panel__text">Votre inscription a bien été enregistrée. Vous recevrez les détails par email.</p>
+                        <a href="./activities.html" class="btn btn--primary" style="margin-top:1.2rem;display:inline-block;">Retour aux activités</a>
+                    </div>
+
+                    <!-- Registration form -->
+                    <div class="reg-card" id="formCard">
+                        <div class="reg-card__header">
+                            <h2>Formulaire d'inscription</h2>
+                        </div>
+                        <div class="reg-card__body">
+                            <form id="regForm" novalidate>
+                                <div class="form-field">
+                                    <label for="full_name">Nom complet <span class="req">*</span></label>
+                                    <input type="text" id="full_name" name="full_name" placeholder="ex. Ahmed Benali" autocomplete="name" />
+                                    <p class="form-field__error" id="err_full_name">Ce champ est requis.</p>
+                                </div>
+                                <div class="form-field">
+                                    <label for="email">Adresse email <span class="req">*</span></label>
+                                    <input type="email" id="email" name="email" placeholder="ex. ahmed@example.com" autocomplete="email" />
+                                    <p class="form-field__error" id="err_email">Veuillez entrer une adresse email valide.</p>
+                                </div>
+                                <div class="form-field">
+                                    <label for="phone">Téléphone <span style="font-weight:400;color:#9ca3af;">(optionnel)</span></label>
+                                    <input type="tel" id="phone" name="phone" placeholder="ex. +213 541 939 878" autocomplete="tel" />
+                                </div>
+
+                                <!-- API error banner -->
+                                <div class="state-panel state-panel--error" id="formErrorPanel" style="padding:var(--space-sm) var(--space-md);text-align:left;border-radius:var(--radius-md);">
+                                    <p class="state-panel__text" id="formErrorText"></p>
+                                </div>
+
+                                <button type="submit" class="submit-btn" id="submitBtn">
+                                    <span class="btn-text">S'inscrire au séminaire</span>
+                                    <span class="spinner"></span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT: Seminar Details -->
+                <aside>
+                    <div class="sidebar-info">
+                        <p class="sidebar-info__title">Détails du séminaire</p>
+
+                        <div class="info-row" id="sidebarDate">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                            <div><span class="info-row__label">Date</span><br/><span class="info-row__value" id="sidebarDateVal">—</span></div>
+                        </div>
+                        <div class="info-row" id="sidebarLoc">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            <div><span class="info-row__label">Lieu</span><br/><span class="info-row__value" id="sidebarLocVal">—</span></div>
+                        </div>
+                        <div class="info-row">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                            <div><span class="info-row__label">Statut</span><br/><span id="sidebarBadge">—</span></div>
+                        </div>
+
+                        <div class="capacity-bar" id="capacityBar" style="display:none;">
+                            <p style="font-size:0.85rem;font-weight:600;color:var(--clr-text);">Places disponibles</p>
+                            <div class="capacity-bar__track"><div class="capacity-bar__fill" id="capacityFill" style="width:0%"></div></div>
+                            <p class="capacity-bar__text" id="capacityText"></p>
+                        </div>
+
+                        <div style="margin-top:var(--space-md);" id="sidebarDesc">
+                            <p style="font-size:0.85rem;font-weight:600;color:var(--clr-text);margin-bottom:0.4rem;">Description</p>
+                            <p style="font-size:0.88rem;color:var(--clr-text-muted,#6b7280);line-height:1.6;" id="sidebarDescText"></p>
+                        </div>
+                    </div>
+                </aside>
+
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer" id="footer">
+        <div class="container">
+            <div class="footer__main">
+                <div class="footer__brand">
+                    <div class="footer__logo">
+                        <img src="./assets/images/logo.png" alt="AANM Logo" class="footer__logo-img">
+                    </div>
+                    <p class="footer__tagline">Pour une meilleure nutrition au Maghreb.<br />Alliance scientifique et traditions locales.</p>
+                    <form class="footer__newsletter" onsubmit="event.preventDefault(); alert('Merci pour votre inscription !');">
+                        <input type="email" class="footer__input" placeholder="Entrez votre email..." required />
+                        <button type="submit" class="footer__submit" aria-label="S'inscrire">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </button>
+                    </form>
+                </div>
+                <div class="footer__links">
+                    <div class="footer__column">
+                        <h4 class="footer__heading">NAVIGATION</h4>
+                        <a href="/" class="footer__link">Accueil</a>
+                        <a href="./about.html" class="footer__link">À Propos</a>
+                        <a href="./activities.html" class="footer__link">Activités</a>
+                        <a href="./news.html" class="footer__link">Actualités</a>
+                        <a href="./contact.html" class="footer__link">Contact</a>
+                    </div>
+                    <div class="footer__column">
+                        <h4 class="footer__heading">ANNUAIRE</h4>
+                        <a href="./lab-directory.html" class="footer__link">Annuaire des Labos</a>
+                        <a href="./lab-map.html" class="footer__link">Carte des Labos</a>
+                        <a href="./advanced-search.html" class="footer__link">Recherche Avancée</a>
+                        <a href="./lab-submission.html" class="footer__link">Soumettre un Labo</a>
+                    </div>
+                    <div class="footer__column">
+                        <h4 class="footer__heading">CONTACT</h4>
+                        <a href="tel:+213541939878" class="footer__link">Téléphone</a>
+                        <a href="mailto:cabinet@aanm-assal.org" class="footer__link">Email</a>
+                        <a href="https://github.com/mimowalker16/AANM" target="_blank" rel="noopener" class="footer__link">GitHub</a>
+                        <a href="#" class="footer__link">LinkedIn</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer__bottom">
+                <p class="footer__copyright">// PUBLIÉ_PAR_AANM.ORG</p>
+                <div class="footer__bottom-right">
+                    <span class="footer__status"><span class="footer__status-dot"></span>TOUS SYSTÈMES NORMAUX</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="./main.js" type="module"></script>
+    <script>
+        const API_BASE = location.protocol + '//' + location.hostname + ':3001';
+
+        const params = new URLSearchParams(location.search);
+        const seminarId = params.get('id');
+
+        const heroSection  = document.getElementById('heroSection');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const mainContent  = document.getElementById('mainContent');
+        const notFoundState = document.getElementById('notFoundState');
+
+        const heroTitle    = document.getElementById('heroTitle');
+        const heroDateEl   = document.getElementById('heroDate');
+        const heroLocEl    = document.getElementById('heroLocation');
+        const countdownEl  = document.getElementById('countdown');
+
+        const formCard     = document.getElementById('formCard');
+        const stateClosed  = document.getElementById('stateClosed');
+        const stateFull    = document.getElementById('stateFull');
+        const stateSuccess = document.getElementById('stateSuccess');
+        const formErrorPanel = document.getElementById('formErrorPanel');
+        const formErrorText  = document.getElementById('formErrorText');
+
+        function formatDate(dateStr) {
+            const d = new Date(dateStr);
+            return d.toLocaleString('fr-FR', { dateStyle: 'full', timeStyle: 'short' });
+        }
+
+        function startCountdown(targetDate) {
+            function tick() {
+                const diff = new Date(targetDate) - new Date();
+                if (diff <= 0) {
+                    countdownEl.innerHTML = '<span style="font-size:0.9rem;opacity:0.8;">Séminaire en cours ou passé</span>';
+                    return;
+                }
+                const days  = Math.floor(diff / 86400000);
+                const hours = Math.floor((diff % 86400000) / 3600000);
+                const mins  = Math.floor((diff % 3600000) / 60000);
+                const secs  = Math.floor((diff % 60000) / 1000);
+                countdownEl.innerHTML = [
+                    [days, 'Jours'], [hours, 'Heures'], [mins, 'Minutes'], [secs, 'Secondes']
+                ].map(([n, l]) => `
+                    <div class="countdown-unit">
+                        <div class="countdown-unit__num">${String(n).padStart(2,'0')}</div>
+                        <div class="countdown-unit__label">${l}</div>
+                    </div>`).join('');
+            }
+            tick();
+            setInterval(tick, 1000);
+        }
+
+        function renderSeminar(s) {
+            // Hero
+            heroTitle.textContent = s.title;
+            heroDateEl.querySelector('span').textContent = formatDate(s.date);
+            heroLocEl.querySelector('span').textContent = s.location || 'Lieu à confirmer';
+            startCountdown(s.date);
+            heroSection.style.display = '';
+
+            // Sidebar
+            document.getElementById('sidebarDateVal').textContent = formatDate(s.date);
+            document.getElementById('sidebarLocVal').textContent = s.location || 'À confirmer';
+
+            const badge = document.getElementById('sidebarBadge');
+            const isFull = s.capacity !== null && s.registration_count >= s.capacity;
+            if (!s.is_open) {
+                badge.innerHTML = '<span class="badge badge--closed">Fermé</span>';
+            } else if (isFull) {
+                badge.innerHTML = '<span class="badge badge--full">Complet</span>';
+            } else {
+                badge.innerHTML = '<span class="badge badge--open">Inscriptions ouvertes</span>';
+            }
+
+            if (s.capacity !== null) {
+                const pct = Math.min(100, Math.round((s.registration_count / s.capacity) * 100));
+                document.getElementById('capacityFill').style.width = pct + '%';
+                document.getElementById('capacityText').textContent =
+                    `${s.registration_count} / ${s.capacity} places réservées`;
+                document.getElementById('capacityBar').style.display = '';
+            }
+
+            if (s.description) {
+                document.getElementById('sidebarDescText').textContent = s.description;
+            } else {
+                document.getElementById('sidebarDesc').style.display = 'none';
+            }
+
+            // Show correct panel
+            loadingOverlay.style.display = 'none';
+            mainContent.style.display = '';
+
+            if (!s.is_open) {
+                formCard.style.display = 'none';
+                stateClosed.classList.add('is-visible');
+            } else if (isFull) {
+                formCard.style.display = 'none';
+                stateFull.classList.add('is-visible');
+            }
+        }
+
+        async function loadSeminar() {
+            if (!seminarId) {
+                loadingOverlay.style.display = 'none';
+                notFoundState.style.display = '';
+                return;
+            }
+            try {
+                const res = await fetch(`${API_BASE}/api/seminaires/${seminarId}`);
+                if (!res.ok) throw new Error('not found');
+                const { data } = await res.json();
+                renderSeminar(data);
+            } catch {
+                loadingOverlay.style.display = 'none';
+                notFoundState.style.display = '';
+            }
+        }
+
+        // ── Form submission ──────────────────────────────────────────────────
+        document.getElementById('regForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            formErrorPanel.classList.remove('is-visible');
+
+            const nameVal  = document.getElementById('full_name').value.trim();
+            const emailVal = document.getElementById('email').value.trim();
+            const phoneVal = document.getElementById('phone').value.trim();
+            const emailRx  = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            let valid = true;
+
+            if (!nameVal) {
+                document.getElementById('full_name').classList.add('error');
+                document.getElementById('err_full_name').style.display = 'block';
+                valid = false;
+            } else {
+                document.getElementById('full_name').classList.remove('error');
+                document.getElementById('err_full_name').style.display = 'none';
+            }
+
+            if (!emailVal || !emailRx.test(emailVal)) {
+                document.getElementById('email').classList.add('error');
+                document.getElementById('err_email').style.display = 'block';
+                valid = false;
+            } else {
+                document.getElementById('email').classList.remove('error');
+                document.getElementById('err_email').style.display = 'none';
+            }
+
+            if (!valid) return;
+
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.classList.add('loading');
+
+            try {
+                const res = await fetch(`${API_BASE}/api/seminaires/${seminarId}/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ full_name: nameVal, email: emailVal, phone: phoneVal || undefined })
+                });
+                const json = await res.json();
+
+                if (res.ok) {
+                    formCard.style.display = 'none';
+                    stateSuccess.classList.add('is-visible');
+                } else {
+                    formErrorText.textContent = json.message || 'Une erreur est survenue. Veuillez réessayer.';
+                    formErrorPanel.classList.add('is-visible');
+                    btn.disabled = false;
+                    btn.classList.remove('loading');
+                }
+            } catch {
+                formErrorText.textContent = 'Impossible de contacter le serveur. Vérifiez votre connexion.';
+                formErrorPanel.classList.add('is-visible');
+                btn.disabled = false;
+                btn.classList.remove('loading');
+            }
+        });
+
+        loadSeminar();
+    </script>
+</body>
+
+</html>

@@ -478,15 +478,15 @@
                                 <line x1="3" y1="10" x2="21" y2="10"></line>
                             </svg>
                         </div>
-                        <div class="countdown-card__date-large">15</div>
-                        <div class="countdown-card__month">Mars 2026</div>
+                        <div class="countdown-card__date-large" id="ctaDateDay">—</div>
+                        <div class="countdown-card__month" id="ctaDateMonth">—</div>
                     </div>
                 </div>
                 
                 <div class="countdown-card__content">
-                    <span class="countdown-card__label">Séminaire National</span>
-                    <h2 class="countdown-card__title">Nutrition & Santé Maghrébine</h2>
-                    <p class="countdown-card__description">
+                    <span class="countdown-card__label" id="ctaLabel">Séminaire National</span>
+                    <h2 class="countdown-card__title" id="ctaTitle">Nutrition &amp; Santé Maghrébine</h2>
+                    <p class="countdown-card__description" id="ctaDescription">
                         Rejoignez-nous pour un séminaire enrichissant sur les dernières avancées en nutrition et leurs applications dans le contexte maghrébin.
                     </p>
                     
@@ -515,28 +515,28 @@
                                 <circle cx="12" cy="12" r="10"></circle>
                                 <polyline points="12 6 12 12 16 14"></polyline>
                             </svg>
-                            <span>09:00 - 17:00</span>
+                            <span id="ctaTime">—</span>
                         </div>
-                        <div class="countdown-card__detail">
+                        <div class="countdown-card__detail" id="ctaLocationDetail" style="display:none">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                                 <circle cx="12" cy="10" r="3"></circle>
                             </svg>
-                            <span>Alger, Algérie</span>
+                            <span id="ctaLocation"></span>
                         </div>
-                        <div class="countdown-card__detail">
+                        <div class="countdown-card__detail" id="ctaPlacesDetail" style="display:none">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="9" cy="7" r="4"></circle>
                                 <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
                                 <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                             </svg>
-                            <span>150 Places</span>
+                            <span id="ctaPlaces"></span>
                         </div>
                     </div>
                     
                     <div class="countdown-card__actions">
-                        <a href="./contact.html" class="btn btn--primary">
+                        <a href="#" class="btn btn--primary" id="ctaRegisterBtn" aria-disabled="true">
                             S'inscrire Maintenant
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -760,54 +760,125 @@
 
     <script src="./main.js" type="module"></script>
     <script>
-        // Countdown Timer
-        function initCountdown() {
-            // Set the target date (March 15, 2026)
-            const targetDate = new Date('2026-03-15T09:00:00').getTime();
-            
-            const daysEl = document.getElementById('days');
-            const hoursEl = document.getElementById('hours');
+        const API_BASE = location.protocol + '//' + location.hostname + ':3001';
+
+        const FR_MONTHS = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+
+        let countdownInterval = null;
+        let currentSeminarId  = null;
+
+        function startCountdown(targetDate) {
+            if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
+            const daysEl    = document.getElementById('days');
+            const hoursEl   = document.getElementById('hours');
             const minutesEl = document.getElementById('minutes');
             const secondsEl = document.getElementById('seconds');
-            
-            function updateCountdown() {
-                const now = new Date().getTime();
-                const distance = targetDate - now;
-                
-                if (distance < 0) {
-                    // Countdown finished
-                    daysEl.textContent = '00';
-                    hoursEl.textContent = '00';
-                    minutesEl.textContent = '00';
-                    secondsEl.textContent = '00';
+            // If already past on entry, trigger the switch immediately without
+            // creating any interval (prevents stale setInterval from racing).
+            if (new Date(targetDate) - Date.now() <= 0) {
+                daysEl.textContent = hoursEl.textContent = minutesEl.textContent = secondsEl.textContent = '00';
+                initSeminarSection();
+                return;
+            }
+            function tick() {
+                const diff = new Date(targetDate) - Date.now();
+                if (diff <= 0) {
+                    daysEl.textContent = hoursEl.textContent = minutesEl.textContent = secondsEl.textContent = '00';
+                    clearInterval(countdownInterval);
+                    countdownInterval = null;
+                    initSeminarSection();
                     return;
                 }
-                
-                // Calculate time remaining
-                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                
-                // Update DOM with zero-padding
-                daysEl.textContent = String(days).padStart(2, '0');
-                hoursEl.textContent = String(hours).padStart(2, '0');
-                minutesEl.textContent = String(minutes).padStart(2, '0');
-                secondsEl.textContent = String(seconds).padStart(2, '0');
+                daysEl.textContent    = String(Math.floor(diff / 86400000)).padStart(2, '0');
+                hoursEl.textContent   = String(Math.floor((diff % 86400000) / 3600000)).padStart(2, '0');
+                minutesEl.textContent = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
+                secondsEl.textContent = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
             }
-            
-            // Update immediately and then every second
-            updateCountdown();
-            setInterval(updateCountdown, 1000);
+            tick();
+            countdownInterval = setInterval(tick, 1000);
         }
-        
-        // Initialize countdown when DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initCountdown);
-        } else {
-            initCountdown();
+
+        function populateCard(s) {
+            const d = new Date(s.date);
+            // Left panel – date
+            document.getElementById('ctaDateDay').textContent   = d.getDate();
+            document.getElementById('ctaDateMonth').textContent = FR_MONTHS[d.getMonth()] + ' ' + d.getFullYear();
+            // Content
+            document.getElementById('ctaLabel').textContent = 'Séminaire National';
+            document.getElementById('ctaTitle').textContent = s.title;
+            if (s.description) {
+                document.getElementById('ctaDescription').textContent = s.description;
+            }
+            // Time detail
+            document.getElementById('ctaTime').textContent =
+                d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+            // Location
+            if (s.location) {
+                document.getElementById('ctaLocation').textContent = s.location;
+                document.getElementById('ctaLocationDetail').style.display = '';
+            }
+            // Capacity
+            if (s.capacity !== null) {
+                const remaining = s.capacity - s.registration_count;
+                document.getElementById('ctaPlaces').textContent = remaining + ' place' + (remaining !== 1 ? 's' : '') + ' disponible' + (remaining !== 1 ? 's' : '');
+                document.getElementById('ctaPlacesDetail').style.display = '';
+            }
+            // Countdown
+            startCountdown(s.date);
+            // CTA button
+            const btn = document.getElementById('ctaRegisterBtn');
+            const isFull = s.capacity !== null && s.registration_count >= s.capacity;
+            if (!s.is_open) {
+                btn.innerHTML = 'Inscriptions Fermées';
+                btn.style.opacity = '0.6';
+                btn.style.pointerEvents = 'none';
+            } else if (isFull) {
+                btn.innerHTML = 'Séminaire Complet';
+                btn.style.opacity = '0.6';
+                btn.style.pointerEvents = 'none';
+            } else {
+                btn.href = `./seminar-register.html?id=${s.id}`;
+                btn.removeAttribute('aria-disabled');
+            }
         }
-        
+
+        async function initSeminarSection() {
+            try {
+                const res = await fetch(`${API_BASE}/api/seminaires`);
+                if (!res.ok) throw new Error();
+                const { data } = await res.json();
+                if (!data || data.length === 0) throw new Error('no seminars');
+                // Only look at upcoming seminars — never fall back to a past one
+                const now = Date.now();
+                const upcoming = data
+                    .filter(s => new Date(s.date) > now)
+                    .sort((a, b) => new Date(a.date) - new Date(b.date));
+                if (!upcoming.length) throw new Error('no upcoming');
+                const nearest = upcoming[0];
+                // Guard: already showing the correct seminar, nothing to do
+                if (nearest.id === currentSeminarId) return;
+                currentSeminarId = nearest.id;
+                populateCard(nearest);
+            } catch {
+                // No upcoming seminars or server down — reset state and show placeholder
+                if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
+                currentSeminarId = null;
+                document.getElementById('ctaDateDay').textContent   = '—';
+                document.getElementById('ctaDateMonth').textContent = '—';
+                document.getElementById('ctaTitle').textContent     = 'Prochain séminaire à venir';
+                document.getElementById('ctaDescription').textContent = 'Le prochain séminaire sera annoncé prochainement. Restez connectés !';
+                document.getElementById('ctaTime').textContent = '—';
+                document.getElementById('days').textContent = document.getElementById('hours').textContent =
+                document.getElementById('minutes').textContent = document.getElementById('seconds').textContent = '—';
+                const btn = document.getElementById('ctaRegisterBtn');
+                btn.innerHTML = 'Bientôt disponible';
+                btn.style.opacity = '0.6';
+                btn.style.pointerEvents = 'none';
+            }
+        }
+
+        initSeminarSection();
+
         // Filter functionality
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.addEventListener('click', () => {

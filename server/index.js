@@ -10,6 +10,7 @@ import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
 import systemRoutes from './routes/system.js';
 import labRoutes from './routes/labs.js';
 import adminRoutes from './routes/admin.js';
+import seminaireRoutes from './routes/seminaires.js';
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api', systemRoutes);
 app.use('/api/labs', labRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/seminaires', seminaireRoutes);
 
 // Error handling
 app.use('*', notFoundHandler);

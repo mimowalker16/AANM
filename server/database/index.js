@@ -26,6 +26,37 @@ class Database {
     initializeTables() {
         this.db.serialize(() => {
             this.db.run(`
+                CREATE TABLE IF NOT EXISTS seminaires (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    title TEXT NOT NULL,
+                    date TEXT NOT NULL,
+                    location TEXT,
+                    description TEXT,
+                    capacity INTEGER,
+                    is_open INTEGER DEFAULT 1,
+                    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+                )
+            `, (err) => {
+                if (err) console.error('Error creating seminaires table:', err);
+                else console.log('📅 Seminaires table ready');
+            });
+
+            this.db.run(`
+                CREATE TABLE IF NOT EXISTS registrations (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    seminar_id INTEGER NOT NULL REFERENCES seminaires(id) ON DELETE CASCADE,
+                    full_name TEXT NOT NULL,
+                    email TEXT NOT NULL,
+                    phone TEXT,
+                    registered_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    UNIQUE(seminar_id, email)
+                )
+            `, (err) => {
+                if (err) console.error('Error creating registrations table:', err);
+                else console.log('📋 Registrations table ready');
+            });
+
+            this.db.run(`
                 CREATE TABLE IF NOT EXISTS labs (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     lab_name TEXT NOT NULL,
@@ -319,6 +350,122 @@ class Database {
                 } else {
                     resolve({ changes: this.changes });
                 }
+            });
+        });
+    }
+
+    // ─── Seminaire operations ────────────────────────────────────────────────
+
+    createSeminaire(data) {
+        return new Promise((resolve, reject) => {
+            const sql = `
+                INSERT INTO seminaires (title, date, location, description, capacity, is_open)
+                VALUES (?, ?, ?, ?, ?, ?)
+            `;
+            this.db.run(sql, [data.title, data.date, data.location, data.description, data.capacity ?? null, data.is_open ?? 1], function(err) {
+                if (err) reject(err);
+                else resolve({ id: this.lastID });
+            });
+        });
+    }
+
+    getSeminaires() {
+        return new Promise((resolve, reject) => {
+            const sql = `
+                SELECT s.*, (SELECT COUNT(*) FROM registrations r WHERE r.seminar_id = s.id) AS registration_count
+                FROM seminaires s ORDER BY s.date ASC
+            `;
+            this.db.all(sql, [], (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows);
+            });
+        });
+    }
+
+    getSeminaireById(id) {
+        return new Promise((resolve, reject) => {
+            const sql = `
+                SELECT s.*, (SELECT COUNT(*) FROM registrations r WHERE r.seminar_id = s.id) AS registration_count
+                FROM seminaires s WHERE s.id = ?
+            `;
+            this.db.get(sql, [id], (err, row) => {
+                if (err) reject(err);
+                else resolve(row || null);
+            });
+        });
+    }
+
+    updateSeminaire(id, data) {
+        return new Promise((resolve, reject) => {
+            const sql = `
+                UPDATE seminaires SET title=?, date=?, location=?, description=?, capacity=? WHERE id=?
+            `;
+            this.db.run(sql, [data.title, data.date, data.location, data.description, data.capacity ?? null, id], function(err) {
+                if (err) reject(err);
+                else resolve({ changes: this.changes });
+            });
+        });
+    }
+
+    toggleSeminaireOpen(id) {
+        return new Promise((resolve, reject) => {
+            const sql = `UPDATE seminaires SET is_open = CASE WHEN is_open = 1 THEN 0 ELSE 1 END WHERE id = ?`;
+            this.db.run(sql, [id], function(err) {
+                if (err) reject(err);
+                else resolve({ changes: this.changes });
+            });
+        });
+    }
+
+    deleteSeminaire(id) {
+        return new Promise((resolve, reject) => {
+            this.db.run(`DELETE FROM seminaires WHERE id = ?`, [id], function(err) {
+                if (err) reject(err);
+                else resolve({ changes: this.changes });
+            });
+        });
+    }
+
+    // ─── Registration operations ─────────────────────────────────────────────
+
+    createRegistration(seminarId, data) {
+        return new Promise((resolve, reject) => {
+            const sql = `INSERT INTO registrations (seminar_id, full_name, email, phone) VALUES (?, ?, ?, ?)`;
+            this.db.run(sql, [seminarId, data.full_name, data.email, data.phone || null], function(err) {
+                if (err) {
+                    if (err.code === 'SQLITE_CONSTRAINT') reject({ duplicate: true });
+                    else reject(err);
+                } else {
+                    resolve({ id: this.lastID });
+                }
+            });
+        });
+    }
+
+    getRegistrationsBySeminar(seminarId) {
+        return new Promise((resolve, reject) => {
+            this.db.all(
+                `SELECT * FROM registrations WHERE seminar_id = ? ORDER BY registered_at DESC`,
+                [seminarId],
+                (err, rows) => { if (err) reject(err); else resolve(rows); }
+            );
+        });
+    }
+
+    deleteRegistration(id) {
+        return new Promise((resolve, reject) => {
+            this.db.run(`DELETE FROM registrations WHERE id = ?`, [id], function(err) {
+                if (err) reject(err);
+                else resolve({ changes: this.changes });
+            });
+        });
+    }
+
+    getRegistrationCount(seminarId) {
+        return new Promise((resolve, reject) => {
+            this.db.get(`SELECT COUNT(*) AS count FROM registrations WHERE seminar_id = ?`, [seminarId], (err, row) => {
+                if (err) reject(err);
+                else resolve(row.count);
             });
         });
     }
