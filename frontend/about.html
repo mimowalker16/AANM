@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>À Propos — AANM</title>
+    <meta name="description"
+        content="Découvrez l'histoire, la mission et l'équipe de l'Association Algérienne de Nutrition Maghrébine." />
+    <link rel="stylesheet" href="./style.css" />
+    <link rel="icon" type="image/png" href="./assets/images/logo.png" />
+    <style>
+        /* About Page Specific */
+        .timeline {
+            position: relative;
+            padding: var(--space-xl) 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--clr-primary);
+            opacity: 0.2;
+            transform: translateX(-50%);
+        }
+
+        .timeline__item {
+            display: flex;
+            gap: var(--space-lg);
+            margin-bottom: var(--space-xl);
+            position: relative;
+            align-items: flex-start;
+        }
+
+        .timeline__item:nth-child(even) {
+            flex-direction: row-reverse;
+            text-align: right;
+        }
+
+        .timeline__year {
+            flex-shrink: 0;
+            width: 120px;
+            font-family: var(--ff-numbers);
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--clr-primary);
+        }
+
+        .timeline__dot {
+            flex-shrink: 0;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--clr-secondary);
+            border: 3px solid var(--clr-bg);
+            box-shadow: 0 0 0 2px var(--clr-secondary);
+            position: relative;
+            top: 8px;
+        }
+
+        .timeline__content {
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .timeline__title {
+            font-size: var(--fs-h4);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline__text {
+            font-size: var(--fs-body);
+            color: var(--clr-text-light);
+        }
+
+        .team__grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: var(--space-md);
+            margin-top: var(--space-xl);
+        }
+
+        .team-card {
+            background: var(--clr-white);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: transform var(--transition-base), box-shadow var(--transition-base);
+        }
+
+        .team-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .team-card__image {
+            height: 280px;
+            overflow: hidden;
+            background: var(--clr-bg-alt);
+        }
+
+        .team-card__image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .team-card__body {
+            padding: var(--space-md);
+        }
+
+        .team-card__name {
+            font-size: var(--fs-h4);
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .team-card__role {
+            font-size: var(--fs-small);
+            color: var(--clr-secondary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .team-card__bio {
+            font-size: var(--fs-small);
+            color: var(--clr-text-light);
+            line-height: 1.6;
+        }
+
+        .values__grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: var(--space-md);
+            margin-top: var(--space-xl);
+        }
+
+        .value-card {
+            padding: var(--space-lg);
+            border-radius: var(--radius-lg);
+            background: var(--clr-white);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            transition: transform var(--transition-base);
+        }
+
+        .value-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .value-card__icon {
+            font-size: 2.5rem;
+            margin-bottom: var(--space-sm);
+        }
+
+        .value-card__title {
+            font-size: var(--fs-h4);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .value-card__text {
+            font-size: var(--fs-body);
+            color: var(--clr-text-light);
+        }
+
+        .mission__highlight {
+            background: var(--clr-primary);
+            color: var(--clr-white);
+            border-radius: var(--radius-xl);
+            padding: var(--space-2xl);
+            margin: var(--space-xl) 0;
+            text-align: center;
+        }
+
+        .mission__highlight h3 {
+            font-size: var(--fs-h2);
+            color: var(--clr-white);
+            margin-bottom: var(--space-md);
+        }
+
+        .mission__highlight p {
+            font-size: var(--fs-body-lg);
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .timeline::before {
+                left: 30px;
+            }
+
+            .timeline__item,
+            .timeline__item:nth-child(even) {
+                flex-direction: column;
+                text-align: left;
+                padding-left: 60px;
+            }
+
+            .timeline__dot {
+                position: absolute;
+                left: 21px;
+            }
+
+            .timeline__year {
+                width: auto;
+            }
+        }
+    </style>
+    <script src="/api-config.js"></script>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar__overlay" id="navOverlay"></div>
+    <nav class="navbar navbar--transparent" id="navbar">
+        <div class="navbar__inner">
+            <div class="navbar__logo-container">
+                <a href="/" class="navbar__logo" aria-label="Visit home page">
+                    <img src="./assets/images/logo.png" alt="AANM Logo" class="navbar__logo-img">
+                </a>
+            </div>
+            <div class="navbar__links" id="navLinks">
+                <a href="/" class="navbar__link">Accueil</a>
+                <a href="./about.html" class="navbar__link navbar__link--active">À Propos</a>
+                <a href="./activities.html" class="navbar__link">Activités</a>
+                <a href="./news.html" class="navbar__link">Actualités</a>
+                <a href="./contact.html" class="navbar__link">Contact</a>
+                <a href="./lab-submission.html" class="navbar__link">Submit Lab</a>
+                <a href="./lab-directory.html" class="navbar__link">Lab Directory</a>
+                <a href="./lab-map.html" class="navbar__link">Lab Map</a>
+                <a href="./contact.html" class="navbar__cta">Nous Rejoindre →</a>
+            </div>
+            <button class="navbar__toggle" id="navToggle"
+                aria-label="Menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <!-- PAGE HEADER -->
+    <header class="page-header">
+        <div class="container">
+            <span class="section-label">À Propos</span>
+            <h1 class="page-header__title">Notre Histoire & Notre Mission</h1>
+            <p class="page-header__subtitle">Découvrez l'Association Algérienne de Nutrition Maghrébine, son parcours,
+                son équipe et ses valeurs.</p>
+        </div>
+    </header>
+
+    <!-- MISSION -->
+    <section class="section">
+        <div class="container">
+            <div class="about__grid">
+                <div class="reveal">
+                    <span class="section-label">Notre Mission</span>
+                    <h2 class="section-title">Promouvoir une nutrition saine au Maghreb</h2>
+                    <p class="section-subtitle">L'Association Algérienne de Nutrition Maghrébine a été fondée avec une
+                        vision claire : améliorer la qualité de vie de chaque citoyen par le biais d'une nutrition saine
+                        et éclairée.</p>
+                    <p class="section-subtitle" style="margin-top: 1rem;">Nous croyons fermement qu'une bonne
+                        alimentation est le socle d'une santé durable. C'est pourquoi nous travaillons chaque jour à
+                        éduquer, sensibiliser et accompagner les communautés vers de meilleures habitudes alimentaires.
+                    </p>
+                </div>
+                <div class="about__image reveal reveal--delay-2">
+                    <img src="https://images.unsplash.com/photo-1607962837359-5e7e89f86776?w=800&q=80"
+                        alt="Notre mission nutritionnelle" />
+                </div>
+            </div>
+            <div class="mission__highlight reveal">
+                <h3>Notre Vision</h3>
+                <p>Un Maghreb où chaque personne a accès à une alimentation saine, équilibrée et culturellement
+                    appropriée, soutenue par des connaissances scientifiques solides et des pratiques traditionnelles
+                    éprouvées.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- TIMELINE -->
+    <section class="section section--no-pad-top">
+        <div class="container">
+            <span class="section-label reveal">Notre Parcours</span>
+            <h2 class="section-title reveal">Chronologie de l'AANM</h2>
+            <div class="timeline">
+                <div class="timeline__item reveal">
+                    <div class="timeline__year">2010</div>
+                    <div class="timeline__dot"></div>
+                    <div class="timeline__content">
+                        <h3 class="timeline__title">Fondation de l'AANM</h3>
+                        <p class="timeline__text">Création de l'association par un groupe de nutritionnistes et médecins
+                            algériens engagés pour la santé publique.</p>
+                    </div>
+                </div>
+                <div class="timeline__item reveal">
+                    <div class="timeline__year">2013</div>
+                    <div class="timeline__dot"></div>
+                    <div class="timeline__content">
+                        <h3 class="timeline__title">Première conférence nationale</h3>
+                        <p class="timeline__text">Organisation de notre première grande conférence réunissant des
+                            experts en nutrition de tout le Maghreb.</p>
+                    </div>
+                </div>
+                <div class="timeline__item reveal">
+                    <div class="timeline__year">2016</div>
+                    <div class="timeline__dot"></div>
+                    <div class="timeline__content">
+                        <h3 class="timeline__title">Partenariats internationaux</h3>
+                        <p class="timeline__text">Signature de conventions de partenariat avec l'OMS et d'autres
+                            organisations internationales de santé.</p>
+                    </div>
+                </div>
+                <div class="timeline__item reveal">
+                    <div class="timeline__year">2020</div>
+                    <div class="timeline__dot"></div>
+                    <div class="timeline__content">
+                        <h3 class="timeline__title">Programmes communautaires</h3>
+                        <p class="timeline__text">Lancement de programmes de nutrition communautaire dans plusieurs
+                            wilayas d'Algérie, touchant plus de 10 000 personnes.</p>
+                    </div>
+                </div>
+                <div class="timeline__item reveal">
+                    <div class="timeline__year">2024</div>
+                    <div class="timeline__dot"></div>
+                    <div class="timeline__content">
+                        <h3 class="timeline__title">Expansion maghrébine</h3>
+                        <p class="timeline__text">Extension de nos activités à l'échelle du Maghreb avec de nouveaux
+                            partenariats en Tunisie et au Maroc.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TEAM -->
+    <section class="section" style="background: var(--clr-bg-alt);">
+        <div class="container">
+            <span class="section-label reveal">Notre Équipe</span>
+            <h2 class="section-title reveal">Les visages de l'AANM</h2>
+            <p class="section-subtitle reveal">Des professionnels passionnés dédiés à l'amélioration de la nutrition au
+                Maghreb.</p>
+            <div class="team__grid">
+                <div class="team-card reveal">
+                    <div class="team-card__image">
+                        <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&q=80"
+                            alt="Dr. Mohamed Benali" />
+                    </div>
+                    <div class="team-card__body">
+                        <h3 class="team-card__name">Dr. Mohamed Benali</h3>
+                        <p class="team-card__role">Président</p>
+                        <p class="team-card__bio">Professeur en nutrition et santé publique avec plus de 25 ans
+                            d'expérience en recherche médicale.</p>
+                    </div>
+                </div>
+                <div class="team-card reveal reveal--delay-1">
+                    <div class="team-card__image">
+                        <img src="https://images.unsplash.com/photo-1594824476967-48c8b964ac31?w=400&q=80"
+                            alt="Dr. Fatima Zahra" />
+                    </div>
+                    <div class="team-card__body">
+                        <h3 class="team-card__name">Dr. Fatima Zahra</h3>
+                        <p class="team-card__role">Vice-Présidente</p>
+                        <p class="team-card__bio">Spécialiste en diététique clinique et en nutrition pédiatrique,
+                            engagée dans l'éducation communautaire.</p>
+                    </div>
+                </div>
+                <div class="team-card reveal reveal--delay-2">
+                    <div class="team-card__image">
+                        <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&q=80"
+                            alt="Pr. Ahmed Mansouri" />
+                    </div>
+                    <div class="team-card__body">
+                        <h3 class="team-card__name">Pr. Ahmed Mansouri</h3>
+                        <p class="team-card__role">Directeur Scientifique</p>
+                        <p class="team-card__bio">Chercheur reconnu en sciences alimentaires, auteur de nombreuses
+                            publications sur la nutrition maghrébine.</p>
+                    </div>
+                </div>
+                <div class="team-card reveal reveal--delay-3">
+                    <div class="team-card__image">
+                        <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=400&q=80"
+                            alt="Mme. Nadia Cherifi" />
+                    </div>
+                    <div class="team-card__body">
+                        <h3 class="team-card__name">Mme. Nadia Cherifi</h3>
+                        <p class="team-card__role">Coordinatrice des Programmes</p>
+                        <p class="team-card__bio">Experte en gestion de projets communautaires, elle coordonne tous nos
+                            programmes terrain à l'échelle nationale.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- VALUES -->
+    <section class="section">
+        <div class="container">
+            <span class="section-label reveal">Nos Valeurs</span>
+            <h2 class="section-title reveal">Ce qui nous guide</h2>
+            <div class="values__grid">
+                <div class="value-card reveal">
+                    <div class="value-card__icon">💚</div>
+                    <h3 class="value-card__title">Engagement</h3>
+                    <p class="value-card__text">Nous sommes dévoués à notre mission et travaillons sans relâche pour
+                        améliorer la santé nutritionnelle de nos communautés.</p>
+                </div>
+                <div class="value-card reveal reveal--delay-1">
+                    <div class="value-card__icon">🔬</div>
+                    <h3 class="value-card__title">Excellence Scientifique</h3>
+                    <p class="value-card__text">Nos recommandations sont fondées sur des preuves scientifiques solides
+                        et les dernières avancées en nutrition.</p>
+                </div>
+                <div class="value-card reveal reveal--delay-2">
+                    <div class="value-card__icon">🤝</div>
+                    <h3 class="value-card__title">Collaboration</h3>
+                    <p class="value-card__text">Nous croyons en la force des partenariats et travaillons en synergie
+                        avec tous les acteurs de la santé.</p>
+                </div>
+                <div class="value-card reveal reveal--delay-3">
+                    <div class="value-card__icon">🌱</div>
+                    <h3 class="value-card__title">Innovation</h3>
+                    <p class="value-card__text">Nous intégrons les approches modernes aux pratiques traditionnelles pour
+                        créer des solutions nutritionnelles durables.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer" id="footer">
+        <div class="container">
+            <div class="footer__main">
+                <!-- Left: Brand & Newsletter -->
+                <div class="footer__brand">
+                    <div class="footer__logo">
+                        <img src="./assets/images/logo.png" alt="AANM Logo" class="footer__logo-img">
+                    </div>
+                    <p class="footer__tagline">Pour une meilleure nutrition au Maghreb.<br />Alliance scientifique et traditions locales.</p>
+                    <form class="footer__newsletter" onsubmit="event.preventDefault(); alert('Merci pour votre inscription !');">
+                        <input type="email" class="footer__input" placeholder="Entrez votre email..." required />
+                        <button type="submit" class="footer__submit" aria-label="S'inscrire">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Right: Link Columns -->
+                                <div class="footer__links">
+                    <div class="footer__column">
+                        <h4 class="footer__heading">NAVIGATION</h4>
+                        <a href="/" class="footer__link">Accueil</a>
+                        <a href="./about.html" class="footer__link">À Propos</a>
+                        <a href="./activities.html" class="footer__link">Activités</a>
+                        <a href="./news.html" class="footer__link">Actualités</a>
+                        <a href="./contact.html" class="footer__link">Contact</a>
+                    </div>
+                    <div class="footer__column">
+                        <h4 class="footer__heading">ANNUAIRE</h4>
+                        <a href="./lab-directory.html" class="footer__link">Annuaire des Labos</a>
+                        <a href="./lab-map.html" class="footer__link">Carte des Labos</a>
+                        <a href="./advanced-search.html" class="footer__link">Recherche Avancée</a>
+                        <a href="./lab-submission.html" class="footer__link">Soumettre un Labo</a>
+                    </div>
+                    <div class="footer__column">
+                        <h4 class="footer__heading">CONTACT</h4>
+                        <a href="tel:+213541939878" class="footer__link">Téléphone</a>
+                        <a href="mailto:cabinet@aanm-assal.org" class="footer__link">Email</a>
+                        <a href="https://github.com/mimowalker16/AANM" target="_blank" rel="noopener" class="footer__link">GitHub</a>
+                        <a href="#" class="footer__link">LinkedIn</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Bottom Bar -->
+            <div class="footer__bottom">
+                <p class="footer__copyright">// PUBLIÉ_PAR_AANM.ORG</p>
+                <div class="footer__bottom-right">
+                    <a href="#" class="footer__social" aria-label="GitHub">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
+                        </svg>
+                    </a>
+                    <a href="#" class="footer__social" aria-label="Twitter">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/>
+                        </svg>
+                    </a>
+                    <a href="#" class="footer__social" aria-label="LinkedIn">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                        </svg>
+                    </a>
+                    <span class="footer__divider">|</span>
+                    <div class="footer__status">
+                        <span class="footer__status-dot"></span>
+                        TOUS SYSTÈMES NORMAUX
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="./main.js" type="module"></script>
+</body>
+
+</html>

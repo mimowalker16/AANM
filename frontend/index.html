@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>AANM — Association Algérienne de Nutrition Maghrébine</title>
+  <meta name="description" content="L'Association Algérienne de Nutrition Maghrébine se consacre à l'amélioration de la qualité de vie par la nutrition, l'éducation et la recherche en santé au Maghreb." />
+  
+  <!-- Performance Optimizations -->
+  <meta name="theme-color" content="#2e7d32" />
+  <meta name="color-scheme" content="light" />
+  
+  <!-- Preconnect to external domains -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+  <link rel="preconnect" href="https://unpkg.com" crossorigin>
+  
+  <!-- CSS Loading -->
+  <link rel="stylesheet" href="./style.css" />
+  
+  <!-- Favicon and app icons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/logo.png" />
+  <link rel="apple-touch-icon" href="./assets/images/logo.png" />
+  
+  <!-- Prefetch critical pages -->
+  <link rel="prefetch" href="/lab-directory.html" />
+  <link rel="prefetch" href="/lab-map.html" />
+  <link rel="prefetch" href="/advanced-search.html" />
+  
+  <!-- Performance monitoring -->
+  <script>
+    // Early performance measurement
+    window.performanceStart = performance.now();
+    
+    // Critical loading indicator
+    document.documentElement.insertAdjacentHTML('beforeend', '<div class="critical-loading"></div>');
+    
+    // Remove loading indicator after load
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.querySelector('.critical-loading')?.remove();
+      }, 500);
+    });
+  </script>
+    <script src="/api-config.js"></script>
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <div class="navbar__overlay" id="navOverlay"></div>
+  <nav class="navbar navbar--transparent" id="navbar">
+    <div class="navbar__inner">
+      <div class="navbar__logo-container">
+        <a href="/" class="navbar__logo" aria-label="Visit home page">
+          <img src="./assets/images/logo.png" alt="AANM Logo" class="navbar__logo-img">
+        </a>
+      </div>
+      <div class="navbar__links" id="navLinks">
+        <a href="/" class="navbar__link navbar__link--active">Accueil</a>
+        <a href="./about.html" class="navbar__link">À Propos</a>
+        <a href="./activities.html" class="navbar__link">Activités</a>
+        <a href="./news.html" class="navbar__link">Actualités</a>
+        <a href="./contact.html" class="navbar__link">Contact</a>
+        <a href="./lab-submission.html" class="navbar__link">Submit Lab</a>
+        <a href="./lab-directory.html" class="navbar__link">Lab Directory</a>
+        <a href="./lab-map.html" class="navbar__link">Lab Map</a>
+        <a href="./contact.html" class="navbar__cta">Nous Rejoindre →</a>
+      </div>
+      <button class="navbar__toggle" id="navToggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero" id="hero">
+    <div class="hero__carousel" id="heroCarousel">
+      <div class="hero__slide hero__slide--active">
+        <img src="https://images.unsplash.com/photo-1490818387583-1baba5e638af?w=1920&q=80" alt="Nutrition saine — fruits et légumes frais" />
+      </div>
+      <div class="hero__slide">
+        <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1920&q=80" alt="Alimentation méditerranéenne saine" />
+      </div>
+      <div class="hero__slide">
+        <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1920&q=80" alt="Communauté et santé ensemble" />
+      </div>
+    </div>
+    <div class="hero__overlay"></div>
+    <div class="hero__content">
+      <span class="hero__badge">🌿 Fondée pour une meilleure santé</span>
+      <h1 class="hero__title">Ensemble pour une <em>meilleure nutrition</em> au Maghreb</h1>
+      <p class="hero__description">L'AANM se consacre à l'éducation et à la sensibilisation concernant l'importance d'un régime alimentaire sain, en intégrant les techniques modernes aux pratiques traditionnelles.</p>
+      <div class="hero__buttons">
+        <a href="./activities.html" class="btn btn--primary">Nos Activités <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        <a href="./contact.html" class="btn btn--outline">Nous Contacter</a>
+      </div>
+    </div>
+    <div class="hero__indicators" id="heroIndicators">
+      <div class="hero__dot hero__dot--active" data-slide="0"></div>
+      <div class="hero__dot" data-slide="1"></div>
+      <div class="hero__dot" data-slide="2"></div>
+    </div>
+  </section>
+
+  <!-- ===== ABOUT / MISSION ===== -->
+  <section class="about section" id="about">
+    <div class="container">
+      <div class="about__grid">
+        <div class="reveal">
+          <span class="section-label">À Propos de Nous</span>
+          <h2 class="section-title">Améliorer la qualité de vie par la nutrition</h2>
+          <p class="section-subtitle">Fondée pour améliorer la qualité de vie par le biais de la nutrition, l'Association Algérienne de Nutrition Maghrébine se consacre à l'éducation et à la sensibilisation concernant l'importance d'un régime alimentaire sain.</p>
+          <p class="section-subtitle" style="margin-top: 1rem;">En intégrant les techniques modernes aux pratiques traditionnelles, nous visons à réduire les taux de malnutrition et de maladies liées à l'alimentation. Nos initiatives comprennent des programmes communautaires, des recherches et des partenariats avec des experts en santé.</p>
+          <a href="./about.html" class="btn btn--outline-dark" style="margin-top: 2rem;">En savoir plus →</a>
+        </div>
+        <div class="about__image reveal reveal--delay-2">
+          <img src="https://images.unsplash.com/photo-1607962837359-5e7e89f86776?w=800&q=80" alt="Nutrition et santé communautaire" />
+        </div>
+      </div>
+      <h2 class="about__statement reveal">« Une bonne nutrition est un droit fondamental pour tous. »</h2>
+    </div>
+  </section>
+
+  <!-- ===== IMAGE GALLERY ===== -->
+  <section class="gallery">
+    <div class="container">
+      <div class="gallery__grid">
+        <div class="gallery__item reveal">
+          <img src="https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=600&q=80" alt="Alimentation saine" />
+        </div>
+        <div class="gallery__item gallery__item--center reveal reveal--delay-1">
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=900&q=80" alt="Recherche nutritionnelle" />
+        </div>
+        <div class="gallery__item reveal reveal--delay-2">
+          <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80" alt="Cuisine méditerranéenne" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== KEY STATS ===== -->
+  <section class="stats section" id="stats">
+    <div class="container">
+      <div class="stats__grid">
+        <div class="stat reveal">
+          <div class="stat__number" data-target="15">0</div>
+          <div class="stat__label">années d'expérience</div>
+          <p class="stat__description">Depuis notre fondation, nous œuvrons sans relâche pour améliorer la nutrition à travers le Maghreb.</p>
+        </div>
+        <div class="stat reveal reveal--delay-1">
+          <div class="stat__number" data-target="200" data-suffix="+">0</div>
+          <div class="stat__label">événements organisés</div>
+          <p class="stat__description">Conférences, ateliers, séminaires et formations pour les professionnels de la santé et le grand public.</p>
+        </div>
+        <div class="stat reveal reveal--delay-2">
+          <div class="stat__number" data-target="50" data-suffix="k+">0</div>
+          <div class="stat__label">personnes sensibilisées</div>
+          <p class="stat__description">Nos programmes communautaires touchent des milliers de personnes chaque année à travers l'Algérie.</p>
+        </div>
+        <div class="stat reveal reveal--delay-3">
+          <div class="stat__number" data-target="30" data-suffix="+">0</div>
+          <div class="stat__label">partenaires de santé</div>
+          <p class="stat__description">Collaborations avec des institutions de santé, universités et organisations internationales.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PILLARS / OUR WORK ===== -->
+  <section class="pillars section" id="pillars">
+    <div class="container">
+      <span class="section-label reveal">Notre Mission</span>
+      <h2 class="section-title reveal">Comment nous créons l'impact</h2>
+      <p class="section-subtitle reveal">Notre vision est un monde où chaque personne au Maghreb a accès à une alimentation saine et équilibrée. Voici nos axes d'action :</p>
+      <div class="pillars__grid">
+        <div class="pillar-card pillar-card--gold reveal">
+          <div class="pillar-card__icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="16" cy="16" r="6"/><circle cx="32" cy="16" r="6"/><path d="M10 36c0-6 4-10 14-10s14 4 14 10"/>
+            </svg>
+          </div>
+          <h3 class="pillar-card__title">Éducation Nutritionnelle</h3>
+          <p class="pillar-card__text">Nous sensibilisons les communautés à l'importance d'une alimentation saine à travers des programmes éducatifs adaptés aux pratiques locales.</p>
+        </div>
+        <div class="pillar-card pillar-card--purple reveal reveal--delay-1">
+          <div class="pillar-card__icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M24 6v36M6 24h36"/><circle cx="24" cy="24" r="18"/>
+            </svg>
+          </div>
+          <h3 class="pillar-card__title">Recherche Scientifique</h3>
+          <p class="pillar-card__text">Nous menons des recherches appliquées sur les habitudes alimentaires au Maghreb et publions nos résultats pour le bénéfice de la communauté scientifique.</p>
+        </div>
+        <div class="pillar-card pillar-card--teal reveal reveal--delay-2">
+          <div class="pillar-card__icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 24c0-8 5-14 12-14s12 6 12 14-5 14-12 14"/><path d="M20 18l4 6-4 6"/><circle cx="24" cy="38" r="3"/>
+            </svg>
+          </div>
+          <h3 class="pillar-card__title">Programmes Communautaires</h3>
+          <p class="pillar-card__text">Nous concevons et gérons des programmes de terrain en partenariat avec les acteurs locaux, ciblant les communautés les plus vulnérables.</p>
+        </div>
+        <div class="pillar-card pillar-card--coral reveal reveal--delay-3">
+          <div class="pillar-card__icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M8 24l8-8 8 8 8-8 8 8"/><path d="M8 32l8-8 8 8 8-8 8 8"/>
+            </svg>
+          </div>
+          <h3 class="pillar-card__title">Partenariats Santé</h3>
+          <p class="pillar-card__text">Nous convoquons des partenariats stratégiques entre les secteurs public et privé pour maximiser l'impact de nos actions sur la santé nutritionnelle.</p>
+        </div>
+      </div>
+      <a href="./about.html" class="btn btn--secondary reveal" style="margin-top: 2.5rem;">En savoir plus sur notre modèle →</a>
+    </div>
+  </section>
+
+  <!-- ===== TESTIMONIALS ===== -->
+  <section class="testimonials section" id="testimonials">
+    <div class="container">
+      <div class="testimonials__wrapper">
+        <button class="testimonials__arrow testimonials__arrow--prev" id="testimonialPrev" aria-label="Précédent">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M15 18l-6-6 6-6"/>
+          </svg>
+        </button>
+        
+        <div class="testimonials__carousel" id="testimonialCarousel">
+          <div class="testimonial-slide testimonial-slide--active">
+            <div class="testimonial__image">
+              <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&q=80" alt="Dr. Amina Bouzid" />
+            </div>
+            <div class="testimonial__card">
+              <div class="testimonial__header">
+                <h3 class="testimonial__author">Dr. Amina Bouzid</h3>
+                <p class="testimonial__role">Professeure de Nutrition, Université d'Alger</p>
+              </div>
+              <p class="testimonial__quote">L'AANM a contribué de manière significative à améliorer la sensibilisation nutritionnelle dans notre région. Le soutien et l'expertise ont été incroyables. Ils ont dépassé nos attentes et nous ont aidés à toucher des milliers de personnes.</p>
+              <div class="testimonial__social">
+                <a href="#" class="testimonial__social-link" aria-label="GitHub">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
+                  </svg>
+                </a>
+                <a href="#" class="testimonial__social-link" aria-label="Twitter">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/>
+                  </svg>
+                </a>
+                <a href="#" class="testimonial__social-link" aria-label="YouTube">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                  </svg>
+                </a>
+                <a href="#" class="testimonial__social-link" aria-label="LinkedIn">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <div class="testimonial-slide">
+            <div class="testimonial__image">
+              <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=600&q=80" alt="Karim Medjdoub" />
+            </div>
+            <div class="testimonial__card">
+              <div class="testimonial__header">
+                <h3 class="testimonial__author">Karim Medjdoub</h3>
+                <p class="testimonial__role">Directeur de Centre de Santé, Oran</p>
+              </div>
+              <p class="testimonial__quote">Grâce aux programmes de l'AANM, notre communauté a adopté des habitudes alimentaires plus saines. Les résultats sont visibles sur la santé de nos enfants. Une transformation remarquable qui continue d'inspirer notre travail quotidien.</p>
+              <div class="testimonial__social">
+                <a href="#" class="testimonial__social-link" aria-label="GitHub">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
+                  </svg>
+                </a>
+                <a href="#" class="testimonial__social-link" aria-label="Twitter">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/>
+                  </svg>
+                </a>
+                <a href="#" class="testimonial__social-link" aria-label="YouTube">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                  </svg>
+                </a>
+                <a href="#" class="testimonial__social-link" aria-label="LinkedIn">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <div class="testimonial-slide">
+            <div class="testimonial__image">
+              <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=600&q=80" alt="Prof. Sarah Khelifi" />
+            </div>
+            <div class="testimonial__card">
+              <div class="testimonial__header">
+                <h3 class="testimonial__author">Prof. Sarah Khelifi</h3>
+                <p class="testimonial__role">Chercheuse en Sciences Alimentaires</p>
+              </div>
+              <p class="testimonial__quote">La collaboration avec l'AANM nous a permis de développer des solutions nutritionnelles adaptées aux besoins spécifiques de la population maghrébine. Une expertise exceptionnelle qui a transformé notre approche de la recherche.</p>
+              <div class="testimonial__social">
+                <a href="#" class="testimonial__social-link" aria-label="GitHub">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
+                  </svg>
+                </a>
+                <a href="#" class="testimonial__social-link" aria-label="Twitter">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/>
+                  </svg>
+                </a>
+                <a href="#" class="testimonial__social-link" aria-label="YouTube">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                  </svg>
+                </a>
+                <a href="#" class="testimonial__social-link" aria-label="LinkedIn">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <button class="testimonials__arrow testimonials__arrow--next" id="testimonialNext" aria-label="Suivant">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
+        </button>
+      </div>
+      
+      <div class="testimonials__dots" id="testimonialDots">
+        <div class="testimonials__dot testimonials__dot--active" data-slide="0"></div>
+        <div class="testimonials__dot" data-slide="1"></div>
+        <div class="testimonials__dot" data-slide="2"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== RECENT EVENTS ===== -->
+  <section class="events section" id="events">
+    <div class="container">
+      <div class="events__header">
+        <div>
+          <h2 class="section-title reveal">Activités récentes</h2>
+          <p class="section-subtitle reveal">Découvrez nos dernières activités et programmes en faveur d'une meilleure nutrition au Maghreb. Ces études de cas présentent des applications et des réussites concrètes.</p>
+        </div>
+        <div class="events__arrows">
+          <button class="events__arrow events__arrow--prev" id="eventsLeft" aria-label="Précédent">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <button class="events__arrow events__arrow--next" id="eventsRight" aria-label="Suivant">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+        </div>
+      </div>
+      
+      <div class="events__carousel-wrapper">
+        <div class="events__track" id="eventsTrack">
+          <!-- Card 1 -->
+          <div class="event-card">
+            <div class="event-card__image">
+              <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&q=80" alt="Conférence nutrition" />
+            </div>
+            <div class="event-card__overlay">
+              <div class="event-card__content">
+                <h3 class="event-card__title">Conférence Internationale sur la Nutrition Maghrébine</h3>
+                <p class="event-card__description">Rassemblement d'experts internationaux pour discuter des défis nutritionnels spécifiques à la région du Maghreb et proposer des solutions innovantes.</p>
+                <a href="#" class="event-card__link">
+                  En savoir plus
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Card 2 -->
+          <div class="event-card">
+            <div class="event-card__image">
+              <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=800&q=80" alt="Atelier communautaire" />
+            </div>
+            <div class="event-card__overlay">
+              <div class="event-card__content">
+                <h3 class="event-card__title">Atelier de Cuisine Santé pour les Familles</h3>
+                <p class="event-card__description">Programme interactif aidant les familles algériennes à préparer des repas nutritifs et abordables avec des ingrédients locaux authentiques.</p>
+                <a href="#" class="event-card__link">
+                  En savoir plus
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Card 3 -->
+          <div class="event-card">
+            <div class="event-card__image">
+              <img src="https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?w=800&q=80" alt="Recherche santé" />
+            </div>
+            <div class="event-card__overlay">
+              <div class="event-card__content">
+                <h3 class="event-card__title">Étude sur les Habitudes Alimentaires</h3>
+                <p class="event-card__description">Résultats de notre étude sur les habitudes alimentaires des jeunes algériens et recommandations pour une meilleure nutrition scolaire.</p>
+                <a href="#" class="event-card__link">
+                  En savoir plus
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Card 4 -->
+          <div class="event-card">
+            <div class="event-card__image">
+              <img src="https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=800&q=80" alt="Formation professionnels" />
+            </div>
+            <div class="event-card__overlay">
+              <div class="event-card__content">
+                <h3 class="event-card__title">Formation des Professionnels de Santé</h3>
+                <p class="event-card__description">Programme de formation continue pour les médecins et infirmiers sur les dernières avancées en nutrition clinique et préventive.</p>
+                <a href="#" class="event-card__link">
+                  En savoir plus
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Card 5 -->
+          <div class="event-card">
+            <div class="event-card__image">
+              <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80" alt="Sensibilisation communautaire" />
+            </div>
+            <div class="event-card__overlay">
+              <div class="event-card__content">
+                <h3 class="event-card__title">Campagne de Sensibilisation Scolaire</h3>
+                <p class="event-card__description">Initiative nationale de sensibilisation aux bonnes pratiques nutritionnelles dans les établissements scolaires algériens.</p>
+                <a href="#" class="event-card__link">
+                  En savoir plus
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="events__dots" id="eventsDots">
+        <div class="events__dot events__dot--active" data-slide="0"></div>
+        <div class="events__dot" data-slide="1"></div>
+        <div class="events__dot" data-slide="2"></div>
+        <div class="events__dot" data-slide="3"></div>
+        <div class="events__dot" data-slide="4"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PARTNERS ===== -->
+  <section class="partners section" id="partners">
+    <div class="container">
+      <div class="partners__header">
+        <div>
+          <h2 class="section-title">Nos Partenaires</h2>
+          <p class="partners__description">Nous ne travaillons jamais seuls. Voici quelques-uns de nos partenaires qui partagent notre vision d'une meilleure nutrition pour tous.</p>
+        </div>
+        <a href="./contact.html" class="btn btn--outline-dark">Devenir partenaire</a>
+      </div>
+      <div class="partners__carousel">
+        <div class="partners__track" id="partnersTrack">
+          <!-- First set of logos -->
+          <div class="partners__logo">Ministère de la Santé</div>
+          <div class="partners__logo">OMS Algérie</div>
+          <div class="partners__logo">UNICEF</div>
+          <div class="partners__logo">FAO</div>
+          <div class="partners__logo">Université d'Alger</div>
+          <div class="partners__logo">Institut Pasteur</div>
+          <div class="partners__logo">CHU Mustapha</div>
+          <div class="partners__logo">INSP</div>
+          <!-- Duplicate set for seamless loop -->
+          <div class="partners__logo">Ministère de la Santé</div>
+          <div class="partners__logo">OMS Algérie</div>
+          <div class="partners__logo">UNICEF</div>
+          <div class="partners__logo">FAO</div>
+          <div class="partners__logo">Université d'Alger</div>
+          <div class="partners__logo">Institut Pasteur</div>
+          <div class="partners__logo">CHU Mustapha</div>
+          <div class="partners__logo">INSP</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer" id="footer">
+    <div class="container">
+      <div class="footer__main">
+        <!-- Left: Brand & Newsletter -->
+        <div class="footer__brand">
+          <div class="footer__logo">
+            <img src="./assets/images/logo.png" alt="AANM Logo" class="footer__logo-img">
+          </div>
+          <p class="footer__tagline">Pour une meilleure nutrition au Maghreb.<br />Alliance scientifique et traditions locales.</p>
+          <form class="footer__newsletter" onsubmit="event.preventDefault(); alert('Merci pour votre inscription !');">
+            <input type="email" class="footer__input" placeholder="Entrez votre email..." required />
+            <button type="submit" class="footer__submit" aria-label="S'inscrire">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </button>
+          </form>
+        </div>
+        
+        <!-- Right: Link Columns -->
+                  <div class="footer__links">
+          <div class="footer__column">
+            <h4 class="footer__heading">NAVIGATION</h4>
+            <a href="/" class="footer__link">Accueil</a>
+            <a href="./about.html" class="footer__link">À Propos</a>
+            <a href="./activities.html" class="footer__link">Activités</a>
+            <a href="./news.html" class="footer__link">Actualités</a>
+            <a href="./contact.html" class="footer__link">Contact</a>
+          </div>
+          <div class="footer__column">
+            <h4 class="footer__heading">ANNUAIRE</h4>
+            <a href="./lab-directory.html" class="footer__link">Annuaire des Labos</a>
+            <a href="./lab-map.html" class="footer__link">Carte des Labos</a>
+            <a href="./advanced-search.html" class="footer__link">Recherche Avancée</a>
+            <a href="./lab-submission.html" class="footer__link">Soumettre un Labo</a>
+          </div>
+          <div class="footer__column">
+            <h4 class="footer__heading">CONTACT</h4>
+            <a href="tel:+213541939878" class="footer__link">Téléphone</a>
+            <a href="mailto:cabinet@aanm-assal.org" class="footer__link">Email</a>
+            <a href="https://github.com/mimowalker16/AANM" target="_blank" rel="noopener" class="footer__link">GitHub</a>
+            <a href="#" class="footer__link">LinkedIn</a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Bottom Bar -->
+      <div class="footer__bottom">
+        <p class="footer__copyright">// PUBLIÉ_PAR_AANM.ORG</p>
+        <div class="footer__bottom-right">
+          <a href="#" class="footer__social" aria-label="GitHub">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
+            </svg>
+          </a>
+          <a href="#" class="footer__social" aria-label="Twitter">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/>
+            </svg>
+          </a>
+          <a href="#" class="footer__social" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+            </svg>
+          </a>
+          <span class="footer__divider">|</span>
+          <div class="footer__status">
+            <span class="footer__status-dot"></span>
+            TOUS SYSTÈMES NORMAUX
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="./main.js" type="module"></script>
+</body>
+</html>

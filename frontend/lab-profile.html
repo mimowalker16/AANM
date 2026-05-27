@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Lab Profile - AANM</title>
+    <meta name="description" content="Detailed laboratory profile with information, contact details, and location." />
+    
+    <!-- Performance Optimizations -->
+    <meta name="theme-color" content="#2e7d32" />
+    <meta name="color-scheme" content="light" />
+    
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
+    
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="./style.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/logo.png" />
+    <link rel="apple-touch-icon" href="./assets/images/logo.png" />
+    
+    <!-- Leaflet CSS for mini map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
+          crossorigin="" />
+    
+    <style>
+        .lab-profile {
+            padding: var(--space-xl) 0;
+        }
+
+        .profile-header {
+            background: var(--clr-bg-alt);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            margin-bottom: var(--space-xl);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, rgba(var(--clr-primary-rgb), 0.1), transparent);
+            border-radius: 50%;
+            transform: translate(50px, -50px);
+        }
+
+        .profile-title {
+            font-size: var(--fs-h2);
+            color: var(--clr-primary);
+            margin-bottom: var(--space-sm);
+        }
+
+        .profile-institution {
+            font-size: var(--fs-h4);
+            color: var(--clr-text-muted);
+            margin-bottom: var(--space-md);
+        }
+
+        .profile-location {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            color: var(--clr-text-muted);
+            font-size: var(--fs-body);
+            margin-bottom: var(--space-md);
+        }
+
+        .profile-location .icon {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        .profile-established {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            background: rgba(var(--clr-primary-rgb), 0.1);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-full);
+            font-size: var(--fs-small);
+            font-weight: 600;
+            color: var(--clr-primary);
+        }
+
+        .profile-established .icon {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .profile-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: var(--space-xl);
+            margin-bottom: var(--space-xl);
+        }
+
+        .profile-main {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-lg);
+        }
+
+        .profile-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-lg);
+        }
+
+        .profile-section {
+            background: var(--clr-bg);
+            padding: var(--space-lg);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: var(--fs-h4);
+            color: var(--clr-primary);
+            margin-bottom: var(--space-md);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .section-title .icon {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        .description-text {
+            line-height: 1.7;
+            color: var(--clr-text);
+            font-size: var(--fs-body);
+        }
+
+        .research-areas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-sm);
+        }
+
+        .research-area-card {
+            background: var(--clr-bg-alt);
+            padding: var(--space-md);
+            border-radius: var(--radius-md);
+            border-left: 4px solid var(--clr-primary);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .research-area-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .research-area-title {
+            font-weight: 600;
+            color: var(--clr-primary);
+            margin-bottom: var(--space-xs);
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: var(--space-sm);
+            background: var(--clr-bg-alt);
+            border-radius: var(--radius-md);
+            transition: background-color 0.2s ease;
+        }
+
+        .contact-item:hover {
+            background: rgba(var(--clr-primary-rgb), 0.1);
+        }
+
+        .contact-item .icon {
+            width: 20px;
+            height: 20px;
+            fill: var(--clr-primary);
+            flex-shrink: 0;
+        }
+
+        .contact-item a {
+            color: var(--clr-text);
+            text-decoration: none;
+            font-weight: 500;
+            word-break: break-all;
+        }
+
+        .contact-item a:hover {
+            color: var(--clr-primary);
+        }
+
+        .mini-map {
+            width: 100%;
+            height: 300px;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 2px solid var(--clr-bg-alt);
+        }
+
+        .address-text {
+            background: var(--clr-bg-alt);
+            padding: var(--space-md);
+            border-radius: var(--radius-md);
+            margin-top: var(--space-md);
+            line-height: 1.5;
+            color: var(--clr-text-muted);
+        }
+
+        .profile-actions {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-md);
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: var(--space-md) var(--space-lg);
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .action-btn.primary {
+            background: var(--clr-primary);
+            color: white;
+        }
+
+        .action-btn.primary:hover {
+            background: color-mix(in srgb, var(--clr-primary) 85%, black);
+            transform: translateY(-2px);
+        }
+
+        .action-btn.secondary {
+            background: transparent;
+            color: var(--clr-primary);
+            border: 2px solid var(--clr-primary);
+        }
+
+        .action-btn.secondary:hover {
+            background: var(--clr-primary);
+            color: white;
+        }
+
+        .action-btn .icon {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: var(--space-xl);
+            color: var(--clr-text-muted);
+        }
+
+        .error-state {
+            text-align: center;
+            padding: var(--space-xl);
+            background: var(--clr-bg-alt);
+            border-radius: var(--radius-lg);
+            color: var(--clr-text-muted);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            color: var(--clr-primary);
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: var(--space-lg);
+            transition: gap 0.2s ease;
+        }
+
+        .back-link:hover {
+            gap: var(--space-sm);
+        }
+
+        .back-link .icon {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: var(--space-sm);
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: var(--space-md);
+            background: var(--clr-bg-alt);
+            border-radius: var(--radius-md);
+        }
+
+        .stat-number {
+            font-size: var(--fs-h3);
+            font-weight: 700;
+            color: var(--clr-primary);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: var(--fs-small);
+            color: var(--clr-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 1024px) {
+            .profile-content {
+                grid-template-columns: 1fr;
+                gap: var(--space-lg);
+            }
+
+            .profile-sidebar {
+                order: -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .profile-header {
+                padding: var(--space-lg);
+            }
+
+            .profile-title {
+                font-size: var(--fs-h3);
+            }
+
+            .profile-institution {
+                font-size: var(--fs-h5);
+            }
+
+            .research-areas-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .profile-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .mini-map {
+                height: 250px;
+            }
+        }
+    </style>
+    <script src="/api-config.js"></script>
+</head>
+<body>
+    <!-- Navbar Overlay -->
+    <div class="navbar__overlay" id="navOverlay"></div>
+    <nav class="navbar navbar--transparent" id="navbar">
+        <div class="navbar__inner">
+            <div class="navbar__logo-container">
+                <a href="/" class="navbar__logo" aria-label="Visit home page">
+                    <img src="./assets/images/logo.png" alt="AANM Logo" class="navbar__logo-img">
+                </a>
+            </div>
+            <div class="navbar__links" id="navLinks">
+                <a href="/" class="navbar__link">Accueil</a>
+                <a href="./about.html" class="navbar__link">À Propos</a>
+                <a href="./activities.html" class="navbar__link">Activités</a>
+                <a href="./news.html" class="navbar__link">Actualités</a>
+                <a href="./contact.html" class="navbar__link">Contact</a>
+                <a href="./lab-submission.html" class="navbar__link">Submit Lab</a>
+                <a href="./lab-directory.html" class="navbar__link navbar__link--active">Lab Directory</a>
+                <a href="./lab-map.html" class="navbar__link">Lab Map</a>
+                <a href="./contact.html" class="navbar__cta">Nous Rejoindre →</a>
+            </div>
+            <button class="navbar__toggle" id="navToggle" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <span class="section-label">Lab Profile</span>
+            <h1 class="page-header__title">Laboratory Profile</h1>
+            <p class="page-header__subtitle">Detailed information about this research laboratory</p>
+        </div>
+    </header>
+
+    <main>
+        <section class="section lab-profile">
+            <div class="container">
+                <!-- Loading State -->
+                <div id="loadingState" class="loading-state">
+                    <p>Loading laboratory information...</p>
+                </div>
+
+                <!-- Error State -->
+                <div id="errorState" class="error-state" style="display: none;">
+                    <h3>Laboratory Not Found</h3>
+                    <p>The laboratory you're looking for could not be found or may not be available.</p>
+                    <a href="/lab-directory.html" class="action-btn primary">
+                        <svg class="icon" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/>
+                        </svg>
+                        Browse All Laboratories
+                    </a>
+                </div>
+
+                <!-- Main Profile Content -->
+                <div id="profileContent" class="profile-content-wrapper" style="display: none;">
+                    <!-- Back Link -->
+                    <a href="/lab-directory.html" class="back-link">
+                        <svg class="icon" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"/>
+                        </svg>
+                        Back to Laboratory Directory
+                    </a>
+
+                    <!-- Profile Header -->
+                    <div class="profile-header">
+                        <h1 id="labName" class="profile-title"></h1>
+                        <p id="institutionName" class="profile-institution"></p>
+                        <div id="locationInfo" class="profile-location">
+                            <svg class="icon" viewBox="0 0 20 20">
+                                <path d="M10 2C6.69 2 4 4.69 4 8c0 5.25 6 12 6 12s6-6.75 6-12c0-3.31-2.69-6-6-6zm0 8c-1.1 0-2-0.9-2-2s0.9-2 2-2 2 0.9 2 2-0.9 2-2 2z"/>
+                            </svg>
+                            <span id="locationText"></span>
+                        </div>
+                        <div id="establishedYear" class="profile-established" style="display: none;">
+                            <svg class="icon" viewBox="0 0 20 20">
+                                <path d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zM4 8h12v8H4V8z"/>
+                            </svg>
+                            <span>Established <span id="yearText"></span></span>
+                        </div>
+                    </div>
+
+                    <!-- Profile Content Grid -->
+                    <div class="profile-content">
+                        <!-- Main Content -->
+                        <div class="profile-main">
+                            <!-- Description Section -->
+                            <div class="profile-section">
+                                <h2 class="section-title">
+                                    <svg class="icon" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/>
+                                    </svg>
+                                    About This Laboratory
+                                </h2>
+                                <div id="descriptionContent" class="description-text">
+                                    <!-- Description content will be inserted here -->
+                                </div>
+                            </div>
+
+                            <!-- Research Areas Section -->
+                            <div class="profile-section">
+                                <h2 class="section-title">
+                                    <svg class="icon" viewBox="0 0 20 20">
+                                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                    Research Areas
+                                </h2>
+                                <div id="researchAreasGrid" class="research-areas-grid">
+                                    <!-- Research areas will be inserted here -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sidebar -->
+                        <div class="profile-sidebar">
+                            <!-- Contact Information -->
+                            <div class="profile-section">
+                                <h3 class="section-title">
+                                    <svg class="icon" viewBox="0 0 20 20">
+                                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+                                        <path d="m18 8.118-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+                                    </svg>
+                                    Contact Information
+                                </h3>
+                                <div id="contactInfo" class="contact-info">
+                                    <!-- Contact information will be inserted here -->
+                                </div>
+                            </div>
+
+                            <!-- Lab Statistics -->
+                            <div class="profile-section">
+                                <h3 class="section-title">
+                                    <svg class="icon" viewBox="0 0 20 20">
+                                        <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/>
+                                    </svg>
+                                    Quick Stats
+                                </h3>
+                                <div class="stats-grid">
+                                    <div class="stat-item">
+                                        <span id="researchAreaCount" class="stat-number">0</span>
+                                        <span class="stat-label">Research Areas</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span id="joinedDate" class="stat-number">-</span>
+                                        <span class="stat-label">Member Since</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Location & Map -->
+                            <div class="profile-section">
+                                <h3 class="section-title">
+                                    <svg class="icon" viewBox="0 0 20 20">
+                                        <path d="M10 2C6.69 2 4 4.69 4 8c0 5.25 6 12 6 12s6-6.75 6-12c0-3.31-2.69-6-6-6zm0 8c-1.1 0-2-0.9-2-2s0.9-2 2-2 2 0.9 2 2-0.9 2-2 2z"/>
+                                    </svg>
+                                    Location
+                                </h3>
+                                <div id="miniMap" class="mini-map"></div>
+                                <div id="addressText" class="address-text">
+                                    <!-- Full address will be inserted here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="profile-actions">
+                        <a id="contactBtn" href="#" class="action-btn primary">
+                            <svg class="icon" viewBox="0 0 20 20">
+                                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+                                <path d="m18 8.118-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+                            </svg>
+                            Contact Laboratory
+                        </a>
+                        <a href="/lab-map.html" class="action-btn secondary">
+                            <svg class="icon" viewBox="0 0 20 20">
+                                <path d="M10 2C6.69 2 4 4.69 4 8c0 5.25 6 12 6 12s6-6.75 6-12c0-3.31-2.69-6-6-6zm0 8c-1.1 0-2-0.9-2-2s0.9-2 2-2 2 0.9 2 2-0.9 2-2 2z"/>
+                            </svg>
+                            View on Map
+                        </a>
+                        <a href="/advanced-search.html" class="action-btn secondary">
+                            <svg class="icon" viewBox="0 0 20 20">
+                                <path d="M9 9a2 2 0 114 0 2 2 0 01-4 0z"/>
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a4 4 0 00-3.446 6.032l-2.261 2.26a1 1 0 101.414 1.415l2.261-2.261A4 4 0 1011 5z"/>
+                            </svg>
+                            Find Similar Labs
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer" id="footer">
+        <div class="container">
+            <div class="footer__main">
+                <div class="footer__brand">
+                    <div class="footer__logo">
+                        <img src="./assets/images/logo.png" alt="AANM Logo" class="footer__logo-img">
+                    </div>
+                    <p class="footer__tagline">Pour une meilleure nutrition au Maghreb.<br />Alliance scientifique et traditions locales.</p>
+                    <form class="footer__newsletter" onsubmit="event.preventDefault(); alert('Merci pour votre inscription !');">
+                        <input type="email" class="footer__input" placeholder="Entrez votre email..." required />
+                        <button type="submit" class="footer__submit" aria-label="S'inscrire">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </button>
+                    </form>
+                </div>
+                                <div class="footer__links">
+                    <div class="footer__column">
+                        <h4 class="footer__heading">NAVIGATION</h4>
+                        <a href="/" class="footer__link">Accueil</a>
+                        <a href="./about.html" class="footer__link">À Propos</a>
+                        <a href="./activities.html" class="footer__link">Activités</a>
+                        <a href="./news.html" class="footer__link">Actualités</a>
+                        <a href="./contact.html" class="footer__link">Contact</a>
+                    </div>
+                    <div class="footer__column">
+                        <h4 class="footer__heading">ANNUAIRE</h4>
+                        <a href="./lab-directory.html" class="footer__link">Annuaire des Labos</a>
+                        <a href="./lab-map.html" class="footer__link">Carte des Labos</a>
+                        <a href="./advanced-search.html" class="footer__link">Recherche Avancée</a>
+                        <a href="./lab-submission.html" class="footer__link">Soumettre un Labo</a>
+                    </div>
+                    <div class="footer__column">
+                        <h4 class="footer__heading">CONTACT</h4>
+                        <a href="tel:+213541939878" class="footer__link">Téléphone</a>
+                        <a href="mailto:cabinet@aanm-assal.org" class="footer__link">Email</a>
+                        <a href="https://github.com/mimowalker16/AANM" target="_blank" rel="noopener" class="footer__link">GitHub</a>
+                        <a href="#" class="footer__link">LinkedIn</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer__bottom">
+                <p class="footer__copyright">// PUBLIÉ_PAR_AANM.ORG</p>
+                <div class="footer__bottom-right">
+                    <a href="#" class="footer__social" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg></a>
+                    <a href="#" class="footer__social" aria-label="Twitter"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/></svg></a>
+                    <a href="#" class="footer__social" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+                    <span class="footer__divider">|</span>
+                    <div class="footer__status"><span class="footer__status-dot"></span>TOUS SYSTÈMES NORMAUX</div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="./main.js" type="module"></script>
+    
+    <!-- Leaflet JavaScript for mini map -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
+            crossorigin=""></script>
+    
+    <script>
+        const API_BASE = window.AANM_API_BASE;
+        class LabProfile {
+            constructor() {
+                this.labData = null;
+                this.map = null;
+                this.init();
+            }
+
+            async init() {
+                const labId = this.getLabIdFromURL();
+                if (!labId) {
+                    this.showError();
+                    return;
+                }
+
+                await this.loadLabData(labId);
+            }
+
+            getLabIdFromURL() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const labId = urlParams.get('id');
+                return labId ? parseInt(labId) : null;
+            }
+
+            async loadLabData(labId) {
+                try {
+                    const response = await fetch(`${API_BASE}/api/labs/${labId}`);
+                    const result = await response.json();
+
+                    if (result.success && result.data.lab) {
+                        this.labData = result.data.lab;
+                        this.renderLabProfile();
+                    } else {
+                        throw new Error(result.message || 'Laboratory not found');
+                    }
+                } catch (error) {
+                    console.error('Error loading lab data:', error);
+                    this.showError();
+                }
+            }
+
+            renderLabProfile() {
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('profileContent').style.display = 'block';
+
+                // Update page title
+                document.title = `${this.labData.lab_name} - AANM Lab Profile`;
+
+                // Render header information
+                this.renderHeader();
+                
+                // Render main content sections
+                this.renderDescription();
+                this.renderResearchAreas();
+                this.renderContactInfo();
+                this.renderStats();
+                this.renderLocation();
+                
+                // Setup action buttons
+                this.setupActionButtons();
+            }
+
+            renderHeader() {
+                document.getElementById('labName').textContent = this.labData.lab_name;
+                
+                if (this.labData.institution_name) {
+                    document.getElementById('institutionName').textContent = this.labData.institution_name;
+                } else {
+                    document.getElementById('institutionName').style.display = 'none';
+                }
+
+                document.getElementById('locationText').textContent = 
+                    `${this.labData.city}, ${this.labData.country}`;
+
+                if (this.labData.established_year) {
+                    document.getElementById('establishedYear').style.display = 'flex';
+                    document.getElementById('yearText').textContent = this.labData.established_year;
+                }
+            }
+
+            renderDescription() {
+                const descriptionContent = document.getElementById('descriptionContent');
+                if (this.labData.description) {
+                    descriptionContent.innerHTML = `<p>${this.escapeHtml(this.labData.description)}</p>`;
+                } else {
+                    descriptionContent.innerHTML = `<p class="text-muted">No description available for this laboratory.</p>`;
+                }
+            }
+
+            renderResearchAreas() {
+                const researchAreasGrid = document.getElementById('researchAreasGrid');
+                
+                if (this.labData.researchAreas && this.labData.researchAreas.length > 0) {
+                    researchAreasGrid.innerHTML = this.labData.researchAreas.map(area => `
+                        <div class="research-area-card">
+                            <div class="research-area-title">${this.formatResearchArea(area)}</div>
+                        </div>
+                    `).join('');
+                } else {
+                    researchAreasGrid.innerHTML = `
+                        <div class="research-area-card">
+                            <div class="research-area-title">No research areas specified</div>
+                        </div>
+                    `;
+                }
+            }
+
+            renderContactInfo() {
+                const contactInfo = document.getElementById('contactInfo');
+                const contactItems = [];
+
+                // Contact person
+                if (this.labData.contact_person) {
+                    contactItems.push(`
+                        <div class="contact-item">
+                            <svg class="icon" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/>
+                            </svg>
+                            <span>${this.escapeHtml(this.labData.contact_person)}</span>
+                        </div>
+                    `);
+                }
+
+                // Email
+                contactItems.push(`
+                    <div class="contact-item">
+                        <svg class="icon" viewBox="0 0 20 20">
+                            <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+                            <path d="m18 8.118-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+                        </svg>
+                        <a href="mailto:${this.labData.contact_email}">${this.escapeHtml(this.labData.contact_email)}</a>
+                    </div>
+                `);
+
+                // Phone
+                if (this.labData.phone) {
+                    contactItems.push(`
+                        <div class="contact-item">
+                            <svg class="icon" viewBox="0 0 20 20">
+                                <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/>
+                            </svg>
+                            <a href="tel:${this.labData.phone}">${this.escapeHtml(this.labData.phone)}</a>
+                        </div>
+                    `);
+                }
+
+                // Website
+                if (this.labData.website) {
+                    contactItems.push(`
+                        <div class="contact-item">
+                            <svg class="icon" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4.083 9h1.946c.089-1.546.383-2.97.837-4.118A6.004 6.004 0 004.083 9zM10 2a8 8 0 100 16 8 8 0 000-16zm0 2c-.076 0-.232.032-.465.262-.238.234-.497.623-.737 1.182-.389.907-.673 2.142-.766 3.556h3.936c-.093-1.414-.377-2.649-.766-3.556-.24-.559-.499-.948-.737-1.182C10.232 4.032 10.076 4 10 4zm3.971 5c-.089-1.546-.383-2.97-.837-4.118A6.004 6.004 0 0115.917 9h-1.946zm-2.003 2H8.032c.093 1.414.377 2.649.766 3.556.24.559.499.948.737 1.182.233.23.389.262.465.262.076 0 .232-.032.465-.262.238-.234.497-.623.737-1.182.389-.907.673-2.142.766-3.556zm1.166 4.118c.454-1.148.748-2.572.837-4.118h1.946a6.004 6.004 0 01-2.783 4.118zm-6.268 0C6.412 13.97 6.118 12.546 6.03 11H4.083a6.004 6.004 0 002.783 4.118z"/>
+                            </svg>
+                            <a href="${this.labData.website}" target="_blank" rel="noopener noreferrer">
+                                ${this.escapeHtml(this.labData.website)}
+                            </a>
+                        </div>
+                    `);
+                }
+
+                contactInfo.innerHTML = contactItems.join('');
+            }
+
+            renderStats() {
+                // Research area count
+                const researchAreaCount = this.labData.researchAreas ? this.labData.researchAreas.length : 0;
+                document.getElementById('researchAreaCount').textContent = researchAreaCount;
+
+                // Member since date
+                if (this.labData.submitted_at) {
+                    const submitDate = new Date(this.labData.submitted_at);
+                    const year = submitDate.getFullYear();
+                    document.getElementById('joinedDate').textContent = year;
+                }
+            }
+
+            renderLocation() {
+                // Set address text
+                document.getElementById('addressText').textContent = this.labData.address;
+
+                // Initialize mini map
+                this.initMiniMap();
+            }
+
+            initMiniMap() {
+                const mapContainer = document.getElementById('miniMap');
+                
+                // Initialize map
+                this.map = L.map(mapContainer).setView(
+                    [this.labData.coordinates_lat, this.labData.coordinates_lng], 
+                    13
+                );
+
+                // Add tile layer
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(this.map);
+
+                // Create custom icon
+                const customIcon = L.divIcon({
+                    className: 'custom-marker',
+                    html: `
+                        <div style="
+                            background: var(--clr-primary);
+                            color: white;
+                            border-radius: 50%;
+                            width: 30px;
+                            height: 30px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            border: 3px solid white;
+                            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+                        ">
+                            <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                    `,
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 15]
+                });
+
+                // Add marker
+                const marker = L.marker(
+                    [this.labData.coordinates_lat, this.labData.coordinates_lng],
+                    { icon: customIcon }
+                ).addTo(this.map);
+
+                // Add popup
+                const popupContent = `
+                    <div style="text-align: center; min-width: 200px;">
+                        <h4 style="margin: 0 0 8px 0; color: var(--clr-primary);">${this.escapeHtml(this.labData.lab_name)}</h4>
+                        <p style="margin: 0; color: #666; font-size: 14px;">${this.escapeHtml(this.labData.address)}</p>
+                    </div>
+                `;
+                marker.bindPopup(popupContent);
+            }
+
+            setupActionButtons() {
+                // Setup contact button
+                const contactBtn = document.getElementById('contactBtn');
+                contactBtn.href = `mailto:${this.labData.contact_email}`;
+            }
+
+            showError() {
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('errorState').style.display = 'block';
+                document.title = 'Laboratory Not Found - AANM';
+            }
+
+            formatResearchArea(area) {
+                return area.split('-').map(word => 
+                    word.charAt(0).toUpperCase() + word.slice(1)
+                ).join(' ');
+            }
+
+            escapeHtml(text) {
+                if (!text) return '';
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+        }
+
+        // Initialize lab profile
+        document.addEventListener('DOMContentLoaded', () => {
+            const labProfile = new LabProfile();
+        });
+    </script>
+</body>
+</html>

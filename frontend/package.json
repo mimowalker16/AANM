@@ -1,0 +1,22 @@
+{
+  "name": "@aanm/frontend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --open",
+    "build": "npm run clean && npm run optimize && vite build",
+    "preview": "vite preview --open",
+    "clean": "rimraf dist",
+    "optimize": "npm run optimize:images && npm run optimize:css",
+    "optimize:images": "echo 'Image optimization placeholder - add imagemin later'",
+    "optimize:css": "echo 'CSS optimization included in build process'",
+    "check:performance": "lighthouse http://localhost:4173 --output=html --output-path=./lighthouse-report.html",
+    "postbuild": "echo 'Frontend build completed successfully'"
+  },
+  "devDependencies": {
+    "rimraf": "^5.0.5",
+    "terser": "^5.24.0",
+    "vite": "^6.0.0"
+  }
+}

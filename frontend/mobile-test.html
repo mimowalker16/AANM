@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Mobile Testing - AANM</title>
+    <meta name="description" content="Mobile optimization testing suite for the AANM platform." />
+    
+    <!-- Performance Optimizations -->
+    <meta name="theme-color" content="#2e7d32" />
+    <meta name="color-scheme" content="light" />
+    
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="./style.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/logo.png" />
+    <link rel="apple-touch-icon" href="./assets/images/logo.png" />
+    <style>
+        .mobile-test {
+            padding: var(--space-xl) 0;
+        }
+
+        .test-section {
+            background: var(--clr-bg);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-lg);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .test-title {
+            font-size: var(--fs-h4);
+            color: var(--clr-primary);
+            margin-bottom: var(--space-md);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .test-title .icon {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-md);
+            margin-bottom: var(--space-md);
+        }
+
+        .test-item {
+            background: var(--clr-bg-alt);
+            padding: var(--space-md);
+            border-radius: var(--radius-md);
+            text-align: center;
+        }
+
+        .viewport-info {
+            background: var(--clr-accent-teal-light);
+            padding: var(--space-md);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-lg);
+        }
+
+        .touch-test-area {
+            background: linear-gradient(45deg, var(--clr-primary), var(--clr-secondary));
+            color: white;
+            padding: var(--space-xl);
+            border-radius: var(--radius-lg);
+            text-align: center;
+            margin: var(--space-md) 0;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .touch-test-area:active {
+            transform: scale(0.95);
+        }
+
+        .feature-status {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-full);
+            font-size: var(--fs-small);
+            font-weight: 600;
+        }
+
+        .feature-status.supported {
+            background: rgba(46, 125, 50, 0.1);
+            color: #2e7d32;
+        }
+
+        .feature-status.not-supported {
+            background: rgba(211, 47, 47, 0.1);
+            color: #d32f2f;
+        }
+
+        .device-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--space-sm);
+            font-size: var(--fs-small);
+        }
+
+        .info-item {
+            background: var(--clr-bg-alt);
+            padding: var(--space-sm);
+            border-radius: var(--radius-sm);
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: var(--clr-primary);
+        }
+
+        .swipe-test {
+            background: var(--clr-bg-alt);
+            padding: var(--space-lg);
+            border-radius: var(--radius-lg);
+            text-align: center;
+            margin: var(--space-md) 0;
+            border: 2px dashed var(--clr-primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .swipe-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: var(--clr-primary);
+        }
+
+        .swipe-indicator.show {
+            opacity: 1;
+        }
+    </style>
+    <script src="/api-config.js"></script>
+</head>
+<body>
+    <!-- Navbar Overlay -->
+    <div class="navbar__overlay" id="navOverlay"></div>
+    <nav class="navbar">
+        <div class="navbar__inner">
+            <div class="navbar__logo-container">
+                <a href="/" class="navbar__logo" aria-label="Visit home page">
+                    <img src="./assets/images/logo.png" alt="AANM Logo" class="navbar__logo-img">
+                </a>
+            </div>
+            <div class="navbar__links" id="navLinks">
+                <a href="/" class="navbar__link">Home</a>
+                <a href="/about.html" class="navbar__link">About</a>
+                <a href="/activities.html" class="navbar__link">Activities</a>
+                <a href="/news.html" class="navbar__link">News</a>
+                <a href="/contact.html" class="navbar__link">Contact</a>
+                <a href="/lab-submission.html" class="navbar__link">Submit Lab</a>
+                <a href="/lab-directory.html" class="navbar__link">Lab Directory</a>
+                <a href="/lab-map.html" class="navbar__link">Lab Map</a>
+                <a href="/advanced-search.html" class="navbar__link">Search</a>
+                <a href="/mobile-test.html" class="navbar__link navbar__link--active">Mobile Test</a>
+            </div>
+            <button class="navbar__toggle" id="navToggle" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero hero--small">
+            <div class="hero__container">
+                <h1 class="hero__title">Mobile Testing Suite</h1>
+                <p class="hero__description">Test and verify mobile optimizations and responsiveness</p>
+            </div>
+        </section>
+
+        <section class="section mobile-test">
+            <div class="container">
+                <!-- Device Information -->
+                <div class="viewport-info">
+                    <h2>Device Information</h2>
+                    <div class="device-info">
+                        <div class="info-item">
+                            <div class="info-label">Screen Size</div>
+                            <div id="screenSize">Loading...</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Viewport</div>
+                            <div id="viewport">Loading...</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Device Ratio</div>
+                            <div id="deviceRatio">Loading...</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Touch Support</div>
+                            <div id="touchSupport">Loading...</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">User Agent</div>
+                            <div id="userAgent">Loading...</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Orientation</div>
+                            <div id="orientation">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Test -->
+                <div class="test-section">
+                    <h3 class="test-title">
+                        <svg class="icon" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/>
+                        </svg>
+                        Navigation Test
+                    </h3>
+                    <p>Test the mobile navigation by tapping the hamburger menu button in the top-right corner.</p>
+                    <div class="test-grid">
+                        <div class="test-item">
+                            <strong>Menu Toggle</strong><br>
+                            <span id="menuStatus" class="feature-status">Not tested</span>
+                        </div>
+                        <div class="test-item">
+                            <strong>Overlay</strong><br>
+                            <span id="overlayStatus" class="feature-status">Not tested</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Touch Interaction Test -->
+                <div class="test-section">
+                    <h3 class="test-title">
+                        <svg class="icon" viewBox="0 0 20 20">
+                            <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z"/>
+                        </svg>
+                        Touch Interactions
+                    </h3>
+                    <div class="touch-test-area" id="touchTestArea">
+                        <h4>Touch Test Area</h4>
+                        <p>Tap, hold, or swipe on this area to test touch interactions</p>
+                        <div id="touchFeedback">Ready for interaction</div>
+                    </div>
+                    
+                    <!-- Swipe Test -->
+                    <div class="swipe-test" id="swipeTest">
+                        <h4>Swipe Test</h4>
+                        <p>Swipe left or right in this area</p>
+                        <div class="swipe-indicator" id="swipeIndicator">Swipe detected!</div>
+                    </div>
+                </div>
+
+                <!-- Form Input Test -->
+                <div class="test-section">
+                    <h3 class="test-title">
+                        <svg class="icon" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 0h8v12H6V4z"/>
+                        </svg>
+                        Form Input Test
+                    </h3>
+                    <p>Test mobile form interactions and validation</p>
+                    <form id="mobileTestForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="testEmail">Email (required)</label>
+                                <input type="email" id="testEmail" class="form-input" placeholder="test@example.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="testSelect">Select Option</label>
+                                <select id="testSelect" class="form-input">
+                                    <option>Option 1</option>
+                                    <option>Option 2</option>
+                                    <option>Option 3</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="testTextarea">Message</label>
+                                <textarea id="testTextarea" class="form-input" rows="3" placeholder="Type your message..."></textarea>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn--primary" style="margin-top: 1rem;">Test Submit</button>
+                    </form>
+                </div>
+
+                <!-- Button Test -->
+                <div class="test-section">
+                    <h3 class="test-title">
+                        <svg class="icon" viewBox="0 0 20 20">
+                            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                            <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"/>
+                        </svg>
+                        Button Touch Targets
+                    </h3>
+                    <p>All buttons should be at least 44px for optimal touch interaction</p>
+                    <div class="test-grid">
+                        <button class="lab-contact">Primary Button</button>
+                        <button class="action-btn secondary">Secondary Button</button>
+                        <button class="search-btn primary">Search Button</button>
+                        <a href="#" class="btn btn--outline">Link Button</a>
+                    </div>
+                </div>
+
+                <!-- Performance Test -->
+                <div class="test-section">
+                    <h3 class="test-title">
+                        <svg class="icon" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"/>
+                        </svg>
+                        Performance Metrics
+                    </h3>
+                    <div class="device-info">
+                        <div class="info-item">
+                            <div class="info-label">Page Load</div>
+                            <div id="loadTime">Calculating...</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Memory Usage</div>
+                            <div id="memoryUsage">Checking...</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Network Type</div>
+                            <div id="networkType">Unknown</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer__container">
+            <div class="footer__content">
+                <div class="footer__section">
+                    <img src="./assets/images/logo.png" alt="AANM Logo" class="footer__logo">
+                    <p class="footer__description">
+                        The African Association for Natural Medicines is dedicated to advancing research and education in traditional and natural medicine across Africa.
+                    </p>
+                </div>
+                <div class="footer__section">
+                    <h3 class="footer__title">Quick Links</h3>
+                    <ul class="footer__links">
+                        <li><a href="/" class="footer__link">Home</a></li>
+                        <li><a href="/about.html" class="footer__link">About</a></li>
+                        <li><a href="/activities.html" class="footer__link">Activities</a></li>
+                        <li><a href="/news.html" class="footer__link">News</a></li>
+                        <li><a href="/contact.html" class="footer__link">Contact</a></li>
+                        <li><a href="/lab-directory.html" class="footer__link">Lab Directory</a></li>
+                        <li><a href="/lab-map.html" class="footer__link">Lab Map</a></li>
+                        <li><a href="/advanced-search.html" class="footer__link">Advanced Search</a></li>
+                    </ul>
+                </div>
+                <div class="footer__section">
+                    <h3 class="footer__title">Contact Info</h3>
+                    <div class="footer__contact">
+                        <p>Email: info@aanm.org</p>
+                        <p>Phone: +123 456 7890</p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer__bottom">
+                <p>&copy; 2026 African Association for Natural Medicines. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="./main.js" type="module"></script>
+    <script>
+        class MobileTester {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                this.updateDeviceInfo();
+                this.setupTouchTests();
+                this.setupNavigationTests();
+                this.setupFormTests();
+                this.measurePerformance();
+                
+                // Update info on resize/orientation change
+                window.addEventListener('resize', () => {
+                    setTimeout(() => this.updateDeviceInfo(), 100);
+                });
+                
+                window.addEventListener('orientationchange', () => {
+                    setTimeout(() => this.updateDeviceInfo(), 500);
+                });
+            }
+
+            updateDeviceInfo() {
+                // Screen dimensions
+                document.getElementById('screenSize').textContent = 
+                    `${screen.width} × ${screen.height}`;
+                
+                // Viewport dimensions
+                document.getElementById('viewport').textContent = 
+                    `${window.innerWidth} × ${window.innerHeight}`;
+                
+                // Device pixel ratio
+                document.getElementById('deviceRatio').textContent = 
+                    window.devicePixelRatio || 'Unknown';
+                
+                // Touch support
+                const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+                const touchEl = document.getElementById('touchSupport');
+                touchEl.textContent = hasTouch ? 'Supported' : 'Not supported';
+                touchEl.className = `feature-status ${hasTouch ? 'supported' : 'not-supported'}`;
+                
+                // User agent (mobile check)
+                const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                document.getElementById('userAgent').textContent = 
+                    isMobile ? 'Mobile Device' : 'Desktop/Other';
+                
+                // Orientation
+                const orientation = screen.orientation ? screen.orientation.type : 
+                    (window.innerHeight > window.innerWidth ? 'portrait' : 'landscape');
+                document.getElementById('orientation').textContent = orientation;
+            }
+
+            setupTouchTests() {
+                const touchArea = document.getElementById('touchTestArea');
+                const feedback = document.getElementById('touchFeedback');
+                const swipeTest = document.getElementById('swipeTest');
+                const swipeIndicator = document.getElementById('swipeIndicator');
+
+                let startX = 0;
+                let startY = 0;
+
+                // Touch area tests
+                touchArea.addEventListener('touchstart', (e) => {
+                    feedback.textContent = 'Touch started';
+                    startX = e.touches[0].clientX;
+                    startY = e.touches[0].clientY;
+                });
+
+                touchArea.addEventListener('touchmove', (e) => {
+                    feedback.textContent = 'Touch moving';
+                    e.preventDefault();
+                });
+
+                touchArea.addEventListener('touchend', () => {
+                    feedback.textContent = 'Touch ended - Great!';
+                    setTimeout(() => {
+                        feedback.textContent = 'Ready for interaction';
+                    }, 2000);
+                });
+
+                // Click fallback for desktop testing
+                touchArea.addEventListener('click', () => {
+                    feedback.textContent = 'Click detected (non-touch)';
+                    setTimeout(() => {
+                        feedback.textContent = 'Ready for interaction';
+                    }, 2000);
+                });
+
+                // Swipe detection
+                swipeTest.addEventListener('touchstart', (e) => {
+                    startX = e.touches[0].clientX;
+                    startY = e.touches[0].clientY;
+                });
+
+                swipeTest.addEventListener('touchend', (e) => {
+                    const endX = e.changedTouches[0].clientX;
+                    const endY = e.changedTouches[0].clientY;
+                    const diffX = startX - endX;
+                    const diffY = startY - endY;
+
+                    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+                        const direction = diffX > 0 ? 'left' : 'right';
+                        swipeIndicator.textContent = `Swiped ${direction}!`;
+                        swipeIndicator.classList.add('show');
+                        
+                        setTimeout(() => {
+                            swipeIndicator.classList.remove('show');
+                        }, 2000);
+                    }
+                });
+            }
+
+            setupNavigationTests() {
+                const navToggle = document.getElementById('navToggle');
+                const navLinks = document.getElementById('navLinks');
+                const overlay = document.getElementById('navOverlay');
+                const menuStatus = document.getElementById('menuStatus');
+                const overlayStatus = document.getElementById('overlayStatus');
+
+                if (navToggle) {
+                    navToggle.addEventListener('click', () => {
+                        menuStatus.textContent = 'Working';
+                        menuStatus.className = 'feature-status supported';
+                        
+                        setTimeout(() => {
+                            const isOpen = navLinks.classList.contains('navbar__links--open');
+                            if (isOpen) {
+                                overlayStatus.textContent = 'Visible';
+                                overlayStatus.className = 'feature-status supported';
+                            }
+                        }, 100);
+                    });
+                }
+
+                if (overlay) {
+                    overlay.addEventListener('click', () => {
+                        overlayStatus.textContent = 'Clickable';
+                        overlayStatus.className = 'feature-status supported';
+                    });
+                }
+            }
+
+            setupFormTests() {
+                const form = document.getElementById('mobileTestForm');
+                
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    alert('Form submission test successful! Mobile validation working.');
+                });
+
+                // Test zoom prevention on iOS
+                const inputs = form.querySelectorAll('input, select, textarea');
+                inputs.forEach(input => {
+                    input.addEventListener('focus', () => {
+                        console.log('Input focused, font-size:', getComputedStyle(input).fontSize);
+                    });
+                });
+            }
+
+            measurePerformance() {
+                // Page load time
+                if (performance && performance.timing) {
+                    const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
+                    document.getElementById('loadTime').textContent = `${loadTime}ms`;
+                } else {
+                    document.getElementById('loadTime').textContent = 'Not available';
+                }
+
+                // Memory usage (if supported)
+                if (performance && performance.memory) {
+                    const memory = Math.round(performance.memory.usedJSHeapSize / 1024 / 1024);
+                    document.getElementById('memoryUsage').textContent = `${memory}MB`;
+                } else {
+                    document.getElementById('memoryUsage').textContent = 'Not available';
+                }
+
+                // Network information (if supported)
+                if (navigator.connection) {
+                    document.getElementById('networkType').textContent = 
+                        navigator.connection.effectiveType || navigator.connection.type || 'Unknown';
+                } else {
+                    document.getElementById('networkType').textContent = 'Not available';
+                }
+            }
+        }
+
+        // Initialize mobile tester
+        document.addEventListener('DOMContentLoaded', () => {
+            new MobileTester();
+        });
+    </script>
+</body>
+</html>

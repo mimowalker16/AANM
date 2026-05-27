@@ -4,6 +4,8 @@ node_modules/
 # Build output
 dist/
 dist-ssr/
+frontend/dist/
+.local/
 
 # Logs
 *.log
@@ -30,10 +32,14 @@ lerna-debug.log*
 .env.*.local
 .env.development
 .env.production
+backend/.env
+backend/server/.env
 
 # Database files
 server/database/*.db
 server/database/*.db-journal
+backend/server/database/*.db
+backend/server/database/*.db-journal
 *.sqlite
 *.sqlite3
 

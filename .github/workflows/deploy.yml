@@ -1,0 +1,131 @@
+name: Deploy AANM Website
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-frontend:
+    name: Build frontend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build frontend
+        run: npm run build --workspace frontend
+
+      - name: Upload frontend artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: frontend/dist
+
+  build-backend:
+    name: Check backend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Syntax check backend
+        run: npm run check --workspace backend
+
+  deploy:
+    name: Deploy to Hostinger
+    runs-on: ubuntu-latest
+    needs:
+      - build-frontend
+      - build-backend
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download frontend artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-dist
+          path: frontend/dist
+
+      - name: Prepare SSH keys
+        shell: bash
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.HOSTINGER_FRONTEND_SSH_KEY }}" > ~/.ssh/hostinger_frontend
+          echo "${{ secrets.HOSTINGER_BACKEND_SSH_KEY }}" > ~/.ssh/hostinger_backend
+          chmod 600 ~/.ssh/hostinger_frontend ~/.ssh/hostinger_backend
+          ssh-keyscan -H "${{ secrets.HOSTINGER_FRONTEND_HOST }}" >> ~/.ssh/known_hosts
+          ssh-keyscan -H "${{ secrets.HOSTINGER_BACKEND_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Deploy frontend files
+        shell: bash
+        env:
+          FRONTEND_USER: ${{ secrets.HOSTINGER_FRONTEND_USER }}
+          FRONTEND_HOST: ${{ secrets.HOSTINGER_FRONTEND_HOST }}
+          FRONTEND_PATH: ${{ secrets.HOSTINGER_FRONTEND_PATH }}
+        run: |
+          test -n "$FRONTEND_PATH"
+          rsync -az --delete -e "ssh -i ~/.ssh/hostinger_frontend" frontend/dist/ "$FRONTEND_USER@$FRONTEND_HOST:$FRONTEND_PATH/"
+
+      - name: Deploy backend app
+        shell: bash
+        env:
+          BACKEND_USER: ${{ secrets.HOSTINGER_BACKEND_USER }}
+          BACKEND_HOST: ${{ secrets.HOSTINGER_BACKEND_HOST }}
+          BACKEND_PATH: ${{ secrets.HOSTINGER_BACKEND_PATH }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          ALLOWED_ORIGINS: ${{ secrets.ALLOWED_ORIGINS }}
+        run: |
+          test -n "$BACKEND_PATH"
+          {
+            echo "NODE_ENV=production"
+            echo "PORT=3001"
+            echo "DATABASE_URL=$DATABASE_URL"
+            echo "DATABASE_SSL=false"
+            echo "ALLOWED_ORIGINS=$ALLOWED_ORIGINS"
+            echo "ADMIN_USERNAME=$ADMIN_USERNAME"
+            echo "ADMIN_PASSWORD=$ADMIN_PASSWORD"
+            echo "JWT_SECRET=$JWT_SECRET"
+            echo "JWT_EXPIRES_IN=8h"
+          } > backend/.env
+          rsync -az --delete \
+            -e "ssh -i ~/.ssh/hostinger_backend" \
+            --exclude node_modules \
+            backend/ "$BACKEND_USER@$BACKEND_HOST:$BACKEND_PATH/"
+          ssh -i ~/.ssh/hostinger_backend "$BACKEND_USER@$BACKEND_HOST" "
+            cd '$BACKEND_PATH' &&
+            npm ci --omit=dev &&
+            if command -v pm2 >/dev/null 2>&1; then
+              pm2 restart aanm-api || pm2 start server/index.js --name aanm-api
+            else
+              pkill -f 'node server/index.js' || true
+              nohup npm start > aanm-api.log 2>&1 &
+            fi
+          "

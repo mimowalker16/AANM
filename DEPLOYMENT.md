@@ -1,5 +1,9 @@
 # AANM Laboratory Directory Platform - Deployment Guide
 
+> Current deployment target: Hostinger Cloud + Hostinger VPS PostgreSQL.
+> See `HOSTINGER_DEPLOYMENT.md` for the active production deployment workflow.
+> This older guide is kept for background notes.
+
 ## 🚀 Production Deployment
 
 ### Prerequisites

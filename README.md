@@ -1,5 +1,8 @@
 # AANM Website - Lab Directory Feature
 
+> The project is now split into `frontend/` and `backend/`, with PostgreSQL as the production database.
+> See `HOSTINGER_DEPLOYMENT.md` for Hostinger deployment and migration instructions.
+
 This project includes a laboratory directory feature that allows association members and participants to submit their laboratory information with location selection via Google Maps.
 
 ## 🏗️ **Architecture**
@@ -43,9 +46,15 @@ server/
 # Install dependencies
 npm install
 
-# Configure environment variables
-cp server/.env.example server/.env
-# Edit server/.env with your settings
+# Recommended on Windows: starts frontend, backend, and a local PostgreSQL dev DB
+dev.bat
+```
+
+If you run the backend without `dev.bat`, set `DATABASE_URL` to a PostgreSQL
+connection string first, for example:
+
+```bash
+DATABASE_URL=postgres://postgres@127.0.0.1:55432/aanm
 ```
 
 ### **2. No API Keys Required! 🎉**
@@ -70,9 +79,9 @@ npm run server:dev # Backend → http://localhost:3001
 ## 📊 **Database Structure**
 
 ### **Automatic Setup**
-- SQLite database created automatically on first run
-- Location: `server/database/labs.db`
-- No manual setup required
+- `dev.bat` starts a project-local PostgreSQL database on port `55432` when `DATABASE_URL` is not already set.
+- Local PostgreSQL data lives in `.local/postgres-data`.
+- Production uses the PostgreSQL URL supplied through `DATABASE_URL`.
 
 ### **Schema**
 ```sql
@@ -125,8 +134,8 @@ CREATE TABLE labs (
 All sensitive config in `.env`:
 ```bash
 PORT=3001
-DATABASE_URL=./server/database/labs.db
-GOOGLE_MAPS_API_KEY=your_key_here
+DATABASE_URL=postgres://postgres@127.0.0.1:55432/aanm
+DATABASE_SSL=false
 ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
 ```
 

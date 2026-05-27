@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Laboratory Directory - AANM</title>
+    <meta name="description" content="Browse African laboratories and research institutions in our comprehensive directory." />
+    
+    <!-- Performance Optimizations -->
+    <meta name="theme-color" content="#2e7d32" />
+    <meta name="color-scheme" content="light" />
+    
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="./style.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/logo.png" />
+    <link rel="apple-touch-icon" href="./assets/images/logo.png" />
+    <style>
+        .lab-directory {
+            padding: var(--space-xl) 0;
+        }
+
+        .lab-filters {
+            background: var(--clr-bg-alt);
+            padding: var(--space-lg);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-xl);
+        }
+
+        .filter-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-md);
+            align-items: center;
+        }
+
+        .filter-input {
+            padding: var(--space-sm);
+            border: 2px solid var(--clr-bg-alt);
+            border-radius: var(--radius-md);
+            font-size: var(--fs-body);
+            min-width: 250px;
+        }
+
+        .filter-input:focus {
+            outline: none;
+            border-color: var(--clr-primary);
+        }
+
+        .filter-select {
+            padding: var(--space-sm);
+            border: 2px solid var(--clr-bg-alt);
+            border-radius: var(--radius-md);
+            background: white;
+            font-size: var(--fs-body);
+        }
+
+        .advanced-search-link {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            padding: var(--space-sm) var(--space-md);
+            background: var(--clr-primary);
+            color: white;
+            text-decoration: none;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: var(--fs-body);
+            transition: background-color 0.3s ease;
+        }
+
+        .advanced-search-link:hover {
+            background: color-mix(in srgb, var(--clr-primary) 85%, black);
+        }
+
+        .advanced-search-link .icon {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .lab-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: var(--space-lg);
+            margin-bottom: var(--space-xl);
+        }
+
+        .lab-card {
+            background: var(--clr-bg);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .lab-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border-color: var(--clr-primary);
+        }
+
+        .lab-header {
+            margin-bottom: var(--space-md);
+        }
+
+        .lab-name {
+            font-size: var(--fs-h4);
+            font-weight: 700;
+            color: var(--clr-primary);
+            margin-bottom: var(--space-xs);
+            line-height: 1.3;
+        }
+
+        .lab-institution {
+            font-size: var(--fs-body);
+            color: var(--clr-text-muted);
+            font-style: italic;
+        }
+
+        .lab-location {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            margin-bottom: var(--space-md);
+            color: var(--clr-text-muted);
+            font-size: var(--fs-small);
+        }
+
+        .lab-location .icon {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .lab-research-areas {
+            margin-bottom: var(--space-md);
+        }
+
+        .lab-research-areas h4 {
+            font-size: var(--fs-small);
+            font-weight: 600;
+            margin-bottom: var(--space-xs);
+            color: var(--clr-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .research-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-xs);
+        }
+
+        .research-tag {
+            background: var(--clr-primary);
+            color: white;
+            padding: 4px 8px;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .lab-description {
+            color: var(--clr-text-muted);
+            font-size: var(--fs-small);
+            line-height: 1.5;
+            margin-bottom: var(--space-md);
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .lab-actions {
+            display: flex;
+            gap: var(--space-sm);
+            justify-content: flex-start;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .lab-contact {
+            background: var(--clr-primary);
+            color: white;
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            font-size: var(--fs-small);
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .lab-contact:hover {
+            background: color-mix(in srgb, var(--clr-primary) 85%, black);
+        }
+
+        .lab-view-profile {
+            background: transparent;
+            color: var(--clr-primary);
+            border: 2px solid var(--clr-primary);
+        }
+
+        .lab-view-profile:hover {
+            background: var(--clr-primary);
+            color: white;
+        }
+
+        .lab-established {
+            font-size: var(--fs-small);
+            color: var(--clr-text-muted);
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: var(--space-xl);
+            color: var(--clr-text-muted);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: var(--space-xl);
+            background: var(--clr-bg-alt);
+            border-radius: var(--radius-lg);
+            color: var(--clr-text-muted);
+        }
+
+        .results-count {
+            color: var(--clr-text-muted);
+            font-size: var(--fs-small);
+            margin-bottom: var(--space-md);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-sm);
+            margin-top: var(--space-xl);
+        }
+
+        .pagination button {
+            padding: var(--space-sm) var(--space-md);
+            border: 2px solid var(--clr-primary);
+            background: transparent;
+            color: var(--clr-primary);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .pagination button:hover:not(:disabled) {
+            background: var(--clr-primary);
+            color: white;
+        }
+
+        .pagination button.active {
+            background: var(--clr-primary);
+            color: white;
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 768px) {
+            .lab-grid {
+                grid-template-columns: 1fr;
+                gap: var(--space-md);
+            }
+
+            .filter-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-input {
+                min-width: 100%;
+            }
+
+            .lab-actions {
+                flex-direction: column;
+                align-items: stretch;
+                gap: var(--space-xs);
+            }
+        }
+    </style>
+    <script src="/api-config.js"></script>
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar__overlay" id="navOverlay"></div>
+    <nav class="navbar navbar--transparent" id="navbar">
+        <div class="navbar__inner">
+            <div class="navbar__logo-container">
+                <a href="/" class="navbar__logo" aria-label="Visit home page">
+                    <img src="./assets/images/logo.png" alt="AANM Logo" class="navbar__logo-img">
+                </a>
+            </div>
+            <div class="navbar__links" id="navLinks">
+                <a href="/" class="navbar__link">Accueil</a>
+                <a href="./about.html" class="navbar__link">À Propos</a>
+                <a href="./activities.html" class="navbar__link">Activités</a>
+                <a href="./news.html" class="navbar__link">Actualités</a>
+                <a href="./contact.html" class="navbar__link">Contact</a>
+                <a href="./lab-submission.html" class="navbar__link">Submit Lab</a>
+                <a href="./lab-directory.html" class="navbar__link navbar__link--active">Lab Directory</a>
+                <a href="./lab-map.html" class="navbar__link">Lab Map</a>
+                <a href="./contact.html" class="navbar__cta">Nous Rejoindre →</a>
+            </div>
+            <button class="navbar__toggle" id="navToggle" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <main>
+        <header class="page-header">
+            <div class="container">
+                <span class="section-label">Lab Directory</span>
+                <h1 class="page-header__title">Laboratory Directory</h1>
+                <p class="page-header__subtitle">Discover research laboratories across North Africa</p>
+            </div>
+        </header>
+
+        <section class="section lab-directory">
+            <div class="container">
+                <!-- Search and Filters -->
+                <div class="lab-filters">
+                    <div class="filter-group">
+                        <input 
+                            type="text" 
+                            id="searchInput" 
+                            class="filter-input" 
+                            placeholder="Search laboratories by name, institution, or location..."
+                            autocomplete="off"
+                        >
+                        <select id="countryFilter" class="filter-select">
+                            <option value="">All Countries</option>
+                        </select>
+                        <select id="researchAreaFilter" class="filter-select">
+                            <option value="">All Research Areas</option>
+                        </select>
+                        <a href="/advanced-search.html" class="advanced-search-link">
+                            <svg class="icon" viewBox="0 0 20 20">
+                                <path d="M9 9a2 2 0 114 0 2 2 0 01-4 0z"/>
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a4 4 0 00-3.446 6.032l-2.261 2.26a1 1 0 101.414 1.415l2.261-2.261A4 4 0 1011 5z"/>
+                            </svg>
+                            Advanced Search
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Results Count -->
+                <div id="resultsCount" class="results-count"></div>
+
+                <!-- Loading State -->
+                <div id="loadingState" class="loading-state">
+                    <p>Loading laboratories...</p>
+                </div>
+
+                <!-- Lab Grid -->
+                <div id="labGrid" class="lab-grid" style="display: none;">
+                    <!-- Lab cards will be inserted here -->
+                </div>
+
+                <!-- No Results State -->
+                <div id="noResults" class="no-results" style="display: none;">
+                    <h3>No laboratories found</h3>
+                    <p>Try adjusting your search criteria or <a href="/lab-submission.html">submit a new laboratory</a>.</p>
+                </div>
+
+                <!-- Pagination -->
+                <div id="pagination" class="pagination" style="display: none;">
+                    <!-- Pagination buttons will be inserted here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer" id="footer">
+        <div class="container">
+            <div class="footer__main">
+                <div class="footer__brand">
+                    <div class="footer__logo">
+                        <img src="./assets/images/logo.png" alt="AANM Logo" class="footer__logo-img">
+                    </div>
+                    <p class="footer__tagline">Pour une meilleure nutrition au Maghreb.<br />Alliance scientifique et traditions locales.</p>
+                    <form class="footer__newsletter" onsubmit="event.preventDefault(); alert('Merci pour votre inscription !');">
+                        <input type="email" class="footer__input" placeholder="Entrez votre email..." required />
+                        <button type="submit" class="footer__submit" aria-label="S'inscrire">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+                                <div class="footer__links">
+                    <div class="footer__column">
+                        <h4 class="footer__heading">NAVIGATION</h4>
+                        <a href="/" class="footer__link">Accueil</a>
+                        <a href="./about.html" class="footer__link">À Propos</a>
+                        <a href="./activities.html" class="footer__link">Activités</a>
+                        <a href="./news.html" class="footer__link">Actualités</a>
+                        <a href="./contact.html" class="footer__link">Contact</a>
+                    </div>
+                    <div class="footer__column">
+                        <h4 class="footer__heading">ANNUAIRE</h4>
+                        <a href="./lab-directory.html" class="footer__link">Annuaire des Labos</a>
+                        <a href="./lab-map.html" class="footer__link">Carte des Labos</a>
+                        <a href="./advanced-search.html" class="footer__link">Recherche Avancée</a>
+                        <a href="./lab-submission.html" class="footer__link">Soumettre un Labo</a>
+                    </div>
+                    <div class="footer__column">
+                        <h4 class="footer__heading">CONTACT</h4>
+                        <a href="tel:+213541939878" class="footer__link">Téléphone</a>
+                        <a href="mailto:cabinet@aanm-assal.org" class="footer__link">Email</a>
+                        <a href="https://github.com/mimowalker16/AANM" target="_blank" rel="noopener" class="footer__link">GitHub</a>
+                        <a href="#" class="footer__link">LinkedIn</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer__bottom">
+                <p class="footer__copyright">// PUBLIÉ_PAR_AANM.ORG</p>
+                <div class="footer__bottom-right">
+                    <a href="#" class="footer__social" aria-label="GitHub">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+                    </a>
+                    <a href="#" class="footer__social" aria-label="Twitter">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/></svg>
+                    </a>
+                    <a href="#" class="footer__social" aria-label="LinkedIn">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                    </a>
+                    <span class="footer__divider">|</span>
+                    <div class="footer__status">
+                        <span class="footer__status-dot"></span>
+                        TOUS SYSTÈMES NORMAUX
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="./main.js" type="module"></script>
+    <script>
+        const API_BASE = window.AANM_API_BASE;
+        class LabDirectory {
+            constructor() {
+                this.labs = [];
+                this.filteredLabs = [];
+                this.currentPage = 1;
+                this.labsPerPage = 12;
+                this.init();
+            }
+
+            async init() {
+                await this.loadLabs();
+                this.setupEventListeners();
+                this.renderLabs();
+            }
+
+            async loadLabs(searchParams = {}) {
+                try {
+                    // Build query parameters
+                    const params = new URLSearchParams();
+                    
+                    // Add search parameters if provided
+                    Object.entries(searchParams).forEach(([key, value]) => {
+                        if (value !== undefined && value !== null && value !== '') {
+                            params.append(key, value);
+                        }
+                    });
+                    
+                    // Default pagination
+                    if (!params.has('limit')) {
+                        params.append('limit', '50');
+                    }
+                    
+                    const url = `${API_BASE}/api/labs?${params.toString()}`;
+                    const response = await fetch(url);
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        this.labs = result.data.labs;
+                        this.filteredLabs = [...this.labs];
+                        this.searchParams = result.data.searchParams || {};
+                        console.log(`Loaded ${this.labs.length} laboratories`);
+                        
+                        // Populate filters if this is the initial load
+                        if (Object.keys(searchParams).length === 0) {
+                            await this.populateFilters();
+                        }
+                        
+                        return result.data;
+                    } else {
+                        throw new Error(result.message || 'Failed to load laboratories');
+                    }
+                } catch (error) {
+                    console.error('Error loading labs:', error);
+                    this.showError('Failed to load laboratories. Please check your connection and try again.');
+                    return null;
+                }
+            }
+
+            setupEventListeners() {
+                const searchInput = document.getElementById('searchInput');
+                const countryFilter = document.getElementById('countryFilter');
+                const researchAreaFilter = document.getElementById('researchAreaFilter');
+
+                searchInput.addEventListener('input', this.debounce(() => this.filterLabs(), 300));
+                countryFilter.addEventListener('change', () => this.filterLabs());
+                researchAreaFilter.addEventListener('change', () => this.filterLabs());
+            }
+
+            async populateFilters() {
+                try {
+                    // Get suggestions for countries and research areas
+                    const [countriesResponse, researchAreasResponse] = await Promise.all([
+                        fetch(`${API_BASE}/api/labs/suggestions?field=country&limit=20`),
+                        fetch(`${API_BASE}/api/labs/suggestions?field=research_areas&limit=30`)
+                    ]);
+                    
+                    const countriesResult = await countriesResponse.json();
+                    const researchAreasResult = await researchAreasResponse.json();
+                    
+                    // Populate country filter
+                    if (countriesResult.success) {
+                        const countrySelect = document.getElementById('countryFilter');
+                        countriesResult.data.suggestions.forEach(country => {
+                            const option = document.createElement('option');
+                            option.value = country;
+                            option.textContent = country;
+                            countrySelect.appendChild(option);
+                        });
+                    }
+                    
+                    // Populate research area filter
+                    if (researchAreasResult.success) {
+                        const researchAreaSelect = document.getElementById('researchAreaFilter');
+                        researchAreasResult.data.suggestions.forEach(area => {
+                            const option = document.createElement('option');
+                            option.value = area;
+                            option.textContent = this.formatResearchArea(area);
+                            researchAreaSelect.appendChild(option);
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error populating filters:', error);
+                    // Fallback to basic filter population if API fails
+                    this.populateFiltersFromData();
+                }
+            }
+
+            populateFiltersFromData() {
+                // Fallback method using loaded data
+                const countries = [...new Set(this.labs.map(lab => lab.country))].sort();
+                const countrySelect = document.getElementById('countryFilter');
+                countries.forEach(country => {
+                    const option = document.createElement('option');
+                    option.value = country;
+                    option.textContent = country;
+                    countrySelect.appendChild(option);
+                });
+
+                // Populate research area filter
+                const allResearchAreas = this.labs.flatMap(lab => lab.researchAreas);
+                const uniqueResearchAreas = [...new Set(allResearchAreas)].sort();
+                const researchAreaSelect = document.getElementById('researchAreaFilter');
+                uniqueResearchAreas.forEach(area => {
+                    const option = document.createElement('option');
+                    option.value = area;
+                    option.textContent = this.formatResearchArea(area);
+                    researchAreaSelect.appendChild(option);
+                });
+            }
+
+            async filterLabs() {
+                const searchTerm = document.getElementById('searchInput').value.trim();
+                const selectedCountry = document.getElementById('countryFilter').value;
+                const selectedResearchArea = document.getElementById('researchAreaFilter').value;
+
+                // Build search parameters
+                const searchParams = {};
+                if (searchTerm) searchParams.search = searchTerm;
+                if (selectedCountry) searchParams.country = selectedCountry;
+                if (selectedResearchArea) searchParams.researchArea = selectedResearchArea;
+                
+                // Show loading state
+                this.showLoading();
+                
+                // Perform server-side search
+                const result = await this.loadLabs(searchParams);
+                
+                if (result) {
+                    this.currentPage = 1; // Reset to first page when filtering
+                    this.renderLabs();
+                } else {
+                    this.showError('Search failed. Please try again.');
+                }
+            }
+
+            renderLabs() {
+                const loadingState = document.getElementById('loadingState');
+                const labGrid = document.getElementById('labGrid');
+                const noResults = document.getElementById('noResults');
+                const resultsCount = document.getElementById('resultsCount');
+
+                loadingState.style.display = 'none';
+
+                if (this.filteredLabs.length === 0) {
+                    labGrid.style.display = 'none';
+                    noResults.style.display = 'block';
+                    resultsCount.textContent = '';
+                    document.getElementById('pagination').style.display = 'none';
+                    return;
+                }
+
+                noResults.style.display = 'none';
+                labGrid.style.display = 'grid';
+
+                // Calculate pagination
+                const startIndex = (this.currentPage - 1) * this.labsPerPage;
+                const endIndex = startIndex + this.labsPerPage;
+                const labsToShow = this.filteredLabs.slice(startIndex, endIndex);
+
+                // Update results count
+                resultsCount.textContent = `Showing ${startIndex + 1}-${Math.min(endIndex, this.filteredLabs.length)} of ${this.filteredLabs.length} laboratories`;
+
+                // Render lab cards
+                labGrid.innerHTML = labsToShow.map(lab => this.createLabCard(lab)).join('');
+
+                // Render pagination
+                this.renderPagination();
+            }
+
+            createLabCard(lab) {
+                const researchTags = lab.researchAreas.map(area => 
+                    `<span class="research-tag">${this.formatResearchArea(area)}</span>`
+                ).join('');
+
+                return `
+                    <div class="lab-card">
+                        <div class="lab-header">
+                            <h3 class="lab-name">${this.escapeHtml(lab.lab_name)}</h3>
+                            ${lab.institution_name ? `<p class="lab-institution">${this.escapeHtml(lab.institution_name)}</p>` : ''}
+                        </div>
+                        
+                        <div class="lab-location">
+                            <svg class="icon" viewBox="0 0 20 20">
+                                <path d="M10 2C6.69 2 4 4.69 4 8c0 5.25 6 12 6 12s6-6.75 6-12c0-3.31-2.69-6-6-6zm0 8c-1.1 0-2-0.9-2-2s0.9-2 2-2 2 0.9 2 2-0.9 2-2 2z"/>
+                            </svg>
+                            <span>${this.escapeHtml(lab.city)}, ${this.escapeHtml(lab.country)}</span>
+                        </div>
+
+                        <div class="lab-research-areas">
+                            <h4>Research Areas</h4>
+                            <div class="research-tags">${researchTags}</div>
+                        </div>
+
+                        ${lab.description ? `<p class="lab-description">${this.escapeHtml(lab.description)}</p>` : ''}
+
+                        <div class="lab-actions">
+                            <a href="/lab-profile.html?id=${lab.id}" class="lab-contact lab-view-profile">
+                                <svg class="icon" viewBox="0 0 20 20" style="width: 16px; height: 16px; fill: currentColor; margin-right: 4px;">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"/>
+                                </svg>
+                                View Profile
+                            </a>
+                            <a href="mailto:${lab.contact_email}" class="lab-contact">Contact Lab</a>
+                            ${lab.established_year ? `<span class="lab-established">Est. ${lab.established_year}</span>` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderPagination() {
+                const totalPages = Math.ceil(this.filteredLabs.length / this.labsPerPage);
+                const paginationContainer = document.getElementById('pagination');
+
+                if (totalPages <= 1) {
+                    paginationContainer.style.display = 'none';
+                    return;
+                }
+
+                paginationContainer.style.display = 'flex';
+
+                let paginationHtml = '';
+
+                // Previous button
+                paginationHtml += `
+                    <button ${this.currentPage === 1 ? 'disabled' : ''} onclick="labDirectory.goToPage(${this.currentPage - 1})">
+                        Previous
+                    </button>
+                `;
+
+                // Page numbers
+                for (let i = 1; i <= totalPages; i++) {
+                    if (i === 1 || i === totalPages || (i >= this.currentPage - 2 && i <= this.currentPage + 2)) {
+                        paginationHtml += `
+                            <button 
+                                class="${i === this.currentPage ? 'active' : ''}" 
+                                onclick="labDirectory.goToPage(${i})"
+                            >
+                                ${i}
+                            </button>
+                        `;
+                    } else if (i === this.currentPage - 3 || i === this.currentPage + 3) {
+                        paginationHtml += `<span>...</span>`;
+                    }
+                }
+
+                // Next button
+                paginationHtml += `
+                    <button ${this.currentPage === totalPages ? 'disabled' : ''} onclick="labDirectory.goToPage(${this.currentPage + 1})">
+                        Next
+                    </button>
+                `;
+
+                paginationContainer.innerHTML = paginationHtml;
+            }
+
+            goToPage(page) {
+                const totalPages = Math.ceil(this.filteredLabs.length / this.labsPerPage);
+                if (page >= 1 && page <= totalPages) {
+                    this.currentPage = page;
+                    this.renderLabs();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            }
+
+            formatResearchArea(area) {
+                return area.split('-').map(word => 
+                    word.charAt(0).toUpperCase() + word.slice(1)
+                ).join(' ');
+            }
+
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            }
+
+            showLoading() {
+                const loadingState = document.getElementById('loadingState');
+                const labGrid = document.getElementById('labGrid');
+                const noResults = document.getElementById('noResults');
+                const pagination = document.getElementById('pagination');
+                
+                loadingState.style.display = 'block';
+                loadingState.innerHTML = '<p>Loading laboratories...</p>';
+                labGrid.style.display = 'none';
+                noResults.style.display = 'none';
+                pagination.style.display = 'none';
+            }
+
+            showError(message) {
+                const loadingState = document.getElementById('loadingState');
+                loadingState.innerHTML = `<p style="color: #d32f2f;">${message}</p>`;
+            }
+        }
+
+        // Initialize the lab directory
+        let labDirectory;
+        document.addEventListener('DOMContentLoaded', () => {
+            labDirectory = new LabDirectory();
+        });
+    </script>
+</body>
+</html>
