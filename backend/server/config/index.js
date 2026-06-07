@@ -10,6 +10,7 @@ dotenv.config({ path: join(__dirname, '../../.env') });
 dotenv.config({ path: join(__dirname, '../.env') });
 
 const databaseUrl = process.env.DATABASE_URL || '';
+const databaseSsl = process.env.DATABASE_SSL || 'auto';
 
 export const config = {
     server: {
@@ -20,7 +21,7 @@ export const config = {
         url: databaseUrl.startsWith('postgres://') || databaseUrl.startsWith('postgresql://')
             ? databaseUrl
             : '',
-        ssl: process.env.DATABASE_SSL === 'true'
+        ssl: databaseSsl
     },
     security: {
         rateLimitWindowMs: parseInt(process.env.API_RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,

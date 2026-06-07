@@ -14,15 +14,41 @@ class Database {
             throw new Error('DATABASE_URL is required. Example: postgres://user:password@host:5432/aanm');
         }
 
+        const ssl = this.getSslConfig(config.database.url, config.database.ssl);
         this.pool = new Pool({
             connectionString: config.database.url,
-            ssl: config.database.ssl ? { rejectUnauthorized: false } : false
+            ssl
         });
 
         await this.pool.query('SELECT 1');
         this.isConnected = true;
         console.log('✅ Connected to PostgreSQL database');
         await this.initializeTables();
+    }
+
+    getSslConfig(databaseUrl, sslMode) {
+        if (sslMode === 'true') {
+            return { rejectUnauthorized: false };
+        }
+
+        if (sslMode === 'false') {
+            return false;
+        }
+
+        const url = new URL(databaseUrl);
+        const explicitSslMode = url.searchParams.get('sslmode');
+
+        if (explicitSslMode === 'disable') {
+            return false;
+        }
+
+        if (explicitSslMode) {
+            return { rejectUnauthorized: false };
+        }
+
+        const host = url.hostname;
+        const isLocalHost = host === 'localhost' || host === '127.0.0.1' || host === '::1';
+        return isLocalHost ? false : { rejectUnauthorized: false };
     }
 
     async initializeTables() {
