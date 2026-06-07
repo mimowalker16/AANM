@@ -22,6 +22,19 @@ app.use(corsOptions);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
+// Root route for platform health checks and direct backend URL visits
+app.get('/', (req, res) => {
+    res.json({
+        success: true,
+        message: 'AANM API is running',
+        endpoints: {
+            health: '/api/health',
+            labs: '/api/labs',
+            seminaires: '/api/seminaires'
+        }
+    });
+});
+
 // API Routes
 app.use('/api', systemRoutes);
 app.use('/api/labs', publicReadRateLimiter, labRoutes);
