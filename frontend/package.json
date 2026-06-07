@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite --open",
-    "build": "npm run clean && npm run optimize && vite build",
+    "build": "npm run configure:api && npm run clean && npm run optimize && vite build",
+    "configure:api": "node ../scripts/configure-frontend-api.js",
     "preview": "vite preview --open",
     "clean": "rimraf dist",
     "optimize": "npm run optimize:images && npm run optimize:css",
