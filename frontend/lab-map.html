@@ -639,7 +639,7 @@
                     doubleClickZoom: true,
                     boxZoom: true,
                     keyboard: true
-                }).setVoir([28.0339, 1.6596], 4); // Algeria center, zoom level 4 to show North Africa
+                }).setView([28.0339, 1.6596], 4); // Algeria center, zoom level 4 to show North Africa
 
                 // Add OpenStreetMap tiles
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -763,7 +763,7 @@
                             });
                         } catch (e) {
                             // Fallback if fitBounds fails
-                            this.map.setVoir([28.0339, 1.6596], 4);
+                            this.map.setView([28.0339, 1.6596], 4);
                         }
                     }, 100);
                 }

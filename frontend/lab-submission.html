@@ -681,7 +681,7 @@
             // Default to center of North Africa (Algeria/Tunisia area)
             const defaultCenter = [33.0, 6.0]; // [lat, lng] format for Leaflet
             
-            map = L.map('map').setVoir(defaultCenter, 6);
+            map = L.map('map').setView(defaultCenter, 6);
             
             // Add OpenStreetMap tiles (completely free!)
             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -807,7 +807,7 @@
                 institutionName: document.getElementById("institutionName").value.trim(),
                 establishedYear: document.getElementById("establishedYear").value || null,
                 contactPerson: document.getElementById("contactPerson").value.trim(),
-                contactE-mail : document.getElementById("contactEmail").value.trim(),
+                contactEmail: document.getElementById("contactEmail").value.trim(),
                 phone: document.getElementById("phone").value.trim(),
                 website: document.getElementById("website").value.trim(),
                 description: document.getElementById("description").value.trim(),
