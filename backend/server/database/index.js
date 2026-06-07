@@ -14,41 +14,61 @@ class Database {
             throw new Error('DATABASE_URL is required. Example: postgres://user:password@host:5432/aanm');
         }
 
-        const ssl = this.getSslConfig(config.database.url, config.database.ssl);
-        this.pool = new Pool({
-            connectionString: config.database.url,
-            ssl
-        });
+        const sslCandidates = this.getSslCandidates(config.database.url, config.database.ssl);
+        let lastError = null;
 
-        await this.pool.query('SELECT 1');
+        for (const ssl of sslCandidates) {
+            try {
+                this.pool = new Pool({
+                    connectionString: config.database.url,
+                    ssl
+                });
+
+                await this.pool.query('SELECT 1');
+                console.log(`✅ PostgreSQL connection mode: ${ssl ? 'ssl' : 'plain'}`);
+                lastError = null;
+                break;
+            } catch (error) {
+                lastError = error;
+                if (this.pool) {
+                    await this.pool.end().catch(() => {});
+                    this.pool = null;
+                }
+            }
+        }
+
+        if (lastError) {
+            throw lastError;
+        }
+
         this.isConnected = true;
         console.log('✅ Connected to PostgreSQL database');
         await this.initializeTables();
     }
 
-    getSslConfig(databaseUrl, sslMode) {
+    getSslCandidates(databaseUrl, sslMode) {
         if (sslMode === 'true') {
-            return { rejectUnauthorized: false };
+            return [{ rejectUnauthorized: false }];
         }
 
         if (sslMode === 'false') {
-            return false;
+            return [false];
         }
 
         const url = new URL(databaseUrl);
         const explicitSslMode = url.searchParams.get('sslmode');
 
         if (explicitSslMode === 'disable') {
-            return false;
+            return [false];
         }
 
         if (explicitSslMode) {
-            return { rejectUnauthorized: false };
+            return [{ rejectUnauthorized: false }];
         }
 
         const host = url.hostname;
         const isLocalHost = host === 'localhost' || host === '127.0.0.1' || host === '::1';
-        return isLocalHost ? false : { rejectUnauthorized: false };
+        return isLocalHost ? [false] : [{ rejectUnauthorized: false }, false];
     }
 
     async initializeTables() {
