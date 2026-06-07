@@ -16,6 +16,7 @@
     "server:dev": "npm run dev --workspace backend",
     "full-dev": "concurrently --names \"CLIENT,SERVER\" --prefix-colors \"blue,green\" \"npm run dev --workspace frontend\" \"npm run dev --workspace backend\"",
     "migrate:postgres": "node scripts/migrate-sqlite-to-postgres.js",
+    "seed:postgres": "node scripts/seed/run-seed.js",
     "format": "prettier --write .",
     "check:backend": "node --check backend/server/index.js",
     "check:frontend": "npm run build --workspace frontend"
@@ -28,7 +29,7 @@
     "sqlite3": "^5.1.6"
   },
   "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=9.0.0"
+    "node": "20.x",
+    "npm": "10.x"
   }
 }
