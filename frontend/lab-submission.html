@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Submit Your Lab - AANM</title>
-    <meta name="description" content="Submit your laboratory for inclusion in the AANM directory." />
+    <title>Soumettre votre laboratoire - AANM</title>
+    <meta name="description" content="Soumettez votre laboratoire pour l'inclure dans l'annuaire de l'AANM." />
     
     <!-- Performance Optimizations -->
     <meta name="theme-color" content="#2e7d32" />
@@ -216,7 +216,7 @@
             line-height: 1.6;
         }
 
-        /* === Research Chip Checkboxes === */
+        /* === Recherche Chip Checkboxes === */
         .research-areas {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -311,7 +311,7 @@
             gap: 0.5rem;
         }
 
-        /* === Submit Area === */
+        /* === Zone d'envoi === */
         .form-submit-area {
             margin-top: var(--space-lg);
             text-align: center;
@@ -388,8 +388,8 @@
     <nav class="navbar navbar--transparent" id="navbar">
         <div class="navbar__inner">
             <div class="navbar__logo-container">
-                <a href="/" class="navbar__logo" aria-label="Visit home page">
-                    <img src="./assets/images/logo.png" alt="AANM Logo" class="navbar__logo-img">
+                <a href="/" class="navbar__logo" aria-label="Accueil">
+                    <img src="./assets/images/logo.png" alt="Logo AANM" class="navbar__logo-img">
                 </a>
             </div>
             <div class="navbar__links" id="navLinks">
@@ -398,9 +398,9 @@
                 <a href="./activities.html" class="navbar__link">Activités</a>
                 <a href="./news.html" class="navbar__link">Actualités</a>
                 <a href="./contact.html" class="navbar__link">Contact</a>
-                <a href="./lab-submission.html" class="navbar__link navbar__link--active">Submit Lab</a>
-                <a href="./lab-directory.html" class="navbar__link">Lab Directory</a>
-                <a href="./lab-map.html" class="navbar__link">Lab Map</a>
+                <a href="./lab-submission.html" class="navbar__link navbar__link--active">Soumettre un labo</a>
+                <a href="./lab-directory.html" class="navbar__link">Annuaire des labos</a>
+                <a href="./lab-map.html" class="navbar__link">Carte des labos</a>
                 <a href="./contact.html" class="navbar__cta">Nous Rejoindre →</a>
             </div>
             <button class="navbar__toggle" id="navToggle" aria-label="Menu">
@@ -415,8 +415,8 @@
         <header class="page-header">
             <div class="container">
                 <span class="section-label">Soumission</span>
-                <h1 class="page-header__title">Submit Your Laboratory</h1>
-                <p class="page-header__subtitle">Join our network of research laboratories across North Africa</p>
+                <h1 class="page-header__title">Soumettre votre laboratoire</h1>
+                <p class="page-header__subtitle">Rejoignez notre réseau de laboratoires de recherche en Afrique du Nord</p>
             </div>
         </header>
 
@@ -424,11 +424,11 @@
             <div class="container">
                 <div class="form-container">
 
-                    <!-- Progress Steps -->
-                    <div class="form-steps" aria-label="Form sections">
+                    <!-- Étapes du formulaire -->
+                    <div class="form-steps" aria-label="Étapes du formulaire">
                         <div class="form-step form-step--done">
                             <div class="form-step__dot">1</div>
-                            <span class="form-step__label">Lab Info</span>
+                            <span class="form-step__label">Infos labo</span>
                         </div>
                         <div class="form-step form-step--done">
                             <div class="form-step__dot">2</div>
@@ -436,148 +436,148 @@
                         </div>
                         <div class="form-step form-step--done">
                             <div class="form-step__dot">3</div>
-                            <span class="form-step__label">Location</span>
+                            <span class="form-step__label">Localisation</span>
                         </div>
                         <div class="form-step form-step--done">
                             <div class="form-step__dot">4</div>
-                            <span class="form-step__label">Research</span>
+                            <span class="form-step__label">Recherche</span>
                         </div>
                     </div>
 
                     <form id="labSubmissionForm">
 
-                        <!-- Section 1: Lab Information -->
+                        <!-- Section 1: Informations du laboratoire -->
                         <div class="form-card">
                             <div class="form-card__header">
                                 <div class="form-card__icon">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16M3 21h18M9 21V12h6v9"/></svg>
                                 </div>
                                 <div>
-                                    <h2 class="form-card__title">Lab Information</h2>
-                                    <p class="form-card__subtitle">Basic details about your laboratory</p>
+                                    <h2 class="form-card__title">Informations du laboratoire</h2>
+                                    <p class="form-card__subtitle">Informations essentielles sur votre laboratoire</p>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label for="labName">Laboratory Name <span class="required">*</span></label>
-                                <input type="text" id="labName" name="labName" placeholder="e.g. Laboratory of Nutrition and Food Sciences" required>
+                                <label for="labName">Nom du laboratoire <span class="required">*</span></label>
+                                <input type="text" id="labName" name="labName" placeholder="ex. Laboratoire de nutrition et sciences alimentaires" required>
                             </div>
 
                             <div class="form-row form-row--wide">
                                 <div class="form-group">
-                                    <label for="institutionName">Institution / University</label>
-                                    <input type="text" id="institutionName" name="institutionName" placeholder="e.g. University of Algiers">
+                                    <label for="institutionName">Institution / Université</label>
+                                    <input type="text" id="institutionName" name="institutionName" placeholder="ex. Université d'Alger">
                                 </div>
                                 <div class="form-group">
-                                    <label for="establishedYear">Founded Year</label>
-                                    <input type="number" id="establishedYear" name="establishedYear" min="1800" max="2026" placeholder="e.g. 1998">
+                                    <label for="establishedYear">Année de création</label>
+                                    <input type="number" id="establishedYear" name="establishedYear" min="1800" max="2026" placeholder="ex. 1998">
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Section 2: Contact Details -->
+                        <!-- Section 2: Coordonnées -->
                         <div class="form-card form-card--contact">
                             <div class="form-card__header">
                                 <div class="form-card__icon">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                                 </div>
                                 <div>
-                                    <h2 class="form-card__title">Contact Details</h2>
-                                    <p class="form-card__subtitle">Who should we reach out to?</p>
+                                    <h2 class="form-card__title">Coordonnées</h2>
+                                    <p class="form-card__subtitle">Qui devons-nous contacter ?</p>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label for="contactPerson">Contact Person Name <span class="required">*</span></label>
-                                <input type="text" id="contactPerson" name="contactPerson" placeholder="Full name of the lab director or contact" required>
+                                <label for="contactPerson">Nom de la personne à contacter <span class="required">*</span></label>
+                                <input type="text" id="contactPerson" name="contactPerson" placeholder="Nom complet du responsable du laboratoire ou du contact" required>
                             </div>
 
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="contactEmail">Contact Email <span class="required">*</span></label>
+                                    <label for="contactEmail">E-mail de contact <span class="required">*</span></label>
                                     <input type="email" id="contactEmail" name="contactEmail" placeholder="contact@lab.dz" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="phone">Phone Number</label>
+                                    <label for="phone">Numéro de téléphone</label>
                                     <input type="tel" id="phone" name="phone" placeholder="+213 5XX XXX XXX">
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label for="website">Website URL</label>
-                                <input type="url" id="website" name="website" placeholder="https://your-lab-website.com">
+                                <label for="website">Site web</label>
+                                <input type="url" id="website" name="website" placeholder="https://site-de-votre-labo.com">
                             </div>
                         </div>
 
-                        <!-- Section 3: Location -->
+                        <!-- Section 3: Localisation -->
                         <div class="form-card form-card--location">
                             <div class="form-card__header">
                                 <div class="form-card__icon">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
                                 </div>
                                 <div>
-                                    <h2 class="form-card__title">Laboratory Location <span class="required">*</span></h2>
-                                    <p class="form-card__subtitle">Pin your lab on the map</p>
+                                    <h2 class="form-card__title">Localisation du laboratoire <span class="required">*</span></h2>
+                                    <p class="form-card__subtitle">Placez votre labo sur la carte</p>
                                 </div>
                             </div>
 
                             <div class="map-instructions">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-                                <span><strong>Click anywhere on the map</strong> to pin your laboratory's exact location. You can zoom in for precision.</span>
+                                <span><strong>Cliquez n'importe où sur la carte</strong> pour indiquer précisément la position de votre laboratoire. Vous pouvez zoomer pour plus de précision.</span>
                             </div>
                             <div class="map-wrapper">
                                 <div id="map"></div>
                             </div>
                             <div id="selectedLocation" class="selected-location" style="display: none;">
-                                <strong>📍 Selected Location:</strong>
+                                <strong>📍 Localisation sélectionnée :</strong>
                                 <div id="locationAddress"></div>
                                 <div id="locationCoordinates"></div>
                             </div>
                         </div>
 
-                        <!-- Section 4: Research Focus -->
+                        <!-- Section 4: Axes de recherche -->
                         <div class="form-card form-card--research">
                             <div class="form-card__header">
                                 <div class="form-card__icon">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
                                 </div>
                                 <div>
-                                    <h2 class="form-card__title">Research Focus</h2>
-                                    <p class="form-card__subtitle">What does your lab work on?</p>
+                                    <h2 class="form-card__title">Axes de recherche</h2>
+                                    <p class="form-card__subtitle">Sur quoi travaille votre laboratoire ?</p>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label>Research Areas <span class="required">*</span></label>
-                                <p style="font-size:var(--fs-small);color:var(--clr-text-light);margin-bottom:var(--space-sm);margin-top:-0.2rem">Select all that apply to your laboratory's research</p>
+                                <label>Domaines de recherche <span class="required">*</span></label>
+                                <p style="font-size:var(--fs-small);color:var(--clr-text-light);margin-bottom:var(--space-sm);margin-top:-0.2rem">Sélectionnez tous les domaines correspondant aux travaux de votre laboratoire</p>
                                 <div class="research-areas">
                                     <div class="research-chip">
                                         <input type="checkbox" id="genetics" name="researchAreas" value="genetics">
-                                        <label for="genetics">Genetics</label>
+                                        <label for="genetics">Génétique</label>
                                     </div>
                                     <div class="research-chip">
                                         <input type="checkbox" id="biochemistry" name="researchAreas" value="biochemistry">
-                                        <label for="biochemistry">Biochemistry</label>
+                                        <label for="biochemistry">Biochimie</label>
                                     </div>
                                     <div class="research-chip">
                                         <input type="checkbox" id="microbiology" name="researchAreas" value="microbiology">
-                                        <label for="microbiology">Microbiology</label>
+                                        <label for="microbiology">Microbiologie</label>
                                     </div>
                                     <div class="research-chip">
                                         <input type="checkbox" id="ecology" name="researchAreas" value="ecology">
-                                        <label for="ecology">Ecology</label>
+                                        <label for="ecology">Écologie</label>
                                     </div>
                                     <div class="research-chip">
                                         <input type="checkbox" id="biotechnology" name="researchAreas" value="biotechnology">
-                                        <label for="biotechnology">Biotechnology</label>
+                                        <label for="biotechnology">Biotechnologie</label>
                                     </div>
                                     <div class="research-chip">
                                         <input type="checkbox" id="medical-research" name="researchAreas" value="medical-research">
-                                        <label for="medical-research">Medical Research</label>
+                                        <label for="medical-research">Recherche médicale</label>
                                     </div>
                                     <div class="research-chip">
                                         <input type="checkbox" id="environmental-science" name="researchAreas" value="environmental-science">
-                                        <label for="environmental-science">Environmental Science</label>
+                                        <label for="environmental-science">Sciences de l'environnement</label>
                                     </div>
                                     <div class="research-chip">
                                         <input type="checkbox" id="agriculture" name="researchAreas" value="agriculture">
@@ -585,24 +585,24 @@
                                     </div>
                                     <div class="research-chip">
                                         <input type="checkbox" id="other" name="researchAreas" value="other">
-                                        <label for="other">Other</label>
+                                        <label for="other">Autre</label>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="form-group" style="margin-top: var(--space-md)">
-                                <label for="description">Laboratory Description</label>
-                                <textarea id="description" name="description" placeholder="Briefly describe your lab's research focus, major facilities, key projects, and any publications or partnerships…"></textarea>
+                                <label for="description">Description du laboratoire</label>
+                                <textarea id="description" name="description" placeholder="Décrivez brièvement les axes de recherche, les équipements majeurs, les projets clés, ainsi que les publications ou partenariats de votre laboratoire…"></textarea>
                             </div>
                         </div>
 
-                        <!-- Submit -->
+                        <!-- Envoi -->
                         <div class="form-submit-area">
                             <button type="submit" class="submit-btn" id="submitBtn" disabled>
-                                Submit Laboratory
+                                Soumettre le laboratoire
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                             </button>
-                            <p class="form-submit-note">Fields marked <span class="required">*</span> are required. We'll review your submission within 5 business days.</p>
+                            <p class="form-submit-note">Les champs marqués <span class="required">*</span> sont obligatoires. Nous examinerons votre soumission sous 5 jours ouvrables.</p>
                         </div>
 
                     </form>
@@ -616,7 +616,7 @@
             <div class="footer__main">
                 <div class="footer__brand">
                     <div class="footer__logo">
-                        <img src="./assets/images/logo.png" alt="AANM Logo" class="footer__logo-img">
+                        <img src="./assets/images/logo.png" alt="Logo AANM" class="footer__logo-img">
                     </div>
                     <p class="footer__tagline">Pour une meilleure nutrition au Maghreb.<br />Alliance scientifique et traditions locales.</p>
                     <form class="footer__newsletter" onsubmit="event.preventDefault(); alert('Merci pour votre inscription !');">
@@ -681,7 +681,7 @@
             // Default to center of North Africa (Algeria/Tunisia area)
             const defaultCenter = [33.0, 6.0]; // [lat, lng] format for Leaflet
             
-            map = L.map('map').setView(defaultCenter, 6);
+            map = L.map('map').setVoir(defaultCenter, 6);
             
             // Add OpenStreetMap tiles (completely free!)
             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -706,7 +706,7 @@
                 draggable: true
             }).addTo(map);
             
-            marker.bindPopup("Selected Laboratory Location").openPopup();
+            marker.bindPopup("Localisation du laboratoire sélectionnée").openPopup();
 
             // Allow marker dragging
             marker.on('dragend', function(e) {
@@ -732,13 +732,13 @@
                     const address = data.display_name;
                     
                     // Extract city and country from Nominatim response
-                    const city = data.address?.city || data.address?.town || data.address?.village || data.address?.state || "Unknown";
-                    const country = data.address?.country || "Unknown";
+                    const city = data.address?.city || data.address?.town || data.address?.village || data.address?.state || "Inconnu";
+                    const country = data.address?.country || "Inconnu";
                     
                     // Update UI
                     document.getElementById("selectedLocation").style.display = "block";
                     document.getElementById("locationAddress").textContent = address;
-                    document.getElementById("locationCoordinates").textContent = `Coordinates: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                    document.getElementById("locationCoordinates").textContent = `Coordonnées : ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
                     
                     // Store geocoding results
                     selectedLocation.address = address;
@@ -749,26 +749,26 @@
                     validateForm();
                 } else {
                     // Fallback if reverse geocoding fails
-                    selectedLocation.address = `Coordinates: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
-                    selectedLocation.city = "Unknown";
-                    selectedLocation.country = "Unknown";
+                    selectedLocation.address = `Coordonnées : ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                    selectedLocation.city = "Inconnu";
+                    selectedLocation.country = "Inconnu";
                     
                     document.getElementById("selectedLocation").style.display = "block";
                     document.getElementById("locationAddress").textContent = selectedLocation.address;
-                    document.getElementById("locationCoordinates").textContent = `Coordinates: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                    document.getElementById("locationCoordinates").textContent = `Coordonnées : ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
                     
                     validateForm();
                 }
             } catch (error) {
-                console.error("Reverse geocoding failed:", error);
+                console.error("Échec du géocodage inverse :", error);
                 // Fallback without geocoding
-                selectedLocation.address = `Coordinates: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
-                selectedLocation.city = "Unknown";
-                selectedLocation.country = "Unknown";
+                selectedLocation.address = `Coordonnées : ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                selectedLocation.city = "Inconnu";
+                selectedLocation.country = "Inconnu";
                 
                 document.getElementById("selectedLocation").style.display = "block";
                 document.getElementById("locationAddress").textContent = selectedLocation.address;
-                document.getElementById("locationCoordinates").textContent = `Coordinates: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                document.getElementById("locationCoordinates").textContent = `Coordonnées : ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
                 
                 validateForm();
             }
@@ -798,7 +798,7 @@
             e.preventDefault();
             
             if (!selectedLocation) {
-                alert("Please select your laboratory location on the map.");
+                alert("Veuillez sélectionner la localisation de votre laboratoire sur la carte.");
                 return;
             }
 
@@ -807,7 +807,7 @@
                 institutionName: document.getElementById("institutionName").value.trim(),
                 establishedYear: document.getElementById("establishedYear").value || null,
                 contactPerson: document.getElementById("contactPerson").value.trim(),
-                contactEmail: document.getElementById("contactEmail").value.trim(),
+                contactE-mail : document.getElementById("contactEmail").value.trim(),
                 phone: document.getElementById("phone").value.trim(),
                 website: document.getElementById("website").value.trim(),
                 description: document.getElementById("description").value.trim(),
@@ -818,7 +818,7 @@
             // Show loading state
             const submitBtn = document.getElementById("submitBtn");
             const originalText = submitBtn.textContent;
-            submitBtn.textContent = "Submitting...";
+            submitBtn.textContent = "Envoi...";
             submitBtn.disabled = true;
 
             try {
@@ -833,7 +833,7 @@
                 const result = await response.json();
 
                 if (result.success) {
-                    alert("Thank you! Your laboratory information has been submitted successfully. We will review it and add it to our directory soon.");
+                    alert("Merci ! Les informations de votre laboratoire ont bien été envoyées. Nous les examinerons avant de les ajouter à l'annuaire.");
                     
                     // Reset form
                     document.getElementById("labSubmissionForm").reset();
@@ -844,12 +844,12 @@
                     selectedLocation = null;
                     validateForm();
                 } else {
-                    throw new Error(result.message || 'Submission failed');
+                    throw new Error(result.message || 'Échec de l'envoi');
                 }
                 
             } catch (error) {
-                console.error("Submission error:", error);
-                alert("There was an error submitting your information. Please check your internet connection and try again.");
+                console.error("Erreur d'envoi :", error);
+                alert("Une erreur est survenue lors de l'envoi. Vérifiez votre connexion Internet puis réessayez.");
             } finally {
                 // Reset button state
                 submitBtn.textContent = originalText;

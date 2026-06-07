@@ -1,5 +1,5 @@
 /**
- * AANM Website — Main JavaScript
+ * Site AANM — JavaScript principal
  * Handles: Navbar, Hero Carousel, Stats Counter, Testimonials, Events Carousel, Scroll Reveals, Mobile Optimizations
  */
 
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function testAnimations() {
     // Test if reveal elements exist
     const revealElements = document.querySelectorAll('.reveal');
-    console.log('🎬 Found', revealElements.length, 'reveal elements');
+    console.log('🎬 Trouvé', revealElements.length, 'reveal elements');
     
     // Test if scroll reveal is working after 2 seconds
     setTimeout(() => {
@@ -42,7 +42,7 @@ function testAnimations() {
     
     // Test button hover animations
     const buttons = document.querySelectorAll('.btn');
-    console.log('🔘 Found', buttons.length, 'buttons for hover animations');
+    console.log('🔘 Trouvé', buttons.length, 'buttons for hover animations');
 }
 
 /* ============================================
@@ -425,7 +425,7 @@ function initMobileOptimizations() {
     initMobileLoadingStates();
     
     // Optimize viewport for mobile
-    optimizeViewport();
+    optimizeVoirport();
     
     // Handle orientation changes
     handleOrientationChange();
@@ -465,14 +465,14 @@ function initMobileLoadingStates() {
     loadingElements.forEach(element => {
         const loadingDiv = document.createElement('div');
         loadingDiv.className = 'mobile-loading';
-        loadingDiv.textContent = 'Loading...';
+        loadingDiv.textContent = 'Chargement...';
         loadingDiv.style.display = 'none';
         
         element.parentNode.insertBefore(loadingDiv, element.nextSibling);
     });
 }
 
-function optimizeViewport() {
+function optimizeVoirport() {
     // Prevent zoom on input focus for iOS
     const inputs = document.querySelectorAll('input, select, textarea');
     inputs.forEach(input => {
@@ -536,7 +536,7 @@ function enhanceMobileForms() {
             const firstError = this.querySelector('.error, :invalid');
             if (firstError) {
                 e.preventDefault();
-                firstError.scrollIntoView({ 
+                firstError.scrollIntoVoir({ 
                     behavior: 'smooth', 
                     block: 'center' 
                 });

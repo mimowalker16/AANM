@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Laboratory Map - AANM</title>
-    <meta name="description" content="Interactive map of African laboratories and research institutions." />
+    <title>Carte des laboratoires - AANM</title>
+    <meta name="description" content="Interactive map of African laboratoires and research institutions." />
     
     <!-- Performance Optimizations -->
     <meta name="theme-color" content="#2e7d32" />
@@ -413,8 +413,8 @@
     <nav class="navbar navbar--transparent" id="navbar">
         <div class="navbar__inner">
             <div class="navbar__logo-container">
-                <a href="/" class="navbar__logo" aria-label="Visit home page">
-                    <img src="./assets/images/logo.png" alt="AANM Logo" class="navbar__logo-img">
+                <a href="/" class="navbar__logo" aria-label="Accueil">
+                    <img src="./assets/images/logo.png" alt="Logo AANM" class="navbar__logo-img">
                 </a>
             </div>
             <div class="navbar__links" id="navLinks">
@@ -423,9 +423,9 @@
                 <a href="./activities.html" class="navbar__link">Activités</a>
                 <a href="./news.html" class="navbar__link">Actualités</a>
                 <a href="./contact.html" class="navbar__link">Contact</a>
-                <a href="./lab-submission.html" class="navbar__link">Submit Lab</a>
-                <a href="./lab-directory.html" class="navbar__link">Lab Directory</a>
-                <a href="./lab-map.html" class="navbar__link navbar__link--active">Lab Map</a>
+                <a href="./lab-submission.html" class="navbar__link">Soumettre un labo</a>
+                <a href="./lab-directory.html" class="navbar__link">Annuaire des labos</a>
+                <a href="./lab-map.html" class="navbar__link navbar__link--active">Carte des labos</a>
                 <a href="./contact.html" class="navbar__cta">Nous Rejoindre →</a>
             </div>
             <button class="navbar__toggle" id="navToggle" aria-label="Menu">
@@ -437,9 +437,9 @@
     <main>
         <header class="page-header">
             <div class="container">
-                <span class="section-label">Lab Map</span>
-                <h1 class="page-header__title">Laboratory Map</h1>
-                <p class="page-header__subtitle">Explore research laboratories across North Africa on an interactive map</p>
+                <span class="section-label">Carte des labos</span>
+                <h1 class="page-header__title">Carte des laboratoires</h1>
+                <p class="page-header__subtitle">Explorez les laboratoires de recherche en Afrique du Nord sur une carte interactive</p>
             </div>
         </header>
 
@@ -449,17 +449,17 @@
                 <div class="map-controls">
                     <div class="map-filters">
                         <select id="countryFilter" class="map-filter-select">
-                            <option value="">All Countries</option>
+                            <option value="">Tous les pays</option>
                         </select>
                         <select id="researchAreaFilter" class="map-filter-select">
-                            <option value="">All Research Areas</option>
+                            <option value="">Tous les domaines de recherche</option>
                         </select>
                         <a href="/advanced-search.html" class="advanced-search-link">
                             <svg class="icon" viewBox="0 0 20 20">
                                 <path d="M9 9a2 2 0 114 0 2 2 0 01-4 0z"/>
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a4 4 0 00-3.446 6.032l-2.261 2.26a1 1 0 101.414 1.415l2.261-2.261A4 4 0 1011 5z"/>
                             </svg>
-                            Advanced Search
+                            Recherche avancée
                         </a>
                     </div>
                     <div class="map-stats">
@@ -467,20 +467,20 @@
                             <svg class="icon" viewBox="0 0 20 20">
                                 <path d="M10 2C6.69 2 4 4.69 4 8c0 5.25 6 12 6 12s6-6.75 6-12c0-3.31-2.69-6-6-6zm0 8c-1.1 0-2-0.9-2-2s0.9-2 2-2 2 0.9 2 2-0.9 2-2 2z"/>
                             </svg>
-                            <span id="labCount">Loading...</span>
+                            <span id="labCount">Chargement...</span>
                         </div>
                         <div class="map-stat">
                             <svg class="icon" viewBox="0 0 20 20">
                                 <path d="M10 20C4.477 20 0 15.523 0 10S4.477 0 10 0s10 4.477 10 10-4.477 10-10 10zm-1-7v-3H7V8h2V6h2v2h2v2h-2v3z"/>
                             </svg>
-                            <span id="countryCount">Loading...</span>
+                            <span id="countryCount">Chargement...</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Map Legend -->
+                <!-- Légende de la carte -->
                 <div class="map-legend">
-                    <h3 class="legend-title">Map Legend</h3>
+                    <h3 class="legend-title">Légende de la carte</h3>
                     <div class="legend-items">
                         <div class="legend-item">
                             <div class="legend-marker individual">
@@ -488,13 +488,13 @@
                                     <path d="M10 2C6.69 2 4 4.69 4 8c0 5.25 6 12 6 12s6-6.75 6-12c0-3.31-2.69-6-6-6zm0 8c-1.1 0-2-0.9-2-2s0.9-2 2-2 2 0.9 2 2-0.9 2-2 2z"/>
                                 </svg>
                             </div>
-                            <span>Individual Laboratory</span>
+                            <span>Laboratoire individuel</span>
                         </div>
                         <div class="legend-item">
                             <div class="legend-marker cluster">
                                 <span style="color: white; font-weight: bold; font-size: 0.7rem;">5</span>
                             </div>
-                            <span>Multiple Laboratories (Click to zoom)</span>
+                            <span>Plusieurs laboratoires (cliquez pour zoomer)</span>
                         </div>
                     </div>
                 </div>
@@ -509,9 +509,9 @@
 
                 <!-- No Labs Message -->
                 <div id="noLabsMessage" class="no-labs-message" style="display: none;">
-                    <h3>No laboratories to display</h3>
-                    <p>There are currently no approved laboratories to show on the map.</p>
-                    <p><a href="/lab-submission.html">Submit a laboratory</a> to help build our research network.</p>
+                    <h3>Aucun laboratoire à afficher</h3>
+                    <p>Aucun laboratoire approuvé n’est actuellement disponible sur la carte.</p>
+                    <p><a href="/lab-submission.html">Soumettre un laboratoire</a> pour contribuer à notre réseau de recherche.</p>
                 </div>
 
                 <!-- Map Actions -->
@@ -520,13 +520,13 @@
                         <svg class="icon" viewBox="0 0 20 20" style="width: 16px; height: 16px; fill: currentColor;">
                             <path d="M3 4a1 1 0 012 0v1h10V4a1 1 0 112 0v1h1a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V7a2 2 0 012-2h1V4zm0 5v8h14V9H3zm2-4h10v1H5V5z"/>
                         </svg>
-                        View as List
+                        Voir en liste
                     </a>
                     <a href="/lab-submission.html" class="map-btn">
                         <svg class="icon" viewBox="0 0 20 20" style="width: 16px; height: 16px; fill: currentColor;">
                             <path d="M10 2a1 1 0 011 1v6h6a1 1 0 110 2h-6v6a1 1 0 11-2 0v-6H3a1 1 0 110-2h6V3a1 1 0 011-1z"/>
                         </svg>
-                        Submit Lab
+                        Soumettre un labo
                     </a>
                 </div>
             </div>
@@ -538,7 +538,7 @@
             <div class="footer__main">
                 <div class="footer__brand">
                     <div class="footer__logo">
-                        <img src="./assets/images/logo.png" alt="AANM Logo" class="footer__logo-img">
+                        <img src="./assets/images/logo.png" alt="Logo AANM" class="footer__logo-img">
                     </div>
                     <p class="footer__tagline">Pour une meilleure nutrition au Maghreb.<br />Alliance scientifique et traditions locales.</p>
                     <form class="footer__newsletter" onsubmit="event.preventDefault(); alert('Merci pour votre inscription !');">
@@ -639,7 +639,7 @@
                     doubleClickZoom: true,
                     boxZoom: true,
                     keyboard: true
-                }).setView([28.0339, 1.6596], 4); // Algeria center, zoom level 4 to show North Africa
+                }).setVoir([28.0339, 1.6596], 4); // Algeria center, zoom level 4 to show North Africa
 
                 // Add OpenStreetMap tiles
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -665,7 +665,7 @@
                     if (result.success) {
                         this.labs = result.data.labs;
                         this.filteredLabs = [...this.labs];
-                        console.log(`Loaded ${this.labs.length} laboratories`);
+                        console.log(`Loaded ${this.labs.length} laboratoires`);
                         
                         if (this.labs.length === 0) {
                             this.showNoLabsMessage();
@@ -673,11 +673,11 @@
                             this.hideNoLabsMessage();
                         }
                     } else {
-                        throw new Error(result.message || 'Failed to load laboratories');
+                        throw new Error(result.message || 'Impossible de charger les laboratoires');
                     }
                 } catch (error) {
-                    console.error('Error loading labs:', error);
-                    this.showError('Failed to load laboratories. Please check your connection and try again.');
+                    console.error('Erreur lors du chargement des labos :', error);
+                    this.showError('Impossible de charger les laboratoires. Please check your connection and try again.');
                 } finally {
                     this.hideMapLoading();
                 }
@@ -717,14 +717,14 @@
             }
 
             filterLabs() {
-                const selectedCountry = document.getElementById('countryFilter').value;
+                const selectedPays = document.getElementById('countryFilter').value;
                 const selectedResearchArea = document.getElementById('researchAreaFilter').value;
 
                 this.filteredLabs = this.labs.filter(lab => {
-                    const matchesCountry = !selectedCountry || lab.country === selectedCountry;
+                    const matchesPays = !selectedPays || lab.country === selectedPays;
                     const matchesResearchArea = !selectedResearchArea || 
                         lab.researchAreas.includes(selectedResearchArea);
-                    return matchesCountry && matchesResearchArea;
+                    return matchesPays && matchesResearchArea;
                 });
 
                 this.renderMarkers();
@@ -763,7 +763,7 @@
                             });
                         } catch (e) {
                             // Fallback if fitBounds fails
-                            this.map.setView([28.0339, 1.6596], 4);
+                            this.map.setVoir([28.0339, 1.6596], 4);
                         }
                     }, 100);
                 }
@@ -789,13 +789,13 @@
                         </div>
 
                         <div class="research-areas">
-                            <h4>Research Areas</h4>
+                            <h4>Domaines de recherche</h4>
                             <div class="research-tags">${researchTags}</div>
                         </div>
 
                         <div class="actions">
                             <a href="mailto:${lab.contact_email}" class="btn-contact">Contact</a>
-                            <a href="/lab-profile.html?id=${lab.id}" class="btn-details">View Profile</a>
+                            <a href="/lab-profile.html?id=${lab.id}" class="btn-details">Voir le profil</a>
                         </div>
                     </div>
                 `;
@@ -806,10 +806,10 @@
                 const countryCountEl = document.getElementById('countryCount');
 
                 const visibleLabs = this.filteredLabs.length;
-                const visibleCountries = [...new Set(this.filteredLabs.map(lab => lab.country))].length;
+                const visiblePays = [...new Set(this.filteredLabs.map(lab => lab.country))].length;
 
                 labCountEl.textContent = `${visibleLabs} ${visibleLabs === 1 ? 'Laboratory' : 'Laboratories'}`;
-                countryCountEl.textContent = `${visibleCountries} ${visibleCountries === 1 ? 'Country' : 'Countries'}`;
+                countryCountEl.textContent = `${visiblePays} ${visiblePays === 1 ? 'Pays' : 'Pays'}`;
             }
 
             showNoLabsMessage() {

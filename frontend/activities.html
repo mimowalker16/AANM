@@ -434,8 +434,8 @@
     <nav class="navbar navbar--transparent" id="navbar">
         <div class="navbar__inner">
             <div class="navbar__logo-container">
-                <a href="/" class="navbar__logo" aria-label="Visit home page">
-                    <img src="./assets/images/logo.png" alt="AANM Logo" class="navbar__logo-img">
+                <a href="/" class="navbar__logo" aria-label="Accueil">
+                    <img src="./assets/images/logo.png" alt="Logo AANM" class="navbar__logo-img">
                 </a>
             </div>
             <div class="navbar__links" id="navLinks">
@@ -444,9 +444,9 @@
                 <a href="./activities.html" class="navbar__link navbar__link--active">Activités</a>
                 <a href="./news.html" class="navbar__link">Actualités</a>
                 <a href="./contact.html" class="navbar__link">Contact</a>
-                <a href="./lab-submission.html" class="navbar__link">Submit Lab</a>
-                <a href="./lab-directory.html" class="navbar__link">Lab Directory</a>
-                <a href="./lab-map.html" class="navbar__link">Lab Map</a>
+                <a href="./lab-submission.html" class="navbar__link">Soumettre un labo</a>
+                <a href="./lab-directory.html" class="navbar__link">Annuaire des labos</a>
+                <a href="./lab-map.html" class="navbar__link">Carte des labos</a>
                 <a href="./contact.html" class="navbar__cta">Nous Rejoindre →</a>
             </div>
             <button class="navbar__toggle" id="navToggle"
@@ -690,7 +690,7 @@
                 <!-- Left: Brand & Newsletter -->
                 <div class="footer__brand">
                     <div class="footer__logo">
-                        <img src="./assets/images/logo.png" alt="AANM Logo" class="footer__logo-img">
+                        <img src="./assets/images/logo.png" alt="Logo AANM" class="footer__logo-img">
                     </div>
                     <p class="footer__tagline">Pour une meilleure nutrition au Maghreb.<br />Alliance scientifique et traditions locales.</p>
                     <form class="footer__newsletter" onsubmit="event.preventDefault(); alert('Merci pour votre inscription !');">
@@ -810,7 +810,7 @@
             // Time detail
             document.getElementById('ctaTime').textContent =
                 d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-            // Location
+            // Localisation
             if (s.location) {
                 document.getElementById('ctaLocation').textContent = s.location;
                 document.getElementById('ctaLocationDetail').style.display = '';

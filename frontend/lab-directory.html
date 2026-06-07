@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Laboratory Directory - AANM</title>
-    <meta name="description" content="Browse African laboratories and research institutions in our comprehensive directory." />
+    <title>Annuaire des laboratoires - AANM</title>
+    <meta name="description" content="Browse African laboratoires and research institutions in our comprehensive directory." />
     
     <!-- Performance Optimizations -->
     <meta name="theme-color" content="#2e7d32" />
@@ -298,8 +298,8 @@
     <nav class="navbar navbar--transparent" id="navbar">
         <div class="navbar__inner">
             <div class="navbar__logo-container">
-                <a href="/" class="navbar__logo" aria-label="Visit home page">
-                    <img src="./assets/images/logo.png" alt="AANM Logo" class="navbar__logo-img">
+                <a href="/" class="navbar__logo" aria-label="Accueil">
+                    <img src="./assets/images/logo.png" alt="Logo AANM" class="navbar__logo-img">
                 </a>
             </div>
             <div class="navbar__links" id="navLinks">
@@ -308,9 +308,9 @@
                 <a href="./activities.html" class="navbar__link">Activités</a>
                 <a href="./news.html" class="navbar__link">Actualités</a>
                 <a href="./contact.html" class="navbar__link">Contact</a>
-                <a href="./lab-submission.html" class="navbar__link">Submit Lab</a>
-                <a href="./lab-directory.html" class="navbar__link navbar__link--active">Lab Directory</a>
-                <a href="./lab-map.html" class="navbar__link">Lab Map</a>
+                <a href="./lab-submission.html" class="navbar__link">Soumettre un labo</a>
+                <a href="./lab-directory.html" class="navbar__link navbar__link--active">Annuaire des labos</a>
+                <a href="./lab-map.html" class="navbar__link">Carte des labos</a>
                 <a href="./contact.html" class="navbar__cta">Nous Rejoindre →</a>
             </div>
             <button class="navbar__toggle" id="navToggle" aria-label="Menu">
@@ -322,36 +322,36 @@
     <main>
         <header class="page-header">
             <div class="container">
-                <span class="section-label">Lab Directory</span>
-                <h1 class="page-header__title">Laboratory Directory</h1>
-                <p class="page-header__subtitle">Discover research laboratories across North Africa</p>
+                <span class="section-label">Annuaire des labos</span>
+                <h1 class="page-header__title">Annuaire des laboratoires</h1>
+                <p class="page-header__subtitle">Découvrez les laboratoires de recherche en Afrique du Nord</p>
             </div>
         </header>
 
         <section class="section lab-directory">
             <div class="container">
-                <!-- Search and Filters -->
+                <!-- Recherche and Filters -->
                 <div class="lab-filters">
                     <div class="filter-group">
                         <input 
                             type="text" 
                             id="searchInput" 
                             class="filter-input" 
-                            placeholder="Search laboratories by name, institution, or location..."
+                            placeholder="Rechercher des laboratoires par nom, institution ou localisation..."
                             autocomplete="off"
                         >
                         <select id="countryFilter" class="filter-select">
-                            <option value="">All Countries</option>
+                            <option value="">Tous les pays</option>
                         </select>
                         <select id="researchAreaFilter" class="filter-select">
-                            <option value="">All Research Areas</option>
+                            <option value="">Tous les domaines de recherche</option>
                         </select>
                         <a href="/advanced-search.html" class="advanced-search-link">
                             <svg class="icon" viewBox="0 0 20 20">
                                 <path d="M9 9a2 2 0 114 0 2 2 0 01-4 0z"/>
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a4 4 0 00-3.446 6.032l-2.261 2.26a1 1 0 101.414 1.415l2.261-2.261A4 4 0 1011 5z"/>
                             </svg>
-                            Advanced Search
+                            Recherche avancée
                         </a>
                     </div>
                 </div>
@@ -359,9 +359,9 @@
                 <!-- Results Count -->
                 <div id="resultsCount" class="results-count"></div>
 
-                <!-- Loading State -->
+                <!-- Chargement State -->
                 <div id="loadingState" class="loading-state">
-                    <p>Loading laboratories...</p>
+                    <p>Chargement des laboratoires...</p>
                 </div>
 
                 <!-- Lab Grid -->
@@ -371,8 +371,8 @@
 
                 <!-- No Results State -->
                 <div id="noResults" class="no-results" style="display: none;">
-                    <h3>No laboratories found</h3>
-                    <p>Try adjusting your search criteria or <a href="/lab-submission.html">submit a new laboratory</a>.</p>
+                    <h3>Aucun laboratoire trouvé</h3>
+                    <p>Essayez de modifier vos critères de recherche ou <a href="/lab-submission.html">soumettez un nouveau laboratoire</a>.</p>
                 </div>
 
                 <!-- Pagination -->
@@ -388,7 +388,7 @@
             <div class="footer__main">
                 <div class="footer__brand">
                     <div class="footer__logo">
-                        <img src="./assets/images/logo.png" alt="AANM Logo" class="footer__logo-img">
+                        <img src="./assets/images/logo.png" alt="Logo AANM" class="footer__logo-img">
                     </div>
                     <p class="footer__tagline">Pour une meilleure nutrition au Maghreb.<br />Alliance scientifique et traditions locales.</p>
                     <form class="footer__newsletter" onsubmit="event.preventDefault(); alert('Merci pour votre inscription !');">
@@ -490,7 +490,7 @@
                         this.labs = result.data.labs;
                         this.filteredLabs = [...this.labs];
                         this.searchParams = result.data.searchParams || {};
-                        console.log(`Loaded ${this.labs.length} laboratories`);
+                        console.log(`Loaded ${this.labs.length} laboratoires`);
                         
                         // Populate filters if this is the initial load
                         if (Object.keys(searchParams).length === 0) {
@@ -499,11 +499,11 @@
                         
                         return result.data;
                     } else {
-                        throw new Error(result.message || 'Failed to load laboratories');
+                        throw new Error(result.message || 'Impossible de charger les laboratoires');
                     }
                 } catch (error) {
-                    console.error('Error loading labs:', error);
-                    this.showError('Failed to load laboratories. Please check your connection and try again.');
+                    console.error('Erreur lors du chargement des labos :', error);
+                    this.showError('Impossible de charger les laboratoires. Please check your connection and try again.');
                     return null;
                 }
             }
@@ -551,7 +551,7 @@
                         });
                     }
                 } catch (error) {
-                    console.error('Error populating filters:', error);
+                    console.error('Erreur lors du chargement des filtres :', error);
                     // Fallback to basic filter population if API fails
                     this.populateFiltersFromData();
                 }
@@ -582,13 +582,13 @@
 
             async filterLabs() {
                 const searchTerm = document.getElementById('searchInput').value.trim();
-                const selectedCountry = document.getElementById('countryFilter').value;
+                const selectedPays = document.getElementById('countryFilter').value;
                 const selectedResearchArea = document.getElementById('researchAreaFilter').value;
 
                 // Build search parameters
                 const searchParams = {};
                 if (searchTerm) searchParams.search = searchTerm;
-                if (selectedCountry) searchParams.country = selectedCountry;
+                if (selectedPays) searchParams.country = selectedPays;
                 if (selectedResearchArea) searchParams.researchArea = selectedResearchArea;
                 
                 // Show loading state
@@ -601,7 +601,7 @@
                     this.currentPage = 1; // Reset to first page when filtering
                     this.renderLabs();
                 } else {
-                    this.showError('Search failed. Please try again.');
+                    this.showError('La recherche a échoué. Please try again.');
                 }
             }
 
@@ -630,7 +630,7 @@
                 const labsToShow = this.filteredLabs.slice(startIndex, endIndex);
 
                 // Update results count
-                resultsCount.textContent = `Showing ${startIndex + 1}-${Math.min(endIndex, this.filteredLabs.length)} of ${this.filteredLabs.length} laboratories`;
+                resultsCount.textContent = `Showing ${startIndex + 1}-${Math.min(endIndex, this.filteredLabs.length)} of ${this.filteredLabs.length} laboratoires`;
 
                 // Render lab cards
                 labGrid.innerHTML = labsToShow.map(lab => this.createLabCard(lab)).join('');
@@ -659,7 +659,7 @@
                         </div>
 
                         <div class="lab-research-areas">
-                            <h4>Research Areas</h4>
+                            <h4>Domaines de recherche</h4>
                             <div class="research-tags">${researchTags}</div>
                         </div>
 
@@ -670,9 +670,9 @@
                                 <svg class="icon" viewBox="0 0 20 20" style="width: 16px; height: 16px; fill: currentColor; margin-right: 4px;">
                                     <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"/>
                                 </svg>
-                                View Profile
+                                Voir le profil
                             </a>
-                            <a href="mailto:${lab.contact_email}" class="lab-contact">Contact Lab</a>
+                            <a href="mailto:${lab.contact_email}" class="lab-contact">Contacter le labo</a>
                             ${lab.established_year ? `<span class="lab-established">Est. ${lab.established_year}</span>` : ''}
                         </div>
                     </div>
@@ -765,7 +765,7 @@
                 const pagination = document.getElementById('pagination');
                 
                 loadingState.style.display = 'block';
-                loadingState.innerHTML = '<p>Loading laboratories...</p>';
+                loadingState.innerHTML = '<p>Chargement des laboratoires...</p>';
                 labGrid.style.display = 'none';
                 noResults.style.display = 'none';
                 pagination.style.display = 'none';

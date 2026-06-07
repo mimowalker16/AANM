@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Advanced Search - AANM</title>
-    <meta name="description" content="Advanced search and filtering for African laboratories and research institutions." />
+    <title>Recherche avancée - AANM</title>
+    <meta name="description" content="Recherche avancée et filtres pour les laboratoires et institutions de recherche africains." />
     
     <!-- Performance Optimizations -->
     <meta name="theme-color" content="#2e7d32" />
@@ -408,8 +408,8 @@
     <nav class="navbar navbar--transparent" id="navbar">
         <div class="navbar__inner">
             <div class="navbar__logo-container">
-                <a href="/" class="navbar__logo" aria-label="Visit home page">
-                    <img src="./assets/images/logo.png" alt="AANM Logo" class="navbar__logo-img">
+                <a href="/" class="navbar__logo" aria-label="Accueil">
+                    <img src="./assets/images/logo.png" alt="Logo AANM" class="navbar__logo-img">
                 </a>
             </div>
             <div class="navbar__links" id="navLinks">
@@ -418,9 +418,9 @@
                 <a href="./activities.html" class="navbar__link">Activités</a>
                 <a href="./news.html" class="navbar__link">Actualités</a>
                 <a href="./contact.html" class="navbar__link">Contact</a>
-                <a href="./lab-submission.html" class="navbar__link">Submit Lab</a>
-                <a href="./lab-directory.html" class="navbar__link">Lab Directory</a>
-                <a href="./lab-map.html" class="navbar__link">Lab Map</a>
+                <a href="./lab-submission.html" class="navbar__link">Soumettre un labo</a>
+                <a href="./lab-directory.html" class="navbar__link">Annuaire des labos</a>
+                <a href="./lab-map.html" class="navbar__link">Carte des labos</a>
                 <a href="./advanced-search.html" class="navbar__link navbar__link--active">Recherche</a>
                 <a href="./contact.html" class="navbar__cta">Nous Rejoindre →</a>
             </div>
@@ -436,67 +436,67 @@
         <header class="page-header">
             <div class="container">
                 <span class="section-label">Recherche</span>
-                <h1 class="page-header__title">Advanced Laboratory Search</h1>
-                <p class="page-header__subtitle">Find research laboratories with powerful search and filtering options</p>
+                <h1 class="page-header__title">Recherche avancée de laboratoires</h1>
+                <p class="page-header__subtitle">Trouvez des laboratoires de recherche avec des options avancées de recherche et de filtrage</p>
             </div>
         </header>
 
         <section class="section advanced-search">
             <div class="container">
-                <!-- Search History -->
+                <!-- Historique de recherche -->
                 <div id="searchHistory" class="search-history" style="display: none;">
-                    <div class="history-title">Recent Searches</div>
+                    <div class="history-title">Recherches récentes</div>
                     <div id="historyItems" class="history-items"></div>
                 </div>
 
-                <!-- Advanced Search Form -->
+                <!-- Formulaire de recherche avancée -->
                 <div class="search-form">
                     <form id="advancedSearchForm">
-                        <!-- General Search -->
+                        <!-- Recherche générale -->
                         <div class="form-section">
                             <h3 class="section-title">
                                 <svg class="icon" viewBox="0 0 20 20">
                                     <path d="M9 9a2 2 0 114 0 2 2 0 01-4 0z"/>
                                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a4 4 0 00-3.446 6.032l-2.261 2.26a1 1 0 101.414 1.415l2.261-2.261A4 4 0 1011 5z"/>
                                 </svg>
-                                General Search
+                                Recherche générale
                             </h3>
                             <div class="form-grid">
                                 <div class="form-group">
-                                    <label class="form-label" for="searchQuery">Keywords</label>
+                                    <label class="form-label" for="searchQuery">Mots-clés</label>
                                     <input 
                                         type="text" 
                                         id="searchQuery" 
                                         class="form-input" 
-                                        placeholder="Search in lab names, descriptions, locations..."
+                                        placeholder="Rechercher dans les noms, descriptions et localisations des labos..."
                                     >
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Location Filters -->
+                        <!-- Filtres de localisation -->
                         <div class="form-section">
                             <h3 class="section-title">
                                 <svg class="icon" viewBox="0 0 20 20">
                                     <path d="M10 2C6.69 2 4 4.69 4 8c0 5.25 6 12 6 12s6-6.75 6-12c0-3.31-2.69-6-6-6zm0 8c-1.1 0-2-0.9-2-2s0.9-2 2-2 2 0.9 2 2-0.9 2-2 2z"/>
                                 </svg>
-                                Location
+                                Localisation
                             </h3>
                             <div class="form-grid">
                                 <div class="form-group">
-                                    <label class="form-label" for="countryFilter">Country</label>
+                                    <label class="form-label" for="countryFilter">Pays</label>
                                     <select id="countryFilter" class="form-input">
-                                        <option value="">All Countries</option>
+                                        <option value="">Tous les pays</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label" for="cityFilter">City</label>
+                                    <label class="form-label" for="cityFilter">Ville</label>
                                     <div class="autocomplete-container">
                                         <input 
                                             type="text" 
                                             id="cityFilter" 
                                             class="form-input" 
-                                            placeholder="Enter city name..."
+                                            placeholder="Saisir le nom de la ville..."
                                             autocomplete="off"
                                         >
                                         <div id="citySuggestions" class="autocomplete-suggestions"></div>
@@ -505,7 +505,7 @@
                             </div>
                         </div>
 
-                        <!-- Institution Filters -->
+                        <!-- Filtres d'institution -->
                         <div class="form-section">
                             <h3 class="section-title">
                                 <svg class="icon" viewBox="0 0 20 20">
@@ -515,35 +515,35 @@
                             </h3>
                             <div class="form-grid">
                                 <div class="form-group">
-                                    <label class="form-label" for="institutionFilter">Institution Name</label>
+                                    <label class="form-label" for="institutionFilter">Nom de l'institution</label>
                                     <div class="autocomplete-container">
                                         <input 
                                             type="text" 
                                             id="institutionFilter" 
                                             class="form-input" 
-                                            placeholder="Enter institution name..."
+                                            placeholder="Saisir le nom de l'institution..."
                                             autocomplete="off"
                                         >
                                         <div id="institutionSuggestions" class="autocomplete-suggestions"></div>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">Establishment Year Range</label>
+                                    <label class="form-label">Période de création</label>
                                     <div class="year-range">
                                         <input 
                                             type="number" 
                                             id="yearFrom" 
                                             class="form-input" 
-                                            placeholder="From"
+                                            placeholder="De"
                                             min="1900"
                                             max="2026"
                                         >
-                                        <div class="separator">to</div>
+                                        <div class="separator">à</div>
                                         <input 
                                             type="number" 
                                             id="yearTo" 
                                             class="form-input" 
-                                            placeholder="To"
+                                            placeholder="À"
                                             min="1900"
                                             max="2026"
                                         >
@@ -552,71 +552,71 @@
                             </div>
                         </div>
 
-                        <!-- Research Areas -->
+                        <!-- Domaines de recherche -->
                         <div class="form-section">
                             <h3 class="section-title">
                                 <svg class="icon" viewBox="0 0 20 20">
                                     <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                 </svg>
-                                Research Areas
+                                Domaines de recherche
                             </h3>
                             <div id="researchAreasContainer" class="checkbox-group">
-                                <!-- Research area checkboxes will be populated here -->
+                                <!-- Recherche area checkboxes will be populated here -->
                             </div>
                         </div>
 
-                        <!-- Search Actions -->
+                        <!-- Actions de recherche -->
                         <div class="search-actions">
                             <button type="submit" class="search-btn primary">
                                 <svg class="icon" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"/>
                                 </svg>
-                                Search Laboratories
+                                Rechercher des laboratoires
                             </button>
                             <button type="button" id="clearForm" class="search-btn secondary">
                                 <svg class="icon" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"/>
                                 </svg>
-                                Clear Filters
+                                Effacer les filtres
                             </button>
                             <a href="/lab-directory.html" class="search-btn secondary">
                                 <svg class="icon" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/>
                                 </svg>
-                                Simple Search
+                                Recherche simple
                             </a>
                         </div>
                     </form>
                 </div>
 
-                <!-- Search Results -->
+                <!-- Résultats de recherche -->
                 <div id="searchResults" class="search-results" style="display: none;">
                     <div class="results-header">
                         <div id="resultsInfo" class="results-info"></div>
                         <div class="results-sort">
-                            <label class="sort-label" for="sortBy">Sort by:</label>
+                            <label class="sort-label" for="sortBy">Trier par :</label>
                             <select id="sortBy" class="sort-select">
-                                <option value="lab_name">Lab Name</option>
+                                <option value="lab_name">Nom du labo</option>
                                 <option value="institution_name">Institution</option>
-                                <option value="city">City</option>
-                                <option value="country">Country</option>
-                                <option value="established_year">Year Established</option>
-                                <option value="submitted_at">Date Added</option>
+                                <option value="city">Ville</option>
+                                <option value="country">Pays</option>
+                                <option value="established_year">Année de création</option>
+                                <option value="submitted_at">Date d'ajout</option>
                             </select>
                             <select id="sortOrder" class="sort-select">
-                                <option value="asc">Ascending</option>
-                                <option value="desc">Descending</option>
+                                <option value="asc">Croissant</option>
+                                <option value="desc">Décroissant</option>
                             </select>
                         </div>
                     </div>
                     
                     <div id="loadingResults" class="loading-results" style="display: none;">
-                        <p>Searching laboratories...</p>
+                        <p>Recherche des laboratoires...</p>
                     </div>
                     
                     <div id="noResults" class="no-results" style="display: none;">
-                        <h3>No laboratories found</h3>
-                        <p>Try adjusting your search criteria or browse all laboratories in the <a href="/lab-directory.html">directory</a>.</p>
+                        <h3>Aucun laboratoire trouvé</h3>
+                        <p>Essayez de modifier vos critères de recherche ou consultez tous les laboratoires dans <a href="/lab-directory.html">l’annuaire</a>.</p>
                     </div>
                     
                     <div id="resultsGrid" class="results-grid"></div>
@@ -630,7 +630,7 @@
             <div class="footer__main">
                 <div class="footer__brand">
                     <div class="footer__logo">
-                        <img src="./assets/images/logo.png" alt="AANM Logo" class="footer__logo-img">
+                        <img src="./assets/images/logo.png" alt="Logo AANM" class="footer__logo-img">
                     </div>
                     <p class="footer__tagline">Pour une meilleure nutrition au Maghreb.<br />Alliance scientifique et traditions locales.</p>
                     <form class="footer__newsletter" onsubmit="event.preventDefault(); alert('Merci pour votre inscription !');">
@@ -704,12 +704,12 @@
                     
                     if (statsResult.success) {
                         this.searchStats = statsResult.data;
-                        this.populateCountryFilter();
+                        this.populatePaysFilter();
                         this.populateResearchAreas();
                         this.setYearLimits();
                     }
                 } catch (error) {
-                    console.error('Error loading initial data:', error);
+                    console.error('Erreur lors du chargement initial :', error);
                 }
             }
 
@@ -776,7 +776,7 @@
                         container.classList.remove('show');
                     }
                 } catch (error) {
-                    console.error('Error fetching suggestions:', error);
+                    console.error('Erreur lors du chargement des suggestions :', error);
                     container.classList.remove('show');
                 }
             }
@@ -826,7 +826,7 @@
                 });
             }
 
-            populateCountryFilter() {
+            populatePaysFilter() {
                 // This would be populated from the API or search stats
                 // For now, using known countries from our sample data
                 const countries = ['Algeria', 'Egypt', 'Libya', 'Morocco', 'Tunisia'];
@@ -914,10 +914,10 @@
                         this.renderResults(result.data.labs, formData);
                         this.updateURL(formData);
                     } else {
-                        throw new Error(result.message || 'Search failed');
+                        throw new Error(result.message || 'La recherche a échoué');
                     }
                 } catch (error) {
-                    console.error('Search error:', error);
+                    console.error('Erreur de recherche :', error);
                     this.showNoResults();
                 }
             }
@@ -973,7 +973,7 @@
                     resultsInfo.textContent = '';
                 } else {
                     noResults.style.display = 'none';
-                    resultsInfo.textContent = `Found ${labs.length} ${labs.length === 1 ? 'laboratory' : 'laboratories'}`;
+                    resultsInfo.textContent = `Trouvé ${labs.length} ${labs.length === 1 ? 'laboratoire' : 'laboratoires'}`;
                     resultsGrid.innerHTML = labs.map(lab => this.createResultCard(lab, searchParams)).join('');
                 }
                 
@@ -1006,7 +1006,7 @@
                         </div>
 
                         <div class="lab-research-areas">
-                            <h4>Research Areas</h4>
+                            <h4>Domaines de recherche</h4>
                             <div class="research-tags">${researchTags}</div>
                         </div>
 
@@ -1017,9 +1017,9 @@
                                 <svg class="icon" viewBox="0 0 20 20" style="width: 16px; height: 16px; fill: currentColor; margin-right: 4px;">
                                     <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"/>
                                 </svg>
-                                View Profile
+                                Voir le profil
                             </a>
-                            <a href="mailto:${lab.contact_email}" class="lab-contact">Contact Lab</a>
+                            <a href="mailto:${lab.contact_email}" class="lab-contact">Contacter le labo</a>
                             ${lab.established_year ? `<span class="lab-established">Est. ${lab.established_year}</span>` : ''}
                         </div>
                     </div>

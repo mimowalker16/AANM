@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Admin Dashboard - AANM</title>
-    <meta name="description" content="AANM Laboratory Directory Administration Dashboard" />
+    <title>Tableau de bord administrateur - AANM</title>
+    <meta name="description" content="Tableau d'administration de l'annuaire des laboratoires de l'AANM" />
     
     <!-- Performance Optimizations -->
     <meta name="theme-color" content="#2e7d32" />
@@ -508,8 +508,8 @@
     <nav class="navbar navbar--transparent" id="navbar">
         <div class="navbar__inner">
             <div class="navbar__logo-container">
-                <a href="/" class="navbar__logo" aria-label="Visit home page">
-                    <img src="./assets/images/logo.png" alt="AANM Logo" class="navbar__logo-img">
+                <a href="/" class="navbar__logo" aria-label="Accueil">
+                    <img src="./assets/images/logo.png" alt="Logo AANM" class="navbar__logo-img">
                 </a>
             </div>
             <div class="navbar__links" id="navLinks">
@@ -518,10 +518,10 @@
                 <a href="./activities.html" class="navbar__link">Activités</a>
                 <a href="./news.html" class="navbar__link">Actualités</a>
                 <a href="./contact.html" class="navbar__link">Contact</a>
-                <a href="./lab-submission.html" class="navbar__link">Submit Lab</a>
-                <a href="./lab-directory.html" class="navbar__link">Lab Directory</a>
-                <a href="./lab-map.html" class="navbar__link">Lab Map</a>
-                <a href="./admin-dashboard.html" class="navbar__link navbar__link--active">Admin</a>
+                <a href="./lab-submission.html" class="navbar__link">Soumettre un labo</a>
+                <a href="./lab-directory.html" class="navbar__link">Annuaire des labos</a>
+                <a href="./lab-map.html" class="navbar__link">Carte des labos</a>
+                <a href="./admin-dashboard.html" class="navbar__link navbar__link--active">Administration</a>
                 <a href="./contact.html" class="navbar__cta">Nous Rejoindre →</a>
             </div>
             <button class="navbar__toggle" id="navToggle" aria-label="Menu">
@@ -536,29 +536,29 @@
         <header class="page-header">
             <div class="container">
                 <span class="section-label">Administration</span>
-                <h1 class="page-header__title">Admin Dashboard</h1>
-                <p class="page-header__subtitle">Manage laboratory submissions and approvals</p>
+                <h1 class="page-header__title">Tableau de bord administrateur</h1>
+                <p class="page-header__subtitle">Gérez les soumissions et validations des laboratoires</p>
             </div>
         </header>
 
         <section class="section admin-dashboard">
             <div class="container">
-                <!-- Admin Header with Stats -->
+                <!-- Administration Header with Stats -->
                 <div class="admin-header">
                     <div class="admin-title">
                         <svg class="icon" viewBox="0 0 20 20">
                             <path d="M10 2L3 7v11h4v-6h6v6h4V7l-7-5z"/>
                         </svg>
-                        <h2>Laboratory Management</h2>
+                        <h2>Gestion des laboratoires</h2>
                     </div>
                     <div class="admin-stats">
                         <div class="stat-item">
                             <span id="pendingCount" class="stat-number">-</span>
-                            <span class="stat-label">Pending</span>
+                            <span class="stat-label">En attente</span>
                         </div>
                         <div class="stat-item">
                             <span id="approvedCount" class="stat-number">-</span>
-                            <span class="stat-label">Approved</span>
+                            <span class="stat-label">Approuvés</span>
                         </div>
                         <div class="stat-item">
                             <span id="totalCount" class="stat-number">-</span>
@@ -571,77 +571,77 @@
                 <!-- Tabs -->
                 <div class="admin-tabs">
                     <button class="tab-button active" data-tab="pending">
-                        Pending Submissions
+                        Soumissions en attente
                     </button>
                     <button class="tab-button" data-tab="approved">
-                        Approved Labs
+                        Labos approuvés
                     </button>
                     <button class="tab-button" data-tab="seminaires">
                         Séminaires
                     </button>
                 </div>
 
-                <!-- Pending Submissions Tab -->
+                <!-- Soumissions en attente Tab -->
                 <div id="pendingTab" class="tab-content active">
                     <div id="pendingLoading" class="loading-state">
                         <div class="loading-spinner"></div>
-                        <p>Loading pending submissions...</p>
+                        <p>Chargement des soumissions en attente...</p>
                     </div>
                     <div id="pendingError" class="error-state" style="display: none;"></div>
                     <div id="pendingEmpty" class="empty-state" style="display: none;">
                         <svg class="icon" viewBox="0 0 20 20">
                             <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>
                         </svg>
-                        <h3>No pending submissions</h3>
-                        <p>All laboratory submissions have been reviewed.</p>
+                        <h3>Aucune soumission en attente</h3>
+                        <p>Toutes les soumissions de laboratoires ont été examinées.</p>
                     </div>
                     <div id="pendingTable" style="display: none;">
                         <table class="labs-table">
                             <thead>
                                 <tr>
-                                    <th>Laboratory</th>
-                                    <th>Location</th>
+                                    <th>Laboratoire</th>
+                                    <th>Localisation</th>
                                     <th>Contact</th>
-                                    <th>Research Areas</th>
-                                    <th>Submitted</th>
+                                    <th>Domaines de recherche</th>
+                                    <th>Soumis le</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="pendingTableBody">
-                                <!-- Pending lab rows will be inserted here -->
+                                <!-- En attente lab rows will be inserted here -->
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- Approved Labs Tab -->
+                <!-- Labos approuvés Tab -->
                 <div id="approvedTab" class="tab-content">
                     <div id="approvedLoading" class="loading-state">
                         <div class="loading-spinner"></div>
-                        <p>Loading approved laboratories...</p>
+                        <p>Chargement des laboratoires approuvés...</p>
                     </div>
                     <div id="approvedError" class="error-state" style="display: none;"></div>
                     <div id="approvedEmpty" class="empty-state" style="display: none;">
                         <svg class="icon" viewBox="0 0 20 20">
                             <path d="M10 2C6.69 2 4 4.69 4 8c0 5.25 6 12 6 12s6-6.75 6-12c0-3.31-2.69-6-6-6zm0 8c-1.1 0-2-0.9-2-2s0.9-2 2-2 2 0.9 2 2-0.9 2-2 2z"/>
                         </svg>
-                        <h3>No approved laboratories</h3>
-                        <p>No laboratories have been approved yet.</p>
+                        <h3>Aucun laboratoire approuvé</h3>
+                        <p>Aucun laboratoire n'a encore été approuvé.</p>
                     </div>
                     <div id="approvedTable" style="display: none;">
                         <table class="labs-table">
                             <thead>
                                 <tr>
-                                    <th>Laboratory</th>
-                                    <th>Location</th>
+                                    <th>Laboratoire</th>
+                                    <th>Localisation</th>
                                     <th>Contact</th>
-                                    <th>Research Areas</th>
-                                    <th>Approved</th>
+                                    <th>Domaines de recherche</th>
+                                    <th>Approuvé</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="approvedTableBody">
-                                <!-- Approved lab rows will be inserted here -->
+                                <!-- Approuvé lab rows will be inserted here -->
                             </tbody>
                         </table>
                     </div>
@@ -704,15 +704,15 @@
     <div id="confirmModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 id="modalTitle" class="modal-title">Confirm Action</h3>
+                <h3 id="modalTitle" class="modal-title">Confirmer l'action</h3>
                 <button class="modal-close" onclick="closeModal()">&times;</button>
             </div>
             <div class="modal-body">
-                <p id="modalMessage">Are you sure you want to perform this action?</p>
+                <p id="modalMessage">Êtes-vous sûr de vouloir effectuer cette action ?</p>
             </div>
             <div class="modal-actions">
-                <button class="action-btn" onclick="closeModal()">Cancel</button>
-                <button id="modalConfirmBtn" class="action-btn approve">Confirm</button>
+                <button class="action-btn" onclick="closeModal()">Annuler</button>
+                <button id="modalConfirmBtn" class="action-btn approve">Confirmer</button>
             </div>
         </div>
     </div>
@@ -725,7 +725,7 @@
             <div class="footer__main">
                 <div class="footer__brand">
                     <div class="footer__logo">
-                        <img src="./assets/images/logo.png" alt="AANM Logo" class="footer__logo-img">
+                        <img src="./assets/images/logo.png" alt="Logo AANM" class="footer__logo-img">
                     </div>
                     <p class="footer__tagline">Pour une meilleure nutrition au Maghreb.<br />Alliance scientifique et traditions locales.</p>
                     <form class="footer__newsletter" onsubmit="event.preventDefault(); alert('Merci pour votre inscription !');">
@@ -780,7 +780,7 @@
             const token = sessionStorage.getItem('adminToken');
             if (!token) {
                 window.location.replace('./admin-login.html');
-                throw new Error('Redirecting to login');
+                throw new Error('Redirection vers la connexion');
             }
         })();
 
@@ -876,11 +876,11 @@
                         this.pendingLabs = result.data.labs;
                         this.renderPendingLabs();
                     } else {
-                        throw new Error(result.message || 'Failed to load pending labs');
+                        throw new Error(result.message || 'Impossible de charger les labos en attente');
                     }
                 } catch (error) {
-                    console.error('Error loading pending labs:', error);
-                    this.showError('pending', 'Failed to load pending submissions. Please check your connection and try again.');
+                    console.error('Erreur lors du chargement des labos en attente :', error);
+                    this.showError('pending', 'Impossible de charger les soumissions en attente. Vérifiez votre connexion puis réessayez.');
                 }
             }
 
@@ -894,11 +894,11 @@
                         this.approvedLabs = result.data.labs;
                         this.renderApprovedLabs();
                     } else {
-                        throw new Error(result.message || 'Failed to load approved labs');
+                        throw new Error(result.message || 'Impossible de charger les labos approuvés');
                     }
                 } catch (error) {
-                    console.error('Error loading approved labs:', error);
-                    this.showError('approved', 'Failed to load approved laboratories. Please check your connection and try again.');
+                    console.error('Erreur lors du chargement des labos approuvés :', error);
+                    this.showError('approved', 'Impossible de charger les laboratoires approuvés. Vérifiez votre connexion puis réessayez.');
                 }
             }
 
@@ -980,7 +980,7 @@
                         </td>
                         <td>
                             <div>${submittedDate}</div>
-                            ${type === 'pending' ? `<span class="status-badge pending">Pending</span>` : `<span class="status-badge approved">Approved</span>`}
+                            ${type === 'pending' ? `<span class="status-badge pending">En attente</span>` : `<span class="status-badge approved">Approuvé</span>`}
                         </td>
                         <td>
                             <div class="lab-actions">
@@ -989,20 +989,20 @@
                                         <svg class="icon" viewBox="0 0 20 20">
                                             <path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/>
                                         </svg>
-                                        Approve
+                                        Approuver
                                     </button>
                                     <button class="action-btn reject" onclick="adminDashboard.rejectLab(${lab.id})">
                                         <svg class="icon" viewBox="0 0 20 20">
                                             <path d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"/>
                                         </svg>
-                                        Reject
+                                        Rejeter
                                     </button>` : 
                                     `<a class="action-btn view" href="/lab-directory.html#lab-${lab.id}">
                                         <svg class="icon" viewBox="0 0 20 20">
                                             <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
                                             <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"/>
                                         </svg>
-                                        View
+                                        Voir
                                     </a>`
                                 }
                                 <a class="action-btn view" href="mailto:${lab.contact_email}">
@@ -1020,9 +1020,9 @@
 
             async approveLab(labId) {
                 this.showConfirmModal(
-                    'Approve Laboratory',
-                    'Are you sure you want to approve this laboratory submission? Once approved, it will be visible to the public.',
-                    'Approve',
+                    'Approuver Laboratory',
+                    'Are you sure you want to approve this laboratoire submission? Once approved, it will be visible to the public.',
+                    'Approuver',
                     'approve',
                     async () => {
                         try {
@@ -1030,7 +1030,7 @@
                                 method: 'PUT',
                                 headers: adminHeaders({ 'Content-Type': 'application/json' }),
                                 body: JSON.stringify({
-                                    adminNotes: 'Approved via admin dashboard'
+                                    adminNotes: 'Approuvé depuis le tableau de bord administrateur'
                                 })
                             });
 
@@ -1040,11 +1040,11 @@
                                 this.showNotification('Laboratory approved successfully!', 'success');
                                 await this.loadData();
                             } else {
-                                throw new Error(result.message || 'Failed to approve lab');
+                                throw new Error(result.message || 'Impossible d'approuver le labo');
                             }
                         } catch (error) {
-                            console.error('Error approving lab:', error);
-                            this.showNotification('Failed to approve laboratory. Please try again.', 'error');
+                            console.error('Erreur lors de l'approbation du labo :', error);
+                            this.showNotification('Impossible d'approuver le labooratoire. Please try again.', 'error');
                         }
                     }
                 );
@@ -1052,9 +1052,9 @@
 
             async rejectLab(labId) {
                 this.showConfirmModal(
-                    'Reject Laboratory',
-                    'Are you sure you want to reject this laboratory submission? This will permanently delete the submission.',
-                    'Reject',
+                    'Rejeter Laboratory',
+                    'Are you sure you want to reject this laboratoire submission? This will permanently delete the submission.',
+                    'Rejeter',
                     'reject',
                     async () => {
                         try {
@@ -1069,11 +1069,11 @@
                                 this.showNotification('Laboratory submission rejected and deleted.', 'success');
                                 await this.loadData();
                             } else {
-                                throw new Error(result.message || 'Failed to reject lab');
+                                throw new Error(result.message || 'Impossible de rejeter le labo');
                             }
                         } catch (error) {
-                            console.error('Error rejecting lab:', error);
-                            this.showNotification('Failed to reject laboratory. Please try again.', 'error');
+                            console.error('Erreur lors du rejet du labo :', error);
+                            this.showNotification('Impossible de rejeter le labooratoire. Please try again.', 'error');
                         }
                     }
                 );
@@ -1184,7 +1184,7 @@
                 document.getElementById('semFormTitle').textContent = 'Modifier le séminaire';
                 document.getElementById('semSubmitBtn').textContent = 'Enregistrer les modifications';
                 document.getElementById('semCancelBtn').style.display = '';
-                document.querySelector('[data-tab="seminaires"]').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                document.querySelector('[data-tab="seminaires"]').scrollIntoVoir({ behavior: 'smooth', block: 'start' });
             }
 
             cancelEditSeminar() {
@@ -1369,7 +1369,7 @@
             adminDashboard.closeModal();
         }
 
-        // Logout
+        // Déconnexion
         function adminLogout() {
             sessionStorage.removeItem('adminToken');
             window.location.replace('./admin-login.html');

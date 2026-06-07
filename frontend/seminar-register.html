@@ -303,7 +303,7 @@
             padding: var(--space-xl);
             text-align: center;
         }
-        #notFoundState {
+        #notTrouvéState {
             display: none;
             text-align: center;
             padding: var(--space-xl);
@@ -319,7 +319,7 @@
         <div class="navbar__inner">
             <div class="navbar__logo-container">
                 <a href="/" class="navbar__logo" aria-label="Accueil">
-                    <img src="./assets/images/logo.png" alt="AANM Logo" class="navbar__logo-img">
+                    <img src="./assets/images/logo.png" alt="Logo AANM" class="navbar__logo-img">
                 </a>
             </div>
             <div class="navbar__links" id="navLinks">
@@ -364,7 +364,7 @@
     </div>
 
     <!-- NOT FOUND -->
-    <div id="notFoundState">
+    <div id="notTrouvéState">
         <div class="state-panel state-panel--error is-visible" style="max-width:420px;margin:auto;">
             <div class="state-panel__icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
@@ -402,7 +402,7 @@
                         <a href="./activities.html" class="btn btn--outline" style="margin-top:1rem;display:inline-block;">Voir les activités</a>
                     </div>
 
-                    <!-- Success state -->
+                    <!-- État de réussite -->
                     <div class="state-panel state-panel--success" id="stateSuccess">
                         <div class="state-panel__icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
@@ -412,7 +412,7 @@
                         <a href="./activities.html" class="btn btn--primary" style="margin-top:1.2rem;display:inline-block;">Retour aux activités</a>
                     </div>
 
-                    <!-- Registration form -->
+                    <!-- Formulaire d'inscription -->
                     <div class="reg-card" id="formCard">
                         <div class="reg-card__header">
                             <h2>Formulaire d'inscription</h2>
@@ -448,7 +448,7 @@
                     </div>
                 </div>
 
-                <!-- RIGHT: Seminar Details -->
+                <!-- RIGHT: Détails du séminaire -->
                 <aside>
                     <div class="sidebar-info">
                         <p class="sidebar-info__title">Détails du séminaire</p>
@@ -488,7 +488,7 @@
             <div class="footer__main">
                 <div class="footer__brand">
                     <div class="footer__logo">
-                        <img src="./assets/images/logo.png" alt="AANM Logo" class="footer__logo-img">
+                        <img src="./assets/images/logo.png" alt="Logo AANM" class="footer__logo-img">
                     </div>
                     <p class="footer__tagline">Pour une meilleure nutrition au Maghreb.<br />Alliance scientifique et traditions locales.</p>
                     <form class="footer__newsletter" onsubmit="event.preventDefault(); alert('Merci pour votre inscription !');">
@@ -542,7 +542,7 @@
         const heroSection  = document.getElementById('heroSection');
         const loadingOverlay = document.getElementById('loadingOverlay');
         const mainContent  = document.getElementById('mainContent');
-        const notFoundState = document.getElementById('notFoundState');
+        const notTrouvéState = document.getElementById('notTrouvéState');
 
         const heroTitle    = document.getElementById('heroTitle');
         const heroDateEl   = document.getElementById('heroDate');
@@ -636,7 +636,7 @@
         async function loadSeminar() {
             if (!seminarId) {
                 loadingOverlay.style.display = 'none';
-                notFoundState.style.display = '';
+                notTrouvéState.style.display = '';
                 return;
             }
             try {
@@ -646,7 +646,7 @@
                 renderSeminar(data);
             } catch {
                 loadingOverlay.style.display = 'none';
-                notFoundState.style.display = '';
+                notTrouvéState.style.display = '';
             }
         }
 
