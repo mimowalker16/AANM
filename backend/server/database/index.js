@@ -14,14 +14,17 @@ class Database {
             throw new Error('DATABASE_URL is required. Example: postgres://user:password@host:5432/aanm');
         }
 
+        this.logConnectionTarget(config.database.url, config.database.ssl);
         const sslCandidates = this.getSslCandidates(config.database.url, config.database.ssl);
         let lastError = null;
 
         for (const ssl of sslCandidates) {
             try {
+                console.log(`🔌 Trying PostgreSQL connection with ${ssl ? 'SSL' : 'plain TCP'}...`);
                 this.pool = new Pool({
                     connectionString: config.database.url,
-                    ssl
+                    ssl,
+                    connectionTimeoutMillis: 10000
                 });
 
                 await this.pool.query('SELECT 1');
@@ -30,6 +33,7 @@ class Database {
                 break;
             } catch (error) {
                 lastError = error;
+                console.error(`⚠️ PostgreSQL ${ssl ? 'SSL' : 'plain TCP'} connection failed: ${error.code || error.name} ${error.message}`);
                 if (this.pool) {
                     await this.pool.end().catch(() => {});
                     this.pool = null;
@@ -44,6 +48,15 @@ class Database {
         this.isConnected = true;
         console.log('✅ Connected to PostgreSQL database');
         await this.initializeTables();
+    }
+
+    logConnectionTarget(databaseUrl, sslMode) {
+        try {
+            const url = new URL(databaseUrl);
+            console.log(`🗄️ PostgreSQL target: host=${url.hostname} port=${url.port || '5432'} database=${url.pathname.replace(/^\//, '') || '(none)'} ssl=${sslMode || 'auto'}`);
+        } catch {
+            console.log('🗄️ PostgreSQL target: unable to parse DATABASE_URL');
+        }
     }
 
     getSslCandidates(databaseUrl, sslMode) {
