@@ -14,14 +14,22 @@
             display: flex;
             gap: 0.75rem;
             flex-wrap: wrap;
+            align-items: stretch;
             margin-bottom: var(--space-xl);
         }
 
         .filter-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             padding: 0.6rem 1.5rem;
             border-radius: var(--radius-full);
             font-weight: 600;
             font-size: var(--fs-small);
+            line-height: 1.2;
+            min-height: 44px;
+            text-align: center;
+            white-space: normal;
             border: 2px solid var(--clr-primary);
             color: var(--clr-primary);
             transition: all var(--transition-fast);
@@ -384,6 +392,7 @@
 
         .countdown-card__actions .btn {
             flex: 1;
+            min-width: min(100%, 180px);
         }
 
         @media (max-width: 968px) {
@@ -409,6 +418,10 @@
 
             .countdown-card__actions {
                 flex-direction: column;
+            }
+
+            .countdown-card__actions .btn {
+                width: 100%;
             }
         }
 

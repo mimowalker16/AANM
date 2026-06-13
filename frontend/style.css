@@ -274,14 +274,16 @@ h1, h2, h3, h4, h5, h6 {
 .navbar__links {
   display: flex;
   align-items: center;
-  gap: clamp(1.5rem, 2.5vw, 2.5rem);
+  gap: clamp(0.75rem, 1.25vw, 1.5rem);
+  min-width: 0;
 }
 
 .navbar__link {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 500;
   position: relative;
   padding: 0.25rem 0;
+  white-space: nowrap;
 }
 
 .navbar__link::after {
@@ -303,13 +305,18 @@ h1, h2, h3, h4, h5, h6 {
 .navbar__cta {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
-  padding: 0.7rem 1.6rem;
+  padding: 0.7rem 1.1rem;
   background: var(--clr-secondary);
   color: var(--clr-white);
   border-radius: var(--radius-full);
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.86rem;
+  line-height: 1.2;
+  min-height: 44px;
+  text-align: center;
+  white-space: nowrap;
   transition: background var(--transition-fast), transform var(--transition-fast);
 }
 
@@ -337,7 +344,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Mobile Nav */
-@media (max-width: 900px) {
+@media (max-width: 1120px) {
   .navbar__toggle {
     display: flex;
   }
@@ -362,6 +369,8 @@ h1, h2, h3, h4, h5, h6 {
   }
   .navbar__link {
     font-size: 1.2rem;
+    white-space: normal;
+    text-align: center;
   }
 
   .navbar__toggle--open span:nth-child(1) {
@@ -517,11 +526,18 @@ h1, h2, h3, h4, h5, h6 {
 .btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.6rem;
   padding: 0.85rem 2rem;
   border-radius: var(--radius-full);
   font-weight: 600;
   font-size: 0.95rem;
+  line-height: 1.2;
+  min-height: 44px;
+  max-width: 100%;
+  text-align: center;
+  white-space: normal;
+  overflow-wrap: anywhere;
   transition: all var(--transition-fast);
   letter-spacing: 0.02em;
   cursor: pointer;
@@ -573,6 +589,41 @@ h1, h2, h3, h4, h5, h6 {
 .btn svg {
   width: 18px;
   height: 18px;
+  flex-shrink: 0;
+}
+
+/* French UI copy tends to be longer than the original labels. Keep common
+   controls readable instead of clipping inside fixed-size buttons. */
+:where(
+  .action-btn,
+  .search-btn,
+  .submit-btn,
+  .filter-btn,
+  .map-btn,
+  .lab-contact,
+  .advanced-search-link,
+  .pagination button,
+  .tab-button
+) {
+  max-width: 100%;
+  min-height: 44px;
+  line-height: 1.2;
+  text-align: center;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+:where(
+  .action-btn,
+  .search-btn,
+  .submit-btn,
+  .filter-btn,
+  .map-btn,
+  .lab-contact,
+  .advanced-search-link
+) svg,
+:where(.action-btn, .search-btn, .submit-btn, .map-btn, .advanced-search-link) .icon {
+  flex-shrink: 0;
 }
 
 /* ============================================
@@ -1793,7 +1844,7 @@ h1, h2, h3, h4, h5, h6 {
    ============================================ */
 
 /* Enhanced Mobile Navigation */
-@media (max-width: 900px) {
+@media (max-width: 1120px) {
   .navbar {
     padding: 0 var(--space-md);
   }

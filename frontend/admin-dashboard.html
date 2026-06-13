@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -69,6 +69,7 @@
 
         .admin-tabs {
             display: flex;
+            flex-wrap: wrap;
             gap: var(--space-xs);
             margin-bottom: var(--space-lg);
             border-bottom: 2px solid var(--clr-bg-alt);
@@ -81,9 +82,12 @@
             color: var(--clr-text-muted);
             font-weight: 600;
             font-size: var(--fs-body);
+            line-height: 1.2;
             cursor: pointer;
             border-bottom: 2px solid transparent;
             transition: all 0.3s ease;
+            flex: 1 1 180px;
+            min-width: 0;
         }
 
         .tab-button.active {
@@ -135,7 +139,7 @@
         }
         .sem-field--full { grid-column: 1 / -1; }
         .sem-field textarea { resize: vertical; }
-        .sem-form-actions { margin-top: var(--space-md); display: flex; gap: 0.6rem; }
+        .sem-form-actions { margin-top: var(--space-md); display: flex; gap: 0.6rem; flex-wrap: wrap; }
         .seminar-card {
             background: var(--clr-white, #fff);
             border-radius: var(--radius-lg);
@@ -244,6 +248,8 @@
         .lab-actions {
             display: flex;
             gap: var(--space-xs);
+            flex-wrap: wrap;
+            align-items: center;
         }
 
         .action-btn {
@@ -252,12 +258,17 @@
             border-radius: var(--radius-md);
             font-size: var(--fs-small);
             font-weight: 600;
+            line-height: 1.2;
             cursor: pointer;
             transition: all 0.3s ease;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 4px;
+            min-height: 36px;
+            text-align: center;
+            white-space: normal;
         }
 
         .action-btn.approve {
@@ -452,6 +463,7 @@
 
         .modal-actions {
             display: flex;
+            flex-wrap: wrap;
             gap: var(--space-sm);
             justify-content: flex-end;
         }
@@ -478,6 +490,13 @@
 
             .lab-actions {
                 flex-direction: column;
+                align-items: stretch;
+            }
+
+            .action-btn,
+            .sem-form-actions .action-btn,
+            .modal-actions .action-btn {
+                width: 100%;
             }
 
             .modal-content {

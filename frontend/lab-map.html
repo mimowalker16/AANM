@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -51,6 +51,7 @@
             flex-wrap: wrap;
             gap: var(--space-md);
             align-items: center;
+            min-width: 0;
         }
 
         .map-filter-select {
@@ -70,6 +71,7 @@
         .advanced-search-link {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: var(--space-xs);
             padding: var(--space-sm) var(--space-md);
             background: var(--clr-primary);
@@ -78,6 +80,9 @@
             border-radius: var(--radius-md);
             font-weight: 600;
             font-size: var(--fs-body);
+            line-height: 1.2;
+            min-height: 44px;
+            text-align: center;
             transition: background-color 0.3s ease;
         }
 
@@ -219,11 +224,15 @@
 
         .lab-popup .actions {
             display: flex;
+            flex-wrap: wrap;
             gap: var(--space-xs);
             margin-top: var(--space-sm);
         }
 
         .lab-popup .btn-contact {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             background: var(--clr-primary);
             color: white;
             padding: 6px 12px;
@@ -231,6 +240,8 @@
             text-decoration: none;
             font-size: var(--fs-small);
             font-weight: 600;
+            line-height: 1.2;
+            text-align: center;
             transition: background-color 0.3s ease;
         }
 
@@ -239,6 +250,9 @@
         }
 
         .lab-popup .btn-details {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             background: transparent;
             color: var(--clr-primary);
             padding: 6px 12px;
@@ -247,6 +261,8 @@
             text-decoration: none;
             font-size: var(--fs-small);
             font-weight: 600;
+            line-height: 1.2;
+            text-align: center;
             transition: all 0.3s ease;
         }
 
@@ -307,6 +323,7 @@
 
         .map-actions {
             display: flex;
+            flex-wrap: wrap;
             gap: var(--space-sm);
             justify-content: center;
             margin-top: var(--space-lg);
@@ -324,7 +341,11 @@
             text-decoration: none;
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: var(--space-xs);
+            min-height: 44px;
+            line-height: 1.2;
+            text-align: center;
         }
 
         .map-btn:hover {
@@ -380,6 +401,11 @@
             .map-actions {
                 flex-direction: column;
                 align-items: stretch;
+            }
+
+            .advanced-search-link,
+            .map-btn {
+                width: 100%;
             }
         }
 
