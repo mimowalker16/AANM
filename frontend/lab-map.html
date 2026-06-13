@@ -820,7 +820,7 @@
                         </div>
 
                         <div class="actions">
-                            <a href="mailto:${lab.contact_email}" class="btn-contact">Contact</a>
+                            <a href="${this.escapeAttribute(this.safeMailto(lab.contact_email))}" class="btn-contact">Contact</a>
                             <a href="/lab-profile.html?id=${lab.id}" class="btn-details">Voir le profil</a>
                         </div>
                     </div>
@@ -871,6 +871,16 @@
                 const div = document.createElement('div');
                 div.textContent = text;
                 return div.innerHTML;
+            }
+
+            escapeAttribute(text) {
+                return this.escapeHtml(text).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+            }
+
+            safeMailto(email) {
+                const value = String(email || '').trim();
+                const isSafeEmail = /^[^\s@<>"']+@[^\s@<>"']+\.[^\s@<>"']+$/.test(value);
+                return isSafeEmail ? `mailto:${value}` : '#';
             }
         }
 

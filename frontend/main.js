@@ -536,7 +536,7 @@ function enhanceMobileForms() {
             const firstError = this.querySelector('.error, :invalid');
             if (firstError) {
                 e.preventDefault();
-                firstError.scrollIntoVoir({ 
+                firstError.scrollIntoView({
                     behavior: 'smooth', 
                     block: 'center' 
                 });

@@ -190,6 +190,64 @@
             margin: 0 auto;
         }
 
+        .scientific-guide {
+            background: linear-gradient(135deg, rgba(27, 94, 58, 0.08), rgba(212, 168, 67, 0.14));
+            border: 1px solid rgba(27, 94, 58, 0.12);
+        }
+
+        .scientific-guide__card {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: var(--space-xl);
+            align-items: center;
+            background: var(--clr-white);
+            border-radius: var(--radius-lg);
+            padding: clamp(1.5rem, 4vw, 2.5rem);
+            box-shadow: var(--shadow-md);
+            border-left: 5px solid var(--clr-accent-gold);
+        }
+
+        .scientific-guide__eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            color: var(--clr-secondary);
+            font-size: var(--fs-small);
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: var(--space-sm);
+        }
+
+        .scientific-guide__title {
+            font-size: clamp(1.7rem, 3vw, 2.4rem);
+            margin-bottom: var(--space-sm);
+            color: var(--clr-primary);
+        }
+
+        .scientific-guide__text {
+            color: var(--clr-text-light);
+            line-height: 1.75;
+            max-width: 760px;
+        }
+
+        .scientific-guide__badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 150px;
+            min-height: 150px;
+            padding: var(--space-md);
+            border-radius: 50%;
+            background: var(--clr-primary);
+            color: var(--clr-accent-gold-light);
+            font-family: var(--ff-heading);
+            font-size: 2.4rem;
+            font-weight: 700;
+            line-height: 1;
+            box-shadow: 0 16px 40px rgba(14, 47, 28, 0.2);
+        }
+
         @media (max-width: 768px) {
             .timeline::before {
                 left: 30px;
@@ -209,6 +267,20 @@
 
             .timeline__year {
                 width: auto;
+            }
+
+            .scientific-guide__card {
+                grid-template-columns: 1fr;
+                gap: var(--space-md);
+            }
+
+            .scientific-guide__badge {
+                width: 96px;
+                min-width: 96px;
+                min-height: 96px;
+                font-size: 1.7rem;
+                justify-self: start;
+                order: -1;
             }
         }
     </style>
@@ -268,8 +340,8 @@
                     </p>
                 </div>
                 <div class="about__image reveal reveal--delay-2">
-                    <img src="https://images.unsplash.com/photo-1607962837359-5e7e89f86776?w=800&q=80"
-                        alt="Notre mission nutritionnelle" />
+                    <img src="./assets/images/aanm/aanm-ceremony-group.jpg"
+                        alt="Participants AANM lors d'une cérémonie de formation" />
                 </div>
             </div>
             <div class="mission__highlight reveal">
@@ -277,6 +349,23 @@
                 <p>Un Maghreb où chaque personne a accès à une alimentation saine, équilibrée et culturellement
                     appropriée, soutenue par des connaissances scientifiques solides et des pratiques traditionnelles
                     éprouvées.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SCIENTIFIC GUIDE -->
+    <section class="section scientific-guide">
+        <div class="container">
+            <div class="scientific-guide__card reveal">
+                <div>
+                    <span class="scientific-guide__eyebrow">Tuteur officiel</span>
+                    <h2 class="scientific-guide__title">Dr. Jean-Paul Curtay</h2>
+                    <p class="scientific-guide__text">L'AANM bénéficie de l'accompagnement du Dr. Jean-Paul Curtay,
+                        tuteur officiel de l'association. Sa présence renforce notre exigence scientifique et notre
+                        volonté de transmettre une nutrition préventive, claire et accessible aux professionnels comme
+                        au grand public.</p>
+                </div>
+                <div class="scientific-guide__badge" aria-hidden="true">JPC</div>
             </div>
         </div>
     </section>
@@ -336,60 +425,60 @@
         </div>
     </section>
 
-    <!-- TEAM -->
+    <!-- COMMUNITY -->
     <section class="section" style="background: var(--clr-bg-alt);">
         <div class="container">
-            <span class="section-label reveal">Notre Équipe</span>
-            <h2 class="section-title reveal">Les visages de l'AANM</h2>
-            <p class="section-subtitle reveal">Des professionnels passionnés dédiés à l'amélioration de la nutrition au
-                Maghreb.</p>
+            <span class="section-label reveal">Sur le terrain</span>
+            <h2 class="section-title reveal">La communauté AANM en action</h2>
+            <p class="section-subtitle reveal">Formations, rencontres scientifiques et remises de certificats : notre
+                travail prend vie grâce aux professionnels, participants et partenaires mobilisés autour de la nutrition.</p>
             <div class="team__grid">
                 <div class="team-card reveal">
                     <div class="team-card__image">
-                        <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&q=80"
-                            alt="Dr. Mohamed Benali" />
+                        <img src="./assets/images/aanm/aanm-ceremony-group.jpg"
+                            alt="Groupe AANM lors d'une cérémonie de formation" />
                     </div>
                     <div class="team-card__body">
-                        <h3 class="team-card__name">Dr. Mohamed Benali</h3>
-                        <p class="team-card__role">Président</p>
-                        <p class="team-card__bio">Professeur en nutrition et santé publique avec plus de 25 ans
-                            d'expérience en recherche médicale.</p>
+                        <h3 class="team-card__name">Formations certifiantes</h3>
+                        <p class="team-card__role">Transmission</p>
+                        <p class="team-card__bio">Des sessions structurées pour renforcer les connaissances en nutrition
+                            préventive et accompagner les pratiques professionnelles.</p>
                     </div>
                 </div>
                 <div class="team-card reveal reveal--delay-1">
                     <div class="team-card__image">
-                        <img src="https://images.unsplash.com/photo-1594824476967-48c8b964ac31?w=400&q=80"
-                            alt="Dr. Fatima Zahra" />
+                        <img src="./assets/images/aanm/aanm-stage-group.jpg"
+                            alt="Participants AANM lors d'une rencontre scientifique" />
                     </div>
                     <div class="team-card__body">
-                        <h3 class="team-card__name">Dr. Fatima Zahra</h3>
-                        <p class="team-card__role">Vice-Présidente</p>
-                        <p class="team-card__bio">Spécialiste en diététique clinique et en nutrition pédiatrique,
-                            engagée dans l'éducation communautaire.</p>
+                        <h3 class="team-card__name">Rencontres scientifiques</h3>
+                        <p class="team-card__role">Échanges</p>
+                        <p class="team-card__bio">Des espaces de discussion pour croiser les expériences, les approches
+                            cliniques et les réalités nutritionnelles du Maghreb.</p>
                     </div>
                 </div>
                 <div class="team-card reveal reveal--delay-2">
                     <div class="team-card__image">
-                        <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&q=80"
-                            alt="Pr. Ahmed Mansouri" />
+                        <img src="./assets/images/aanm/aanm-community-outdoor.jpg"
+                            alt="Communauté AANM réunie en extérieur" />
                     </div>
                     <div class="team-card__body">
-                        <h3 class="team-card__name">Pr. Ahmed Mansouri</h3>
-                        <p class="team-card__role">Directeur Scientifique</p>
-                        <p class="team-card__bio">Chercheur reconnu en sciences alimentaires, auteur de nombreuses
-                            publications sur la nutrition maghrébine.</p>
+                        <h3 class="team-card__name">Communauté active</h3>
+                        <p class="team-card__role">Terrain</p>
+                        <p class="team-card__bio">Une dynamique collective portée par les participants, les encadrants
+                            et les partenaires engagés pour la santé nutritionnelle.</p>
                     </div>
                 </div>
                 <div class="team-card reveal reveal--delay-3">
                     <div class="team-card__image">
-                        <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=400&q=80"
-                            alt="Mme. Nadia Cherifi" />
+                        <img src="./assets/images/aanm/aanm-awards-lineup.jpg"
+                            alt="Remise de certificats AANM" />
                     </div>
                     <div class="team-card__body">
-                        <h3 class="team-card__name">Mme. Nadia Cherifi</h3>
-                        <p class="team-card__role">Coordinatrice des Programmes</p>
-                        <p class="team-card__bio">Experte en gestion de projets communautaires, elle coordonne tous nos
-                            programmes terrain à l'échelle nationale.</p>
+                        <h3 class="team-card__name">Valorisation des acquis</h3>
+                        <p class="team-card__role">Reconnaissance</p>
+                        <p class="team-card__bio">Chaque formation se conclut par une reconnaissance du parcours et de
+                            l'implication des participants.</p>
                     </div>
                 </div>
             </div>

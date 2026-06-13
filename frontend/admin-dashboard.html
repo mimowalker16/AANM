@@ -811,8 +811,16 @@
             return Object.assign({ 'Authorization': 'Bearer ' + getAdminToken() }, extra || {});
         }
 
-        function handleAuthError(result) {
-            if (result && result.message && (result.message.includes('expired') || result.message.includes('Invalid'))) {
+        function handleAuthError(response, result) {
+            const message = result?.message || '';
+            const isAuthFailure = response?.status === 401 ||
+                response?.status === 403 ||
+                message.toLowerCase().includes('expired') ||
+                message.toLowerCase().includes('invalid') ||
+                message.toLowerCase().includes('unauthorized') ||
+                message.toLowerCase().includes('forbidden');
+
+            if (isAuthFailure) {
                 sessionStorage.removeItem('adminToken');
                 window.location.replace('./admin-login.html');
                 return true;
@@ -890,6 +898,7 @@
                         headers: adminHeaders()
                     });
                     const result = await response.json();
+                    if (handleAuthError(response, result)) return;
 
                     if (result.success) {
                         this.pendingLabs = result.data.labs;
@@ -1024,7 +1033,7 @@
                                         Voir
                                     </a>`
                                 }
-                                <a class="action-btn view" href="mailto:${lab.contact_email}">
+                                <a class="action-btn view" href="${this.escapeAttribute(this.safeMailto(lab.contact_email))}">
                                     <svg class="icon" viewBox="0 0 20 20">
                                         <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
                                         <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
@@ -1039,8 +1048,8 @@
 
             async approveLab(labId) {
                 this.showConfirmModal(
-                    'Approuver Laboratory',
-                    'Are you sure you want to approve this laboratoire submission? Once approved, it will be visible to the public.',
+                    'Approuver le laboratoire',
+                    'Voulez-vous approuver cette soumission ? Une fois approuvée, elle sera visible publiquement.',
                     'Approuver',
                     'approve',
                     async () => {
@@ -1054,16 +1063,17 @@
                             });
 
                             const result = await response.json();
+                            if (handleAuthError(response, result)) return;
 
                             if (result.success) {
-                                this.showNotification('Laboratory approved successfully!', 'success');
+                                this.showNotification('Laboratoire approuvé avec succès.', 'success');
                                 await this.loadData();
                             } else {
-                                throw new Error(result.message || 'Impossible d'approuver le labo');
+                                throw new Error(result.message || "Impossible d'approuver le laboratoire");
                             }
                         } catch (error) {
-                            console.error('Erreur lors de l'approbation du labo :', error);
-                            this.showNotification('Impossible d'approuver le labooratoire. Please try again.', 'error');
+                            console.error("Erreur lors de l'approbation du laboratoire :", error);
+                            this.showNotification("Impossible d'approuver le laboratoire. Veuillez réessayer.", 'error');
                         }
                     }
                 );
@@ -1071,8 +1081,8 @@
 
             async rejectLab(labId) {
                 this.showConfirmModal(
-                    'Rejeter Laboratory',
-                    'Are you sure you want to reject this laboratoire submission? This will permanently delete the submission.',
+                    'Rejeter le laboratoire',
+                    'Voulez-vous rejeter cette soumission ? Cette action supprimera définitivement la demande.',
                     'Rejeter',
                     'reject',
                     async () => {
@@ -1083,16 +1093,17 @@
                             });
 
                             const result = await response.json();
+                            if (handleAuthError(response, result)) return;
 
                             if (result.success) {
-                                this.showNotification('Laboratory submission rejected and deleted.', 'success');
+                                this.showNotification('Soumission rejetée et supprimée.', 'success');
                                 await this.loadData();
                             } else {
                                 throw new Error(result.message || 'Impossible de rejeter le labo');
                             }
                         } catch (error) {
                             console.error('Erreur lors du rejet du labo :', error);
-                            this.showNotification('Impossible de rejeter le labooratoire. Please try again.', 'error');
+                            this.showNotification('Impossible de rejeter le laboratoire. Veuillez réessayer.', 'error');
                         }
                     }
                 );
@@ -1107,6 +1118,7 @@
                 try {
                     const res = await fetch(`${API_BASE}/api/admin/seminaires`, { headers: adminHeaders() });
                     const result = await res.json();
+                    if (handleAuthError(res, result)) return;
                     if (!result.success) throw new Error(result.message);
                     this.seminaires = result.data;
                     this.renderSeminaires();
@@ -1168,6 +1180,7 @@
                 try {
                     const res = await fetch(`${API_BASE}/api/admin/seminaires/${seminarId}/registrations`, { headers: adminHeaders() });
                     const result = await res.json();
+                    if (handleAuthError(res, result)) return;
                     if (!result.success) throw new Error();
                     if (result.data.length === 0) {
                         panel.innerHTML = '<p class="sem-regs-empty">Aucune inscription pour ce séminaire.</p>';
@@ -1175,15 +1188,20 @@
                     }
                     panel.innerHTML = `<table class="sem-regs-table">
                         <thead><tr><th>#</th><th>Nom</th><th>Email</th><th>Téléphone</th><th>Inscrit le</th><th></th></tr></thead>
-                        <tbody>${result.data.map((r, i) => `
+                        <tbody>${result.data.map((r, i) => {
+                            const registrationId = Number(r.id);
+                            const currentSeminarId = Number(seminarId);
+                            const canDelete = Number.isFinite(registrationId) && Number.isFinite(currentSeminarId);
+                            return `
                             <tr>
                                 <td>${i + 1}</td>
                                 <td>${this.escapeHtml(r.full_name)}</td>
                                 <td>${this.escapeHtml(r.email)}</td>
                                 <td>${r.phone ? this.escapeHtml(r.phone) : '—'}</td>
                                 <td>${new Date(r.registered_at).toLocaleString('fr-FR')}</td>
-                                <td><button class="action-btn reject" style="font-size:0.75rem;padding:0.25rem 0.5rem;" onclick="adminDashboard.deleteRegistration(${r.id}, ${seminarId})">✕</button></td>
-                            </tr>`).join('')}
+                                <td>${canDelete ? `<button type="button" class="action-btn reject" style="font-size:0.75rem;padding:0.25rem 0.5rem;" title="Supprimer l'inscription" aria-label="Supprimer l'inscription de ${this.escapeAttribute(r.full_name)}" onclick="adminDashboard.deleteRegistration(${registrationId}, ${currentSeminarId})">Supprimer</button>` : ''}</td>
+                            </tr>`;
+                        }).join('')}
                         </tbody>
                     </table>`;
                 } catch {
@@ -1203,7 +1221,7 @@
                 document.getElementById('semFormTitle').textContent = 'Modifier le séminaire';
                 document.getElementById('semSubmitBtn').textContent = 'Enregistrer les modifications';
                 document.getElementById('semCancelBtn').style.display = '';
-                document.querySelector('[data-tab="seminaires"]').scrollIntoVoir({ behavior: 'smooth', block: 'start' });
+                document.querySelector('[data-tab="seminaires"]').scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
 
             cancelEditSeminar() {
@@ -1239,6 +1257,7 @@
                         body: JSON.stringify(payload)
                     });
                     const result = await res.json();
+                    if (handleAuthError(res, result)) return;
                     if (!result.success) throw new Error(result.message);
                     this.showNotification(id ? 'Séminaire mis à jour.' : 'Séminaire créé avec succès.', 'success');
                     this.cancelEditSeminar();
@@ -1257,6 +1276,7 @@
                         headers: adminHeaders()
                     });
                     const result = await res.json();
+                    if (handleAuthError(res, result)) return;
                     if (!result.success) throw new Error(result.message);
                     this.showNotification(`Séminaire ${result.is_open ? 'ouvert' : 'fermé'}.`, 'success');
                     await this.loadSeminaires();
@@ -1277,6 +1297,7 @@
                                 headers: adminHeaders()
                             });
                             const result = await res.json();
+                            if (handleAuthError(res, result)) return;
                             if (!result.success) throw new Error(result.message);
                             this.showNotification('Séminaire supprimé.', 'success');
                             await this.loadSeminaires();
@@ -1287,21 +1308,29 @@
                 );
             }
 
-            async deleteRegistration(regId, seminarId) {
-                try {
-                    const res = await fetch(`${API_BASE}/api/admin/registrations/${regId}`, {
-                        method: 'DELETE',
-                        headers: adminHeaders()
-                    });
-                    const result = await res.json();
-                    if (!result.success) throw new Error(result.message);
-                    this.showNotification('Inscription supprimée.', 'success');
-                    // Reload the seminar list then re-expand
-                    await this.loadSeminaires();
-                    this.expandRegistrations(seminarId);
-                } catch {
-                    this.showNotification('Erreur lors de la suppression.', 'error');
-                }
+            deleteRegistration(regId, seminarId) {
+                this.showConfirmModal(
+                    "Supprimer l'inscription",
+                    'Voulez-vous supprimer cette inscription ? Cette action est irréversible.',
+                    'Supprimer',
+                    'reject',
+                    async () => {
+                        try {
+                            const res = await fetch(`${API_BASE}/api/admin/registrations/${regId}`, {
+                                method: 'DELETE',
+                                headers: adminHeaders()
+                            });
+                            const result = await res.json();
+                            if (handleAuthError(res, result)) return;
+                            if (!result.success) throw new Error(result.message);
+                            this.showNotification('Inscription supprimée.', 'success');
+                            await this.loadSeminaires();
+                            this.expandRegistrations(seminarId);
+                        } catch {
+                            this.showNotification('Erreur lors de la suppression.', 'error');
+                        }
+                    }
+                );
             }
 
             showConfirmModal(title, message, confirmText, confirmClass, onConfirm) {
@@ -1320,9 +1349,14 @@
                 confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
 
                 // Add new event listener
-                newConfirmBtn.addEventListener('click', () => {
+                newConfirmBtn.addEventListener('click', async () => {
+                    newConfirmBtn.disabled = true;
                     this.closeModal();
-                    onConfirm();
+                    try {
+                        await onConfirm();
+                    } finally {
+                        newConfirmBtn.disabled = false;
+                    }
                 });
 
                 modal.classList.add('show');
@@ -1374,6 +1408,16 @@
                 const div = document.createElement('div');
                 div.textContent = text;
                 return div.innerHTML;
+            }
+
+            escapeAttribute(text) {
+                return this.escapeHtml(text).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+            }
+
+            safeMailto(email) {
+                const value = String(email || '').trim();
+                const isSafeEmail = /^[^\s@<>"']+@[^\s@<>"']+\.[^\s@<>"']+$/.test(value);
+                return isSafeEmail ? `mailto:${value}` : '#';
             }
         }
 
