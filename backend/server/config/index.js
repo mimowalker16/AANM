@@ -38,6 +38,15 @@ export const config = {
         adminPassword: process.env.ADMIN_PASSWORD || 'aanm-admin-2026',
         jwtSecret: process.env.JWT_SECRET || 'aanm-jwt-super-secret-key-change-in-production',
         jwtExpiresIn: process.env.JWT_EXPIRES_IN || '8h'
+    },
+    email: {
+        smtpHost: process.env.SMTP_HOST || '',
+        smtpPort: parseInt(process.env.SMTP_PORT || '587', 10),
+        smtpSecure: process.env.SMTP_SECURE === 'true',
+        smtpUser: process.env.SMTP_USER || '',
+        smtpPass: process.env.SMTP_PASS || '',
+        from: process.env.EMAIL_FROM || process.env.SMTP_USER || 'AANM <no-reply@aanm-assal.org>',
+        replyTo: process.env.EMAIL_REPLY_TO || process.env.EMAIL_FROM || process.env.SMTP_USER || ''
     }
     // Note: No API keys needed! Using free OpenStreetMap + Leaflet
 };

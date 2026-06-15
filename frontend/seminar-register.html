@@ -447,8 +447,8 @@
                         <div class="state-panel__icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
                         </div>
-                        <p class="state-panel__title">Inscription confirmée !</p>
-                        <p class="state-panel__text">Votre inscription a bien été enregistrée. Vous recevrez les détails par email.</p>
+                        <p class="state-panel__title">Demande reçue !</p>
+                        <p class="state-panel__text">Votre inscription est en attente de vérification du paiement. Après validation, vous recevrez les détails du séminaire par email.</p>
                         <a href="./activities.html" class="btn btn--primary" style="margin-top:1.2rem;display:inline-block;">Retour aux activités</a>
                     </div>
 
@@ -605,10 +605,15 @@
 
             // Sidebar
             document.getElementById('sidebarDateVal').textContent = formatDate(s.date);
-            document.getElementById('sidebarLocVal').textContent = s.location || 'À confirmer';
+            const isVirtual = s.delivery_mode === 'virtual';
+            document.getElementById('sidebarLocVal').textContent = isVirtual
+                ? 'Virtuel - lien envoyé après confirmation'
+                : s.location || 'À confirmer';
 
             const badge = document.getElementById('sidebarBadge');
-            const isFull = s.capacity !== null && s.registration_count >= s.capacity;
+            const reservedCount = Number(s.total_registration_count ?? s.registration_count ?? 0);
+            const approvedCount = Number(s.registration_count ?? 0);
+            const isFull = s.capacity !== null && reservedCount >= s.capacity;
             if (!s.is_open) {
                 badge.innerHTML = '<span class="badge badge--closed">Fermé</span>';
             } else if (isFull) {
@@ -618,10 +623,10 @@
             }
 
             if (s.capacity !== null) {
-                const pct = Math.min(100, Math.round((s.registration_count / s.capacity) * 100));
+                const pct = Math.min(100, Math.round((reservedCount / s.capacity) * 100));
                 document.getElementById('capacityFill').style.width = pct + '%';
                 document.getElementById('capacityText').textContent =
-                    `${s.registration_count} / ${s.capacity} places réservées`;
+                    `${reservedCount} / ${s.capacity} demandes reçues, dont ${approvedCount} approuvées`;
                 document.getElementById('capacityBar').style.display = '';
             }
 

@@ -5,7 +5,7 @@ import { loginRateLimiter } from '../middleware/security.js';
 import {
     adminGetSeminaires, adminCreateSeminaire, adminUpdateSeminaire,
     adminToggleSeminaire, adminDeleteSeminaire,
-    adminGetRegistrations, adminDeleteRegistration
+    adminGetRegistrations, adminApproveRegistration, adminDeleteRegistration
 } from '../controllers/adminSeminaireController.js';
 
 const router = express.Router();
@@ -40,6 +40,7 @@ router.put('/seminaires/:id', requireAdminAuth, adminUpdateSeminaire);
 router.put('/seminaires/:id/toggle', requireAdminAuth, adminToggleSeminaire);
 router.delete('/seminaires/:id', requireAdminAuth, adminDeleteSeminaire);
 router.get('/seminaires/:id/registrations', requireAdminAuth, adminGetRegistrations);
+router.put('/registrations/:id/approve', requireAdminAuth, adminApproveRegistration);
 router.delete('/registrations/:id', requireAdminAuth, adminDeleteRegistration);
 
 export default router;

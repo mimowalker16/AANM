@@ -124,7 +124,7 @@
         }
         .sem-field { display: flex; flex-direction: column; gap: 0.3rem; }
         .sem-field label { font-size: 0.82rem; font-weight: 600; }
-        .sem-field input, .sem-field textarea {
+        .sem-field input, .sem-field textarea, .sem-field select {
             padding: 0.6rem 0.8rem;
             border: 1.5px solid #d1d5db;
             border-radius: var(--radius-md);
@@ -133,7 +133,7 @@
             background: #fafafa;
             transition: border-color 0.2s;
         }
-        .sem-field input:focus, .sem-field textarea:focus {
+        .sem-field input:focus, .sem-field textarea:focus, .sem-field select:focus {
             outline: none;
             border-color: var(--clr-accent-teal);
         }
@@ -162,10 +162,14 @@
         .sem-badge { display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 99px; }
         .sem-badge--open { background: #dcfce7; color: #166534; }
         .sem-badge--closed { background: #fee2e2; color: #991b1b; }
+        .sem-badge--mode { background: #e0f2fe; color: #075985; }
         .seminar-card__body { padding: var(--space-md) var(--space-lg); }
+        .sem-regs-scroll { width: 100%; overflow-x: auto; }
         .sem-regs-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
         .sem-regs-table th, .sem-regs-table td { padding: 0.5rem 0.7rem; text-align: left; border-bottom: 1px solid #f0f0f0; }
         .sem-regs-table th { font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; }
+        .sem-regs-table td { vertical-align: middle; }
+        .sem-reg-actions { display: flex; gap: 0.35rem; flex-wrap: wrap; justify-content: flex-end; }
         .sem-regs-empty { font-size: 0.88rem; color: #9ca3af; text-align: center; padding: var(--space-md); }
         .action-btn.toggle-open { background: rgba(59,169,156,0.08); color: var(--clr-accent-teal-dark, #2A7A70); border: 1px solid rgba(59,169,156,0.3); }
         .action-btn.toggle-open:hover { background: rgba(59,169,156,0.18); }
@@ -174,6 +178,9 @@
         @media (max-width: 600px) {
             .sem-form-grid { grid-template-columns: 1fr; }
             .seminar-card__header { flex-direction: column; align-items: flex-start; }
+            .seminar-card__actions { width: 100%; }
+            .seminar-card__actions .action-btn { flex: 1 1 46%; }
+            .sem-reg-actions { justify-content: flex-start; }
         }
 
         .labs-table {
@@ -403,6 +410,11 @@
         .notification.error {
             background: #f44336;
             color: white;
+        }
+
+        .notification.warning {
+            background: #f59e0b;
+            color: #1f2937;
         }
 
         .modal {
@@ -683,8 +695,19 @@
                                     <input type="datetime-local" id="semDate" />
                                 </div>
                                 <div class="sem-field">
-                                    <label for="semLocation">Lieu</label>
+                                    <label for="semDeliveryMode">Format <span style="color:#e53e3e">*</span></label>
+                                    <select id="semDeliveryMode">
+                                        <option value="in_person">Présentiel</option>
+                                        <option value="virtual">Virtuel</option>
+                                    </select>
+                                </div>
+                                <div class="sem-field">
+                                    <label for="semLocation">Lieu présentiel</label>
                                     <input type="text" id="semLocation" placeholder="ex. Centre de Conférences, Alger" />
+                                </div>
+                                <div class="sem-field">
+                                    <label for="semVirtualRoomUrl">Lien salle virtuelle</label>
+                                    <input type="url" id="semVirtualRoomUrl" placeholder="https://..." />
                                 </div>
                                 <div class="sem-field">
                                     <label for="semCapacity">Capacité (places)</label>
@@ -851,6 +874,8 @@
 
                 // Seminar form
                 document.getElementById('semForm').addEventListener('submit', (e) => this.submitSeminarForm(e));
+                document.getElementById('semDeliveryMode').addEventListener('change', () => this.updateSeminarModeFields());
+                this.updateSeminarModeFields();
 
                 // Modal close on background click
                 document.getElementById('confirmModal').addEventListener('click', (e) => {
@@ -880,6 +905,24 @@
                     this.loadApprovedLabs();
                 } else if (tab === 'seminaires') {
                     this.loadSeminaires();
+                }
+            }
+
+            updateSeminarModeFields() {
+                const mode = document.getElementById('semDeliveryMode').value;
+                const locationField = document.getElementById('semLocation');
+                const virtualField = document.getElementById('semVirtualRoomUrl');
+
+                if (mode === 'virtual') {
+                    locationField.required = false;
+                    virtualField.required = true;
+                    virtualField.closest('.sem-field').style.display = '';
+                    locationField.closest('.sem-field').style.display = 'none';
+                } else {
+                    locationField.required = true;
+                    virtualField.required = false;
+                    locationField.closest('.sem-field').style.display = '';
+                    virtualField.closest('.sem-field').style.display = 'none';
                 }
             }
 
@@ -1144,24 +1187,36 @@
                 const badge = s.is_open
                     ? '<span class="sem-badge sem-badge--open">Ouvert</span>'
                     : '<span class="sem-badge sem-badge--closed">Fermé</span>';
+                const modeBadge = s.delivery_mode === 'virtual'
+                    ? '<span class="sem-badge sem-badge--mode">Virtuel</span>'
+                    : '<span class="sem-badge sem-badge--mode">Présentiel</span>';
                 const toggleBtn = s.is_open
                     ? `<button class="action-btn toggle-close" onclick="adminDashboard.toggleSeminar(${s.id})">Fermer</button>`
                     : `<button class="action-btn toggle-open" onclick="adminDashboard.toggleSeminar(${s.id})">Ouvrir</button>`;
+                const approvedCount = Number(s.approved_registration_count ?? s.registration_count ?? 0);
+                const pendingCount = Number(s.pending_registration_count ?? 0);
+                const totalCount = Number(s.total_registration_count ?? approvedCount + pendingCount);
                 const capText = s.capacity
-                    ? `${s.registration_count}/${s.capacity} inscrits`
-                    : `${s.registration_count} inscrits`;
+                    ? `${approvedCount}/${s.capacity} approuvés`
+                    : `${approvedCount} approuvés`;
+                const pendingText = pendingCount
+                    ? ` · ${pendingCount} en attente`
+                    : '';
+                const placeText = s.delivery_mode === 'virtual'
+                    ? (s.virtual_room_url ? `Salle virtuelle prête` : 'Lien virtuel à renseigner')
+                    : (s.location || 'Lieu à confirmer');
                 const dateStr = new Date(s.date).toLocaleString('fr-FR', { dateStyle: 'medium', timeStyle: 'short' });
                 return `
                     <div class="seminar-card" id="semcard-${s.id}">
                         <div class="seminar-card__header">
                             <div class="seminar-card__info">
-                                <div class="seminar-card__title">${this.escapeHtml(s.title)} ${badge}</div>
-                                <div class="seminar-card__meta">${dateStr}${s.location ? ' · ' + this.escapeHtml(s.location) : ''} · ${capText}</div>
+                                <div class="seminar-card__title">${this.escapeHtml(s.title)} ${badge} ${modeBadge}</div>
+                                <div class="seminar-card__meta">${dateStr} · ${this.escapeHtml(placeText)} · ${capText}${pendingText}</div>
                             </div>
                             <div class="seminar-card__actions">
                                 <button class="action-btn view" onclick="adminDashboard.editSeminar(${s.id})">Modifier</button>
                                 ${toggleBtn}
-                                <button class="action-btn" onclick="adminDashboard.expandRegistrations(${s.id})" id="regToggleBtn-${s.id}">Inscriptions (${s.registration_count})</button>
+                                <button class="action-btn" onclick="adminDashboard.expandRegistrations(${s.id})" id="regToggleBtn-${s.id}">Inscriptions (${totalCount})</button>
                                 <button class="action-btn reject" onclick="adminDashboard.deleteSeminar(${s.id})">Supprimer</button>
                             </div>
                         </div>
@@ -1186,24 +1241,42 @@
                         panel.innerHTML = '<p class="sem-regs-empty">Aucune inscription pour ce séminaire.</p>';
                         return;
                     }
-                    panel.innerHTML = `<table class="sem-regs-table">
-                        <thead><tr><th>#</th><th>Nom</th><th>Email</th><th>Téléphone</th><th>Inscrit le</th><th></th></tr></thead>
+                    panel.innerHTML = `<div class="sem-regs-scroll"><table class="sem-regs-table">
+                        <thead><tr><th>#</th><th>Nom</th><th>Email</th><th>Téléphone</th><th>Statut</th><th>Inscrit le</th><th></th></tr></thead>
                         <tbody>${result.data.map((r, i) => {
                             const registrationId = Number(r.id);
                             const currentSeminarId = Number(seminarId);
                             const canDelete = Number.isFinite(registrationId) && Number.isFinite(currentSeminarId);
+                            const isApproved = r.status === 'approved';
+                            const statusBadge = isApproved
+                                ? '<span class="status-badge approved">Approuvée</span>'
+                                : '<span class="status-badge pending">Paiement à vérifier</span>';
+                            const emailNote = isApproved && r.confirmation_email_sent_at
+                                ? '<br><span style="font-size:0.72rem;color:#16a34a;">Email envoyé</span>'
+                                : isApproved && r.confirmation_email_error
+                                    ? `<br><span style="font-size:0.72rem;color:#dc2626;">Email non envoyé</span>`
+                                    : '';
+                            const approveButton = canDelete && !isApproved
+                                ? `<button type="button" class="action-btn approve" style="font-size:0.75rem;padding:0.25rem 0.5rem;" title="Approuver après paiement" aria-label="Approuver l'inscription de ${this.escapeAttribute(r.full_name)}" onclick="adminDashboard.approveRegistration(${registrationId}, ${currentSeminarId})">Approuver</button>`
+                                : canDelete && isApproved && !r.confirmation_email_sent_at
+                                    ? `<button type="button" class="action-btn approve" style="font-size:0.75rem;padding:0.25rem 0.5rem;" title="Envoyer l'email de confirmation" aria-label="Envoyer l'email de confirmation à ${this.escapeAttribute(r.full_name)}" onclick="adminDashboard.approveRegistration(${registrationId}, ${currentSeminarId}, true)">Envoyer email</button>`
+                                    : '';
+                            const deleteButton = canDelete
+                                ? `<button type="button" class="action-btn reject" style="font-size:0.75rem;padding:0.25rem 0.5rem;" title="Supprimer l'inscription" aria-label="Supprimer l'inscription de ${this.escapeAttribute(r.full_name)}" onclick="adminDashboard.deleteRegistration(${registrationId}, ${currentSeminarId})">Supprimer</button>`
+                                : '';
                             return `
                             <tr>
                                 <td>${i + 1}</td>
                                 <td>${this.escapeHtml(r.full_name)}</td>
                                 <td>${this.escapeHtml(r.email)}</td>
                                 <td>${r.phone ? this.escapeHtml(r.phone) : '—'}</td>
+                                <td>${statusBadge}${emailNote}</td>
                                 <td>${new Date(r.registered_at).toLocaleString('fr-FR')}</td>
-                                <td>${canDelete ? `<button type="button" class="action-btn reject" style="font-size:0.75rem;padding:0.25rem 0.5rem;" title="Supprimer l'inscription" aria-label="Supprimer l'inscription de ${this.escapeAttribute(r.full_name)}" onclick="adminDashboard.deleteRegistration(${registrationId}, ${currentSeminarId})">Supprimer</button>` : ''}</td>
+                                <td><div class="sem-reg-actions">${approveButton}${deleteButton}</div></td>
                             </tr>`;
                         }).join('')}
                         </tbody>
-                    </table>`;
+                    </table></div>`;
                 } catch {
                     panel.innerHTML = '<p class="sem-regs-empty" style="color:#e53e3e;">Erreur lors du chargement.</p>';
                 }
@@ -1216,8 +1289,11 @@
                 document.getElementById('semTitle').value = s.title;
                 document.getElementById('semDate').value = s.date.slice(0, 16);
                 document.getElementById('semLocation').value = s.location || '';
+                document.getElementById('semDeliveryMode').value = s.delivery_mode || 'in_person';
+                document.getElementById('semVirtualRoomUrl').value = s.virtual_room_url || '';
                 document.getElementById('semCapacity').value = s.capacity || '';
                 document.getElementById('semDesc').value = s.description || '';
+                this.updateSeminarModeFields();
                 document.getElementById('semFormTitle').textContent = 'Modifier le séminaire';
                 document.getElementById('semSubmitBtn').textContent = 'Enregistrer les modifications';
                 document.getElementById('semCancelBtn').style.display = '';
@@ -1230,20 +1306,32 @@
                 document.getElementById('semFormTitle').textContent = 'Créer un séminaire';
                 document.getElementById('semSubmitBtn').textContent = 'Créer le séminaire';
                 document.getElementById('semCancelBtn').style.display = 'none';
+                this.updateSeminarModeFields();
             }
 
             async submitSeminarForm(e) {
                 e.preventDefault();
                 const id = document.getElementById('semEditId').value;
+                const deliveryMode = document.getElementById('semDeliveryMode').value;
                 const payload = {
                     title: document.getElementById('semTitle').value.trim(),
                     date: document.getElementById('semDate').value,
                     location: document.getElementById('semLocation').value.trim() || null,
+                    delivery_mode: deliveryMode,
+                    virtual_room_url: document.getElementById('semVirtualRoomUrl').value.trim() || null,
                     capacity: document.getElementById('semCapacity').value ? parseInt(document.getElementById('semCapacity').value) : null,
                     description: document.getElementById('semDesc').value.trim() || null
                 };
                 if (!payload.title || !payload.date) {
                     this.showNotification('Titre et date sont requis.', 'error');
+                    return;
+                }
+                if (deliveryMode === 'virtual' && !payload.virtual_room_url) {
+                    this.showNotification('Le lien de la salle virtuelle est requis.', 'error');
+                    return;
+                }
+                if (deliveryMode === 'in_person' && !payload.location) {
+                    this.showNotification('Le lieu est requis pour un séminaire en présentiel.', 'error');
                     return;
                 }
                 const btn = document.getElementById('semSubmitBtn');
@@ -1303,6 +1391,37 @@
                             await this.loadSeminaires();
                         } catch {
                             this.showNotification('Erreur lors de la suppression.', 'error');
+                        }
+                    }
+                );
+            }
+
+            approveRegistration(regId, seminarId, resendEmail = false) {
+                this.showConfirmModal(
+                    resendEmail ? "Envoyer l'email" : "Approuver l'inscription",
+                    resendEmail
+                        ? "Un email de confirmation sera envoyé si SMTP est configuré."
+                        : "Confirmez que le paiement a été vérifié. L'inscription sera approuvée et un email de confirmation sera envoyé si SMTP est configuré.",
+                    resendEmail ? 'Envoyer' : 'Approuver',
+                    'approve',
+                    async () => {
+                        try {
+                            const res = await fetch(`${API_BASE}/api/admin/registrations/${regId}/approve`, {
+                                method: 'PUT',
+                                headers: adminHeaders()
+                            });
+                            const result = await res.json();
+                            if (handleAuthError(res, result)) return;
+                            if (!result.success) throw new Error(result.message);
+                            if (result.emailSent) {
+                                this.showNotification("Inscription approuvée et email de confirmation envoyé.", 'success');
+                            } else {
+                                this.showNotification(result.emailMessage || "Inscription approuvée. Email non envoyé.", 'warning');
+                            }
+                            await this.loadSeminaires();
+                            this.expandRegistrations(seminarId);
+                        } catch (err) {
+                            this.showNotification(err.message || "Erreur lors de l'approbation.", 'error');
                         }
                     }
                 );

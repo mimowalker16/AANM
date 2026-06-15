@@ -972,13 +972,18 @@
             document.getElementById('ctaTime').textContent =
                 d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
             // Localisation
-            if (s.location) {
-                document.getElementById('ctaLocation').textContent = s.location;
+            const isVirtual = s.delivery_mode === 'virtual';
+            const locationText = isVirtual
+                ? 'Virtuel - lien envoyé après confirmation'
+                : s.location;
+            if (locationText) {
+                document.getElementById('ctaLocation').textContent = locationText;
                 document.getElementById('ctaLocationDetail').style.display = '';
             }
             // Capacity
             if (s.capacity !== null) {
-                const remaining = s.capacity - s.registration_count;
+                const reservedCount = Number(s.total_registration_count ?? s.registration_count ?? 0);
+                const remaining = Math.max(0, s.capacity - reservedCount);
                 document.getElementById('ctaPlaces').textContent = remaining + ' place' + (remaining !== 1 ? 's' : '') + ' disponible' + (remaining !== 1 ? 's' : '');
                 document.getElementById('ctaPlacesDetail').style.display = '';
             }
@@ -986,7 +991,8 @@
             startCountdown(s.date);
             // CTA button
             const btn = document.getElementById('ctaRegisterBtn');
-            const isFull = s.capacity !== null && s.registration_count >= s.capacity;
+            const reservedCount = Number(s.total_registration_count ?? s.registration_count ?? 0);
+            const isFull = s.capacity !== null && reservedCount >= s.capacity;
             if (!s.is_open) {
                 btn.innerHTML = 'Inscriptions Fermées';
                 btn.style.opacity = '0.6';
