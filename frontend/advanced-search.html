@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -181,12 +181,16 @@
             border: none;
             border-radius: var(--radius-md);
             font-weight: 600;
+            line-height: 1.2;
             cursor: pointer;
             transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: var(--space-xs);
             text-decoration: none;
+            min-height: 44px;
+            text-align: center;
         }
 
         .search-btn.primary {
@@ -291,6 +295,10 @@
             transition: background-color 0.3s ease;
             display: inline-flex;
             align-items: center;
+            justify-content: center;
+            min-height: 38px;
+            line-height: 1.2;
+            text-align: center;
         }
 
         .lab-contact:hover {
@@ -388,6 +396,10 @@
             .search-actions {
                 flex-direction: column;
                 align-items: stretch;
+            }
+
+            .search-btn {
+                width: 100%;
             }
 
             .results-header {
@@ -1019,7 +1031,7 @@
                                 </svg>
                                 Voir le profil
                             </a>
-                            <a href="mailto:${lab.contact_email}" class="lab-contact">Contacter le labo</a>
+                            <a href="${this.escapeAttribute(this.safeMailto(lab.contact_email))}" class="lab-contact">Contacter le labo</a>
                             ${lab.established_year ? `<span class="lab-established">Est. ${lab.established_year}</span>` : ''}
                         </div>
                     </div>
@@ -1177,6 +1189,16 @@
                 const div = document.createElement('div');
                 div.textContent = text;
                 return div.innerHTML;
+            }
+
+            escapeAttribute(text) {
+                return this.escapeHtml(text).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+            }
+
+            safeMailto(email) {
+                const value = String(email || '').trim();
+                const isSafeEmail = /^[^\s@<>"']+@[^\s@<>"']+\.[^\s@<>"']+$/.test(value);
+                return isSafeEmail ? `mailto:${value}` : '#';
             }
 
             escapeRegex(string) {

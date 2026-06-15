@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -233,11 +233,15 @@
         .action-btn {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: var(--space-sm);
             padding: var(--space-md) var(--space-lg);
             border: none;
             border-radius: var(--radius-md);
             font-weight: 600;
+            line-height: 1.2;
+            min-height: 44px;
+            text-align: center;
             text-decoration: none;
             transition: all 0.3s ease;
             cursor: pointer;
@@ -367,6 +371,10 @@
             .profile-actions {
                 flex-direction: column;
                 align-items: stretch;
+            }
+
+            .profile-actions .action-btn {
+                width: 100%;
             }
 
             .mini-map {
@@ -763,7 +771,7 @@
                             <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
                             <path d="m18 8.118-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
                         </svg>
-                        <a href="mailto:${this.labData.contact_email}">${this.escapeHtml(this.labData.contact_email)}</a>
+                        <a href="${this.escapeAttribute(this.safeMailto(this.labData.contact_email))}">${this.escapeHtml(this.labData.contact_email)}</a>
                     </div>
                 `);
 
@@ -774,7 +782,7 @@
                             <svg class="icon" viewBox="0 0 20 20">
                                 <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/>
                             </svg>
-                            <a href="tel:${this.labData.phone}">${this.escapeHtml(this.labData.phone)}</a>
+                            <a href="${this.escapeAttribute(this.safeTel(this.labData.phone))}">${this.escapeHtml(this.labData.phone)}</a>
                         </div>
                     `);
                 }
@@ -786,7 +794,7 @@
                             <svg class="icon" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M4.083 9h1.946c.089-1.546.383-2.97.837-4.118A6.004 6.004 0 004.083 9zM10 2a8 8 0 100 16 8 8 0 000-16zm0 2c-.076 0-.232.032-.465.262-.238.234-.497.623-.737 1.182-.389.907-.673 2.142-.766 3.556h3.936c-.093-1.414-.377-2.649-.766-3.556-.24-.559-.499-.948-.737-1.182C10.232 4.032 10.076 4 10 4zm3.971 5c-.089-1.546-.383-2.97-.837-4.118A6.004 6.004 0 0115.917 9h-1.946zm-2.003 2H8.032c.093 1.414.377 2.649.766 3.556.24.559.499.948.737 1.182.233.23.389.262.465.262.076 0 .232-.032.465-.262.238-.234.497-.623.737-1.182.389-.907.673-2.142.766-3.556zm1.166 4.118c.454-1.148.748-2.572.837-4.118h1.946a6.004 6.004 0 01-2.783 4.118zm-6.268 0C6.412 13.97 6.118 12.546 6.03 11H4.083a6.004 6.004 0 002.783 4.118z"/>
                             </svg>
-                            <a href="${this.labData.website}" target="_blank" rel="noopener noreferrer">
+                            <a href="${this.escapeAttribute(this.safeExternalUrl(this.labData.website))}" target="_blank" rel="noopener noreferrer">
                                 ${this.escapeHtml(this.labData.website)}
                             </a>
                         </div>
@@ -875,7 +883,7 @@
             setupActionButtons() {
                 // Setup contact button
                 const contactBtn = document.getElementById('contactBtn');
-                contactBtn.href = `mailto:${this.labData.contact_email}`;
+                contactBtn.href = this.safeMailto(this.labData.contact_email);
             }
 
             showError() {
@@ -895,6 +903,31 @@
                 const div = document.createElement('div');
                 div.textContent = text;
                 return div.innerHTML;
+            }
+
+            escapeAttribute(text) {
+                return this.escapeHtml(text).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+            }
+
+            safeMailto(email) {
+                const value = String(email || '').trim();
+                const isSafeEmail = /^[^\s@<>"']+@[^\s@<>"']+\.[^\s@<>"']+$/.test(value);
+                return isSafeEmail ? `mailto:${value}` : '#';
+            }
+
+            safeTel(phone) {
+                const value = String(phone || '').trim();
+                const isSafePhone = /^[+()\d\s.-]{6,25}$/.test(value);
+                return isSafePhone ? `tel:${value.replace(/\s+/g, '')}` : '#';
+            }
+
+            safeExternalUrl(url) {
+                try {
+                    const parsed = new URL(String(url || '').trim(), window.location.origin);
+                    return ['http:', 'https:'].includes(parsed.protocol) ? parsed.href : '#';
+                } catch {
+                    return '#';
+                }
             }
         }
 

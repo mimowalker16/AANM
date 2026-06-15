@@ -39,12 +39,15 @@ export async function registerForSeminaire(req, res) {
             return res.status(403).json({ success: false, message: 'Les inscriptions pour ce séminaire sont fermées.' });
         }
 
-        if (seminar.capacity !== null && seminar.registration_count >= seminar.capacity) {
+        if (seminar.capacity !== null && seminar.total_registration_count >= seminar.capacity) {
             return res.status(403).json({ success: false, message: 'Ce séminaire est complet.' });
         }
 
         await database.createRegistration(req.params.id, { full_name, email, phone });
-        res.status(201).json({ success: true, message: 'Inscription enregistrée avec succès.' });
+        res.status(201).json({
+            success: true,
+            message: "Votre demande d'inscription a été enregistrée. Elle sera confirmée après vérification du paiement."
+        });
     } catch (err) {
         if (err.duplicate) {
             return res.status(409).json({ success: false, message: 'Cette adresse email est déjà inscrite à ce séminaire.' });

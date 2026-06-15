@@ -91,11 +91,33 @@ class Database {
                 title TEXT NOT NULL,
                 date TEXT NOT NULL,
                 location TEXT,
+                delivery_mode TEXT DEFAULT 'in_person',
+                virtual_room_url TEXT,
                 description TEXT,
                 capacity INTEGER,
                 is_open BOOLEAN DEFAULT true,
                 created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
             )
+        `);
+
+        await this.pool.query("ALTER TABLE seminaires ADD COLUMN IF NOT EXISTS delivery_mode TEXT DEFAULT 'in_person'");
+        await this.pool.query('ALTER TABLE seminaires ADD COLUMN IF NOT EXISTS virtual_room_url TEXT');
+        await this.pool.query("UPDATE seminaires SET delivery_mode = 'in_person' WHERE delivery_mode IS NULL");
+        await this.pool.query("ALTER TABLE seminaires ALTER COLUMN delivery_mode SET DEFAULT 'in_person'");
+        await this.pool.query(`
+            DO $$
+            BEGIN
+                IF NOT EXISTS (
+                    SELECT 1
+                    FROM pg_constraint
+                    WHERE conname = 'seminaires_delivery_mode_check'
+                ) THEN
+                    ALTER TABLE seminaires
+                    ADD CONSTRAINT seminaires_delivery_mode_check
+                    CHECK (delivery_mode IN ('in_person', 'virtual'));
+                END IF;
+            END
+            $$;
         `);
 
         await this.pool.query(`
@@ -105,9 +127,37 @@ class Database {
                 full_name TEXT NOT NULL,
                 email TEXT NOT NULL,
                 phone TEXT,
+                status TEXT DEFAULT 'pending',
+                approved_at TIMESTAMPTZ,
+                confirmation_email_sent_at TIMESTAMPTZ,
+                confirmation_email_error TEXT,
                 registered_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
                 UNIQUE(seminar_id, email)
             )
+        `);
+
+        await this.pool.query('ALTER TABLE registrations ADD COLUMN IF NOT EXISTS status TEXT');
+        await this.pool.query('ALTER TABLE registrations ADD COLUMN IF NOT EXISTS approved_at TIMESTAMPTZ');
+        await this.pool.query('ALTER TABLE registrations ADD COLUMN IF NOT EXISTS confirmation_email_sent_at TIMESTAMPTZ');
+        await this.pool.query('ALTER TABLE registrations ADD COLUMN IF NOT EXISTS confirmation_email_error TEXT');
+        await this.pool.query("UPDATE registrations SET status = 'approved' WHERE status IS NULL");
+        await this.pool.query("UPDATE registrations SET approved_at = registered_at WHERE status = 'approved' AND approved_at IS NULL");
+        await this.pool.query("ALTER TABLE registrations ALTER COLUMN status SET DEFAULT 'pending'");
+        await this.pool.query("ALTER TABLE registrations ALTER COLUMN status SET NOT NULL");
+        await this.pool.query(`
+            DO $$
+            BEGIN
+                IF NOT EXISTS (
+                    SELECT 1
+                    FROM pg_constraint
+                    WHERE conname = 'registrations_status_check'
+                ) THEN
+                    ALTER TABLE registrations
+                    ADD CONSTRAINT registrations_status_check
+                    CHECK (status IN ('pending', 'approved'));
+                END IF;
+            END
+            $$;
         `);
 
         await this.pool.query(`
@@ -322,14 +372,19 @@ class Database {
     async createSeminaire(data) {
         const result = await this.pool.query(
             `
-                INSERT INTO seminaires (title, date, location, description, capacity, is_open)
-                VALUES ($1, $2, $3, $4, $5, $6)
+                INSERT INTO seminaires (
+                    title, date, location, delivery_mode, virtual_room_url,
+                    description, capacity, is_open
+                )
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
                 RETURNING id
             `,
             [
                 data.title,
                 data.date,
                 data.location,
+                data.delivery_mode || 'in_person',
+                data.virtual_room_url || null,
                 data.description,
                 data.capacity ?? null,
                 data.is_open ?? true
@@ -340,11 +395,27 @@ class Database {
 
     async getSeminaires() {
         const result = await this.pool.query(`
-            SELECT s.*, (
+            SELECT s.*,
+            (
+                SELECT COUNT(*)::int
+                FROM registrations r
+                WHERE r.seminar_id = s.id AND r.status = 'approved'
+            ) AS registration_count,
+            (
+                SELECT COUNT(*)::int
+                FROM registrations r
+                WHERE r.seminar_id = s.id AND r.status = 'approved'
+            ) AS approved_registration_count,
+            (
+                SELECT COUNT(*)::int
+                FROM registrations r
+                WHERE r.seminar_id = s.id AND r.status = 'pending'
+            ) AS pending_registration_count,
+            (
                 SELECT COUNT(*)::int
                 FROM registrations r
                 WHERE r.seminar_id = s.id
-            ) AS registration_count
+            ) AS total_registration_count
             FROM seminaires s
             ORDER BY s.date ASC
         `);
@@ -354,11 +425,27 @@ class Database {
     async getSeminaireById(id) {
         const result = await this.pool.query(
             `
-                SELECT s.*, (
+                SELECT s.*,
+                (
+                    SELECT COUNT(*)::int
+                    FROM registrations r
+                    WHERE r.seminar_id = s.id AND r.status = 'approved'
+                ) AS registration_count,
+                (
+                    SELECT COUNT(*)::int
+                    FROM registrations r
+                    WHERE r.seminar_id = s.id AND r.status = 'approved'
+                ) AS approved_registration_count,
+                (
+                    SELECT COUNT(*)::int
+                    FROM registrations r
+                    WHERE r.seminar_id = s.id AND r.status = 'pending'
+                ) AS pending_registration_count,
+                (
                     SELECT COUNT(*)::int
                     FROM registrations r
                     WHERE r.seminar_id = s.id
-                ) AS registration_count
+                ) AS total_registration_count
                 FROM seminaires s
                 WHERE s.id = $1
             `,
@@ -371,10 +458,25 @@ class Database {
         const result = await this.pool.query(
             `
                 UPDATE seminaires
-                SET title = $1, date = $2, location = $3, description = $4, capacity = $5
-                WHERE id = $6
+                SET title = $1,
+                    date = $2,
+                    location = $3,
+                    delivery_mode = $4,
+                    virtual_room_url = $5,
+                    description = $6,
+                    capacity = $7
+                WHERE id = $8
             `,
-            [data.title, data.date, data.location, data.description, data.capacity ?? null, id]
+            [
+                data.title,
+                data.date,
+                data.location,
+                data.delivery_mode || 'in_person',
+                data.virtual_room_url || null,
+                data.description,
+                data.capacity ?? null,
+                id
+            ]
         );
         return { changes: result.rowCount };
     }
@@ -398,11 +500,11 @@ class Database {
                 `
                     INSERT INTO registrations (seminar_id, full_name, email, phone)
                     VALUES ($1, $2, $3, $4)
-                    RETURNING id
+                    RETURNING id, status
                 `,
                 [seminarId, data.full_name, data.email, data.phone || null]
             );
-            return { id: result.rows[0].id };
+            return { id: result.rows[0].id, status: result.rows[0].status };
         } catch (error) {
             if (error.code === '23505') {
                 throw { duplicate: true };
@@ -413,10 +515,77 @@ class Database {
 
     async getRegistrationsBySeminar(seminarId) {
         const result = await this.pool.query(
-            'SELECT * FROM registrations WHERE seminar_id = $1 ORDER BY registered_at DESC',
+            `
+                SELECT *
+                FROM registrations
+                WHERE seminar_id = $1
+                ORDER BY
+                    CASE WHEN status = 'pending' THEN 0 ELSE 1 END,
+                    registered_at DESC
+            `,
             [seminarId]
         );
         return result.rows;
+    }
+
+    async approveRegistration(id) {
+        const result = await this.pool.query(
+            `
+                UPDATE registrations
+                SET status = 'approved',
+                    approved_at = COALESCE(approved_at, CURRENT_TIMESTAMP),
+                    confirmation_email_error = NULL
+                WHERE id = $1
+                RETURNING *
+            `,
+            [id]
+        );
+        return result.rows[0] || null;
+    }
+
+    async getRegistrationWithSeminar(id) {
+        const result = await this.pool.query(
+            `
+                SELECT
+                    r.*,
+                    s.title AS seminar_title,
+                    s.date AS seminar_date,
+                    s.location AS seminar_location,
+                    s.delivery_mode AS seminar_delivery_mode,
+                    s.virtual_room_url AS seminar_virtual_room_url,
+                    s.description AS seminar_description
+                FROM registrations r
+                JOIN seminaires s ON s.id = r.seminar_id
+                WHERE r.id = $1
+            `,
+            [id]
+        );
+        return result.rows[0] || null;
+    }
+
+    async markRegistrationEmailSent(id) {
+        const result = await this.pool.query(
+            `
+                UPDATE registrations
+                SET confirmation_email_sent_at = CURRENT_TIMESTAMP,
+                    confirmation_email_error = NULL
+                WHERE id = $1
+            `,
+            [id]
+        );
+        return { changes: result.rowCount };
+    }
+
+    async markRegistrationEmailError(id, errorMessage) {
+        const result = await this.pool.query(
+            `
+                UPDATE registrations
+                SET confirmation_email_error = $1
+                WHERE id = $2
+            `,
+            [String(errorMessage || 'Erreur email').slice(0, 500), id]
+        );
+        return { changes: result.rowCount };
     }
 
     async deleteRegistration(id) {
