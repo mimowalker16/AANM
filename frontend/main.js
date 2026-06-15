@@ -257,10 +257,18 @@ function initEventsCarousel() {
     const cards = track.querySelectorAll('.event-card');
     const dots = dotsContainer?.querySelectorAll('.events__dot') || [];
     let currentIndex = 0;
-    const cardWidth = 436; // 420px card + 16px gap
+
+    function getCardStep() {
+        const firstCard = cards[0];
+        if (!firstCard) return 0;
+
+        const trackStyles = window.getComputedStyle(track);
+        const gap = parseFloat(trackStyles.columnGap || trackStyles.gap || 0) || 0;
+        return firstCard.getBoundingClientRect().width + gap;
+    }
 
     function updateCarousel() {
-        const offset = currentIndex * cardWidth;
+        const offset = currentIndex * getCardStep();
         track.style.transform = `translateX(-${offset}px)`;
         
         // Update dots
@@ -304,7 +312,7 @@ function initEventsCarousel() {
     track.addEventListener('mousedown', (e) => {
         isDragging = true;
         startX = e.clientX;
-        startTransform = currentIndex * cardWidth;
+        startTransform = currentIndex * getCardStep();
         track.style.transition = 'none';
     });
 
@@ -338,7 +346,7 @@ function initEventsCarousel() {
     let touchStartX;
     track.addEventListener('touchstart', (e) => {
         touchStartX = e.touches[0].clientX;
-        startTransform = currentIndex * cardWidth;
+        startTransform = currentIndex * getCardStep();
         track.style.transition = 'none';
     }, { passive: true });
 
@@ -364,6 +372,8 @@ function initEventsCarousel() {
             updateCarousel();
         }
     }, { passive: true });
+
+    window.addEventListener('resize', updateCarousel);
 }
 
 /* ============================================

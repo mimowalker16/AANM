@@ -226,6 +226,13 @@
             margin: 0 auto;
         }
 
+        .countdown-card,
+        .countdown-card__content,
+        .countdown-card__detail,
+        .countdown-card__actions {
+            min-width: 0;
+        }
+
         .countdown-card__image {
             position: relative;
             min-height: 400px;
@@ -331,6 +338,15 @@
             margin-bottom: var(--space-lg);
         }
 
+        .countdown-card__label,
+        .countdown-card__title,
+        .countdown-card__description,
+        .countdown-card__detail span {
+            max-width: 100%;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
         .countdown-card__timer {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -426,14 +442,146 @@
         }
 
         @media (max-width: 600px) {
+            .countdown-section {
+                padding: var(--space-xl) 0;
+            }
+
+            .countdown-card {
+                width: 100%;
+                border-radius: 18px;
+                box-shadow: var(--shadow-md);
+            }
+
+            .countdown-card__image {
+                min-height: auto;
+                padding: 1rem;
+                align-items: stretch;
+                justify-content: flex-start;
+            }
+
+            .countdown-card__badge {
+                position: static;
+                align-self: flex-start;
+                margin-bottom: 0.85rem;
+                padding: 0.35rem 0.75rem;
+                font-size: 0.68rem;
+                letter-spacing: 0.04em;
+            }
+
+            .countdown-card__decorative {
+                display: grid;
+                grid-template-columns: auto 1fr;
+                align-items: center;
+                gap: 0.85rem;
+                text-align: left;
+            }
+
+            .countdown-card__icon {
+                width: 52px;
+                height: 52px;
+                margin: 0;
+            }
+
+            .countdown-card__icon svg {
+                width: 28px;
+                height: 28px;
+            }
+
+            .countdown-card__date-large {
+                font-size: 2.25rem;
+                margin-bottom: 0.1rem;
+            }
+
+            .countdown-card__month {
+                font-size: 0.82rem;
+                letter-spacing: 0.08em;
+            }
+
+            .countdown-card__content {
+                padding: 1.15rem;
+            }
+
+            .countdown-card__label {
+                font-size: 0.72rem;
+                line-height: 1.35;
+                margin-bottom: 0.4rem;
+            }
+
+            .countdown-card__title {
+                font-size: clamp(1.35rem, 8vw, 1.75rem);
+                line-height: 1.15;
+                margin-bottom: 0.75rem;
+            }
+
+            .countdown-card__description {
+                font-size: 0.95rem;
+                line-height: 1.55;
+                margin-bottom: 1rem;
+                display: -webkit-box;
+                -webkit-line-clamp: 6;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
             .countdown-card__timer {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 1rem;
+                gap: 0.65rem;
+                margin-bottom: 1rem;
+                padding: 0;
+            }
+
+            .countdown-card__time-unit {
+                padding: 0.75rem 0.5rem;
+                border: 1px solid rgba(27, 94, 58, 0.12);
+                border-radius: 14px;
+                background: rgba(27, 94, 58, 0.04);
+            }
+
+            .countdown-card__number {
+                font-size: 1.65rem;
+            }
+
+            .countdown-card__unit {
+                display: block;
+                font-size: 0.68rem;
+                margin-top: 0.35rem;
             }
 
             .countdown-card__details {
                 flex-direction: column;
-                gap: var(--space-sm);
+                gap: 0.6rem;
+                padding: 0.85rem 0;
+                margin-bottom: 1rem;
+            }
+
+            .countdown-card__detail {
+                align-items: flex-start;
+                line-height: 1.45;
+            }
+
+            .countdown-card__detail svg {
+                margin-top: 0.1rem;
+            }
+
+            .countdown-card__actions {
+                gap: 0.65rem;
+            }
+
+            .countdown-card__actions .btn {
+                min-height: 46px;
+                padding: 0.8rem 1rem;
+                font-size: 0.92rem;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .countdown-card__decorative {
+                grid-template-columns: 1fr;
+                gap: 0.55rem;
+            }
+
+            .countdown-card__icon {
+                display: none;
             }
         }
     </style>
