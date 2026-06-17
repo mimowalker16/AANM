@@ -22,6 +22,7 @@ export default defineConfig({
                 labMap: resolve(__dirname, 'lab-map.html'),
                 labProfile: resolve(__dirname, 'lab-profile.html'),
                 advancedSearch: resolve(__dirname, 'advanced-search.html'),
+                adminLogin: resolve(__dirname, 'admin-login.html'),
                 adminDashboard: resolve(__dirname, 'admin-dashboard.html'),
                 seminarRegister: resolve(__dirname, 'seminar-register.html'),
                 mobileTest: resolve(__dirname, 'mobile-test.html')
