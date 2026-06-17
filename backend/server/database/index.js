@@ -99,6 +99,7 @@ class Database {
                 created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
             )
         `);
+        await this.ensureIdSequence('seminaires');
 
         await this.pool.query('ALTER TABLE seminaires ADD COLUMN IF NOT EXISTS location TEXT');
         await this.pool.query('ALTER TABLE seminaires ADD COLUMN IF NOT EXISTS description TEXT');
@@ -142,6 +143,7 @@ class Database {
                 UNIQUE(seminar_id, email)
             )
         `);
+        await this.ensureIdSequence('registrations');
 
         await this.pool.query('ALTER TABLE registrations ADD COLUMN IF NOT EXISTS status TEXT');
         await this.pool.query('ALTER TABLE registrations ADD COLUMN IF NOT EXISTS approved_at TIMESTAMPTZ');
@@ -189,8 +191,27 @@ class Database {
                 admin_notes TEXT
             )
         `);
+        await this.ensureIdSequence('labs');
 
         console.log('📊 PostgreSQL tables ready');
+    }
+
+    async ensureIdSequence(tableName) {
+        if (!/^[a-z_]+$/.test(tableName)) {
+            throw new Error(`Invalid table name: ${tableName}`);
+        }
+
+        const sequenceName = `${tableName}_id_seq`;
+        await this.pool.query(`CREATE SEQUENCE IF NOT EXISTS ${sequenceName}`);
+        await this.pool.query(`ALTER SEQUENCE ${sequenceName} OWNED BY ${tableName}.id`);
+        await this.pool.query(`ALTER TABLE ${tableName} ALTER COLUMN id SET DEFAULT nextval('${sequenceName}')`);
+        await this.pool.query(`
+            SELECT setval(
+                '${sequenceName}',
+                COALESCE((SELECT MAX(id) FROM ${tableName}), 0) + 1,
+                false
+            )
+        `);
     }
 
     parseLab(row) {
