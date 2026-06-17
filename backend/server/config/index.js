@@ -11,11 +11,32 @@ dotenv.config({ path: join(__dirname, '../.env') });
 
 const databaseUrl = process.env.DATABASE_URL || '';
 const databaseSsl = process.env.DATABASE_SSL || 'auto';
+const nodeEnv = process.env.NODE_ENV || 'development';
+
+function parseTrustProxy(value) {
+    if (value === undefined || value === '') {
+        return nodeEnv === 'production' ? 1 : false;
+    }
+
+    const normalizedValue = String(value).trim().toLowerCase();
+
+    if (normalizedValue === 'true') {
+        return true;
+    }
+
+    if (normalizedValue === 'false') {
+        return false;
+    }
+
+    const numericValue = Number(normalizedValue);
+    return Number.isNaN(numericValue) ? value : numericValue;
+}
 
 export const config = {
     server: {
         port: process.env.PORT || 3001,
-        nodeEnv: process.env.NODE_ENV || 'development'
+        nodeEnv,
+        trustProxy: parseTrustProxy(process.env.TRUST_PROXY)
     },
     database: {
         url: databaseUrl.startsWith('postgres://') || databaseUrl.startsWith('postgresql://')

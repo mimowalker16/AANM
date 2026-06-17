@@ -14,6 +14,8 @@ import seminaireRoutes from './routes/seminaires.js';
 
 const app = express();
 
+app.set('trust proxy', config.server.trustProxy);
+
 // Security middleware
 app.use(securityHeaders);
 app.use(corsOptions);
