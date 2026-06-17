@@ -100,9 +100,16 @@ class Database {
             )
         `);
 
+        await this.pool.query('ALTER TABLE seminaires ADD COLUMN IF NOT EXISTS location TEXT');
+        await this.pool.query('ALTER TABLE seminaires ADD COLUMN IF NOT EXISTS description TEXT');
+        await this.pool.query('ALTER TABLE seminaires ADD COLUMN IF NOT EXISTS capacity INTEGER');
+        await this.pool.query('ALTER TABLE seminaires ADD COLUMN IF NOT EXISTS is_open BOOLEAN DEFAULT true');
+        await this.pool.query('ALTER TABLE seminaires ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP');
         await this.pool.query("ALTER TABLE seminaires ADD COLUMN IF NOT EXISTS delivery_mode TEXT DEFAULT 'in_person'");
         await this.pool.query('ALTER TABLE seminaires ADD COLUMN IF NOT EXISTS virtual_room_url TEXT');
+        await this.pool.query("UPDATE seminaires SET is_open = true WHERE is_open IS NULL");
         await this.pool.query("UPDATE seminaires SET delivery_mode = 'in_person' WHERE delivery_mode IS NULL");
+        await this.pool.query("ALTER TABLE seminaires ALTER COLUMN is_open SET DEFAULT true");
         await this.pool.query("ALTER TABLE seminaires ALTER COLUMN delivery_mode SET DEFAULT 'in_person'");
         await this.pool.query(`
             DO $$

@@ -3,6 +3,10 @@ import emailService from '../services/emailService.js';
 
 function normalizeSeminairePayload(body) {
     const deliveryMode = body.delivery_mode === 'virtual' ? 'virtual' : 'in_person';
+    const capacity = body.capacity === '' || body.capacity === undefined || body.capacity === null
+        ? null
+        : Number(body.capacity);
+
     return {
         title: body.title,
         date: body.date,
@@ -10,7 +14,7 @@ function normalizeSeminairePayload(body) {
         delivery_mode: deliveryMode,
         virtual_room_url: deliveryMode === 'virtual' ? body.virtual_room_url || null : null,
         description: body.description || null,
-        capacity: body.capacity ?? null
+        capacity
     };
 }
 
@@ -27,6 +31,10 @@ function validateSeminairePayload(payload) {
         return 'Le lieu est requis pour un séminaire en présentiel.';
     }
 
+    if (payload.capacity !== null && (!Number.isInteger(payload.capacity) || payload.capacity < 1)) {
+        return 'La capacité doit être un nombre entier positif.';
+    }
+
     return null;
 }
 
@@ -35,6 +43,7 @@ export async function adminGetSeminaires(req, res) {
         const seminaires = await database.getSeminaires();
         res.json({ success: true, data: seminaires });
     } catch (err) {
+        console.error('Failed to load seminaires:', err);
         res.status(500).json({ success: false, message: 'Erreur serveur.' });
     }
 }
@@ -49,6 +58,13 @@ export async function adminCreateSeminaire(req, res) {
         const result = await database.createSeminaire({ ...payload, is_open: true });
         res.status(201).json({ success: true, id: result.id });
     } catch (err) {
+        console.error('Failed to create seminaire:', {
+            message: err.message,
+            code: err.code,
+            detail: err.detail,
+            column: err.column,
+            table: err.table
+        });
         res.status(500).json({ success: false, message: 'Erreur serveur.' });
     }
 }
@@ -64,6 +80,14 @@ export async function adminUpdateSeminaire(req, res) {
         if (!result.changes) return res.status(404).json({ success: false, message: 'Séminaire introuvable.' });
         res.json({ success: true });
     } catch (err) {
+        console.error('Failed to update seminaire:', {
+            id: req.params.id,
+            message: err.message,
+            code: err.code,
+            detail: err.detail,
+            column: err.column,
+            table: err.table
+        });
         res.status(500).json({ success: false, message: 'Erreur serveur.' });
     }
 }
