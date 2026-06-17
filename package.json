@@ -12,6 +12,7 @@
     "dev": "npm run dev --workspace frontend",
     "build": "npm run build --workspace frontend",
     "preview": "npm run preview --workspace frontend",
+    "start": "npm start --workspace backend",
     "server": "npm start --workspace backend",
     "server:dev": "npm run dev --workspace backend",
     "full-dev": "concurrently --names \"CLIENT,SERVER\" --prefix-colors \"blue,green\" \"npm run dev --workspace frontend\" \"npm run dev --workspace backend\"",
