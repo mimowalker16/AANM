@@ -164,6 +164,7 @@ export async function adminApproveRegistration(req, res) {
             data: updatedRegistration,
             emailSent: emailStatus.sent,
             emailSkipped: emailStatus.skipped,
+            emailErrorCode: emailStatus.code || null,
             emailMessage: emailStatus.sent
                 ? 'Email de confirmation envoyé.'
                 : emailStatus.reason || "L'inscription a été approuvée, mais l'email n'a pas été envoyé."

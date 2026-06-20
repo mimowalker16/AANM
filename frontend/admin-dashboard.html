@@ -1416,7 +1416,8 @@
                             if (result.emailSent) {
                                 this.showNotification("Inscription approuvée et email de confirmation envoyé.", 'success');
                             } else {
-                                this.showNotification(result.emailMessage || "Inscription approuvée. Email non envoyé.", 'warning');
+                                const emailCode = result.emailErrorCode ? ` (${result.emailErrorCode})` : '';
+                                this.showNotification(`${result.emailMessage || "Inscription approuvée. Email non envoyé."}${emailCode}`, 'warning');
                             }
                             await this.loadSeminaires();
                             this.expandRegistrations(seminarId);

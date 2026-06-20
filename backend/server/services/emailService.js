@@ -23,7 +23,10 @@ class EmailService {
                 auth: {
                     user: config.email.smtpUser,
                     pass: config.email.smtpPass
-                }
+                },
+                connectionTimeout: 10000,
+                greetingTimeout: 10000,
+                socketTimeout: 20000
             });
         }
 
@@ -118,13 +121,73 @@ class EmailService {
         }
 
         const message = this.buildApprovalEmail(row);
-        await transporter.sendMail({
-            from: config.email.from,
-            replyTo: config.email.replyTo || undefined,
-            ...message
-        });
+        try {
+            await transporter.sendMail({
+                from: config.email.from,
+                replyTo: config.email.replyTo || undefined,
+                ...message
+            });
+        } catch (error) {
+            this.transporter = null;
+            const failure = this.describeDeliveryError(error);
+
+            console.error('Seminar approval email failed:', {
+                code: error.code,
+                command: error.command,
+                responseCode: error.responseCode,
+                response: error.response,
+                message: error.message,
+                smtpHost: config.email.smtpHost,
+                smtpPort: config.email.smtpPort,
+                smtpSecure: config.email.smtpSecure
+            });
+
+            return {
+                sent: false,
+                skipped: false,
+                reason: failure.message,
+                code: failure.code
+            };
+        }
 
         return { sent: true, skipped: false };
+    }
+
+    describeDeliveryError(error) {
+        const code = error?.code || error?.command || 'EMAIL_DELIVERY_FAILED';
+
+        if (error?.code === 'ECONNRESET' || error?.code === 'ESOCKET') {
+            return {
+                code,
+                message: "Inscription approuvée, mais l'email n'a pas pu être envoyé : la connexion SMTP a été interrompue. Vérifiez SMTP_HOST, SMTP_PORT et SMTP_SECURE."
+            };
+        }
+
+        if (error?.code === 'ETIMEDOUT' || error?.code === 'ECONNECTION') {
+            return {
+                code,
+                message: "Inscription approuvée, mais l'email n'a pas pu être envoyé : le serveur SMTP est inaccessible ou trop lent."
+            };
+        }
+
+        if (error?.code === 'EAUTH' || error?.responseCode === 535) {
+            return {
+                code,
+                message: "Inscription approuvée, mais l'email n'a pas pu être envoyé : identifiants SMTP refusés."
+            };
+        }
+
+        if (error?.responseCode) {
+            return {
+                code,
+                message: `Inscription approuvée, mais l'email n'a pas pu être envoyé : erreur SMTP ${error.responseCode}.`
+            };
+        }
+
+        return {
+            code,
+            message: "Inscription approuvée, mais l'email n'a pas pu être envoyé. Vérifiez la configuration SMTP."
+        };
     }
 
     escapeHtml(value) {
