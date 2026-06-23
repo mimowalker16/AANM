@@ -7,11 +7,56 @@ class EmailService {
     }
 
     isConfigured() {
+        if (this.resolveProvider() === 'resend') {
+            return this.isResendConfigured();
+        }
+
+        if (this.resolveProvider() === 'smtp') {
+            return this.isSmtpConfigured();
+        }
+
+        return this.isResendConfigured() || this.isSmtpConfigured();
+    }
+
+    isSmtpConfigured() {
         return Boolean(config.email.smtpHost && config.email.smtpUser && config.email.smtpPass);
     }
 
+    isResendConfigured() {
+        return Boolean(config.email.resendApiKey);
+    }
+
+    resolveProvider() {
+        if (config.email.provider === 'resend' || config.email.provider === 'smtp') {
+            return config.email.provider;
+        }
+
+        return this.isResendConfigured() ? 'resend' : 'smtp';
+    }
+
+    getStatus() {
+        const provider = this.resolveProvider();
+
+        return {
+            provider,
+            configured: this.isConfigured(),
+            from: config.email.from,
+            replyTo: config.email.replyTo || null,
+            smtp: {
+                configured: this.isSmtpConfigured(),
+                host: config.email.smtpHost || null,
+                port: config.email.smtpPort,
+                secure: config.email.smtpSecure
+            },
+            resend: {
+                configured: this.isResendConfigured(),
+                apiUrl: config.email.resendApiUrl
+            }
+        };
+    }
+
     getTransporter() {
-        if (!this.isConfigured()) {
+        if (!this.isSmtpConfigured()) {
             return null;
         }
 
@@ -34,14 +79,35 @@ class EmailService {
     }
 
     formatDate(dateValue) {
+        if (!dateValue) {
+            throw new Error('Date value is missing');
+        }
+
+        const date = new Date(dateValue);
+        if (isNaN(date.getTime())) {
+            throw new Error(`Invalid date format: ${dateValue}`);
+        }
+
         return new Intl.DateTimeFormat('fr-FR', {
             dateStyle: 'full',
             timeStyle: 'short',
             timeZone: 'Africa/Algiers'
-        }).format(new Date(dateValue));
+        }).format(date);
     }
 
     buildSeminarDetails(row) {
+        if (!row) {
+            throw new Error('Registration data is missing');
+        }
+
+        if (!row.seminar_title) {
+            throw new Error('Seminar title is missing');
+        }
+
+        if (!row.seminar_date) {
+            throw new Error('Seminar date is missing');
+        }
+
         const isVirtual = row.seminar_delivery_mode === 'virtual';
         const participationLabel = isVirtual ? 'Lien de la salle virtuelle' : 'Lieu';
         const participationValue = isVirtual
@@ -59,6 +125,14 @@ class EmailService {
     }
 
     buildApprovalEmail(row) {
+        if (!row) {
+            throw new Error('Registration data is missing');
+        }
+
+        if (!row.email) {
+            throw new Error('Recipient email is missing');
+        }
+
         const details = this.buildSeminarDetails(row);
         const greetingName = row.full_name || 'participant';
         const descriptionLine = details.description
@@ -110,6 +184,64 @@ class EmailService {
     }
 
     async sendSeminarApprovalEmail(row) {
+        const provider = this.resolveProvider();
+
+        if (!this.isConfigured()) {
+            return {
+                sent: false,
+                skipped: true,
+                reason: 'Service email non configuré'
+            };
+        }
+
+        const message = this.buildApprovalEmail(row);
+
+        if (provider === 'resend') {
+            return this.sendWithResend(message);
+        }
+
+        return this.sendWithSmtp(message);
+    }
+
+    async sendTestEmail(to) {
+        const recipient = String(to || '').trim();
+
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipient)) {
+            return {
+                sent: false,
+                skipped: true,
+                reason: 'Adresse email de test invalide',
+                code: 'INVALID_TEST_EMAIL'
+            };
+        }
+
+        if (!this.isConfigured()) {
+            return {
+                sent: false,
+                skipped: true,
+                reason: 'Service email non configuré',
+                code: 'EMAIL_NOT_CONFIGURED'
+            };
+        }
+
+        const message = {
+            to: recipient,
+            subject: 'Test email - AANM',
+            text: "Ceci est un email de test depuis le service d'administration AANM.",
+            html: `
+                <div style="font-family:Arial,sans-serif;line-height:1.6;color:#1f2937;">
+                    <p>Ceci est un email de test depuis le service d'administration AANM.</p>
+                    <p>Si vous le recevez, la configuration email de production fonctionne.</p>
+                </div>
+            `
+        };
+
+        return this.resolveProvider() === 'resend'
+            ? this.sendWithResend(message)
+            : this.sendWithSmtp(message);
+    }
+
+    async sendWithSmtp(message) {
         const transporter = this.getTransporter();
 
         if (!transporter) {
@@ -120,18 +252,23 @@ class EmailService {
             };
         }
 
-        const message = this.buildApprovalEmail(row);
         try {
             await transporter.sendMail({
                 from: config.email.from,
                 replyTo: config.email.replyTo || undefined,
                 ...message
             });
+            console.log(`Email sent successfully to ${message.to}`);
         } catch (error) {
-            this.transporter = null;
+            // Reset transporter on connection errors, but not on auth errors
+            // Auth errors are permanent and will just keep failing
+            if (error.code !== 'EAUTH' && error.responseCode !== 535) {
+                this.transporter = null;
+            }
             const failure = this.describeDeliveryError(error);
 
             console.error('Seminar approval email failed:', {
+                provider: 'smtp',
                 code: error.code,
                 command: error.command,
                 responseCode: error.responseCode,
@@ -153,8 +290,71 @@ class EmailService {
         return { sent: true, skipped: false };
     }
 
+    async sendWithResend(message) {
+        try {
+            const response = await fetch(config.email.resendApiUrl, {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${config.email.resendApiKey}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    from: config.email.from,
+                    to: [message.to],
+                    reply_to: config.email.replyTo || undefined,
+                    subject: message.subject,
+                    html: message.html,
+                    text: message.text
+                }),
+                signal: AbortSignal.timeout(15000)
+            });
+
+            if (!response.ok) {
+                const responseBody = await response.text();
+                const error = new Error(`Resend API error ${response.status}`);
+                error.code = 'RESEND_API_ERROR';
+                error.responseCode = response.status;
+                error.response = responseBody.slice(0, 500);
+                throw error;
+            }
+
+            return { sent: true, skipped: false };
+        } catch (error) {
+            const failure = this.describeDeliveryError(error);
+
+            console.error('Seminar approval email failed:', {
+                provider: 'resend',
+                code: error.code || error.name,
+                responseCode: error.responseCode,
+                response: error.response,
+                message: error.message
+            });
+
+            return {
+                sent: false,
+                skipped: false,
+                reason: failure.message,
+                code: failure.code
+            };
+        }
+    }
+
     describeDeliveryError(error) {
-        const code = error?.code || error?.command || 'EMAIL_DELIVERY_FAILED';
+        const code = error?.code || error?.command || error?.name || 'EMAIL_DELIVERY_FAILED';
+
+        if (error?.code === 'RESEND_API_ERROR') {
+            return {
+                code,
+                message: `Inscription approuvée, mais l'email n'a pas pu être envoyé : erreur du fournisseur email ${error.responseCode}.`
+            };
+        }
+
+        if (error?.name === 'TimeoutError' || error?.name === 'AbortError') {
+            return {
+                code,
+                message: "Inscription approuvée, mais l'email n'a pas pu être envoyé : le fournisseur email n'a pas répondu à temps."
+            };
+        }
 
         if (error?.code === 'ECONNRESET' || error?.code === 'ESOCKET') {
             return {

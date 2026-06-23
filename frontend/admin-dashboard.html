@@ -175,8 +175,44 @@
         .action-btn.toggle-open:hover { background: rgba(59,169,156,0.18); }
         .action-btn.toggle-close { background: rgba(220,38,38,0.08); color: #991b1b; border: 1px solid rgba(220,38,38,0.25); }
         .action-btn.toggle-close:hover { background: rgba(220,38,38,0.15); }
+        .email-status-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: var(--space-md);
+            margin-bottom: var(--space-md);
+        }
+        .email-status-card {
+            background: #fafafa;
+            border: 1px solid #e5e7eb;
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+        }
+        .email-status-card h4 {
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #6b7280;
+            margin-bottom: 0.45rem;
+        }
+        .email-status-card p {
+            margin: 0.2rem 0;
+            font-size: 0.9rem;
+            color: var(--clr-text);
+            word-break: break-word;
+        }
+        .email-status-pill {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 99px;
+            padding: 0.2rem 0.55rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .email-status-pill--ok { background: #dcfce7; color: #166534; }
+        .email-status-pill--warn { background: #fef3c7; color: #92400e; }
         @media (max-width: 600px) {
             .sem-form-grid { grid-template-columns: 1fr; }
+            .email-status-grid { grid-template-columns: 1fr; }
             .seminar-card__header { flex-direction: column; align-items: flex-start; }
             .seminar-card__actions { width: 100%; }
             .seminar-card__actions .action-btn { flex: 1 1 46%; }
@@ -610,6 +646,9 @@
                     <button class="tab-button" data-tab="seminaires">
                         Séminaires
                     </button>
+                    <button class="tab-button" data-tab="email">
+                        Email
+                    </button>
                 </div>
 
                 <!-- Soumissions en attente Tab -->
@@ -738,6 +777,52 @@
                     <div id="seminairesList"></div>
                 </div>
 
+                <!-- Email Tab -->
+                <div id="emailTab" class="tab-content">
+                    <div class="sem-form-card">
+                        <h3 class="sem-form-card__title">Diagnostic email</h3>
+                        <div id="emailStatusLoading" class="loading-state" style="display:none;">
+                            <div class="loading-spinner"></div>
+                            <p>Chargement de la configuration email...</p>
+                        </div>
+                        <div id="emailStatusError" class="error-state" style="display:none;"></div>
+                        <div id="emailStatusContent" style="display:none;">
+                            <div class="email-status-grid">
+                                <div class="email-status-card">
+                                    <h4>Fournisseur actif</h4>
+                                    <p><span id="emailConfiguredPill" class="email-status-pill">-</span></p>
+                                    <p>Provider: <strong id="emailProvider">-</strong></p>
+                                    <p>From: <strong id="emailFrom">-</strong></p>
+                                    <p>Reply-To: <strong id="emailReplyTo">-</strong></p>
+                                </div>
+                                <div class="email-status-card">
+                                    <h4>SMTP</h4>
+                                    <p>Configuré: <strong id="emailSmtpConfigured">-</strong></p>
+                                    <p>Host: <strong id="emailSmtpHost">-</strong></p>
+                                    <p>Port: <strong id="emailSmtpPort">-</strong></p>
+                                    <p>Secure: <strong id="emailSmtpSecure">-</strong></p>
+                                </div>
+                                <div class="email-status-card">
+                                    <h4>Resend</h4>
+                                    <p>Configuré: <strong id="emailResendConfigured">-</strong></p>
+                                    <p>API: <strong id="emailResendApiUrl">-</strong></p>
+                                </div>
+                                <div class="email-status-card">
+                                    <h4>Test</h4>
+                                    <form id="emailTestForm" class="sem-field" novalidate>
+                                        <label for="emailTestTo">Adresse destinataire</label>
+                                        <input type="email" id="emailTestTo" placeholder="vous@example.com" />
+                                        <div class="sem-form-actions">
+                                            <button type="submit" class="action-btn approve" id="emailTestBtn">Envoyer un test</button>
+                                            <button type="button" class="action-btn" id="emailRefreshBtn">Actualiser</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </section>
     </main>
@@ -856,6 +941,7 @@
             constructor() {
                 this.pendingLabs = [];
                 this.approvedLabs = [];
+                this.emailStatusLoaded = false;
                 this.init();
             }
 
@@ -876,6 +962,9 @@
                 document.getElementById('semForm').addEventListener('submit', (e) => this.submitSeminarForm(e));
                 document.getElementById('semDeliveryMode').addEventListener('change', () => this.updateSeminarModeFields());
                 this.updateSeminarModeFields();
+
+                document.getElementById('emailTestForm').addEventListener('submit', (e) => this.sendTestEmail(e));
+                document.getElementById('emailRefreshBtn').addEventListener('click', () => this.loadEmailStatus(true));
 
                 // Modal close on background click
                 document.getElementById('confirmModal').addEventListener('click', (e) => {
@@ -905,6 +994,8 @@
                     this.loadApprovedLabs();
                 } else if (tab === 'seminaires') {
                     this.loadSeminaires();
+                } else if (tab === 'email') {
+                    this.loadEmailStatus();
                 }
             }
 
@@ -932,6 +1023,87 @@
                     this.loadApprovedLabs()
                 ]);
                 this.updateStats();
+            }
+
+            async loadEmailStatus(force = false) {
+                if (this.emailStatusLoaded && !force) return;
+
+                const loading = document.getElementById('emailStatusLoading');
+                const error = document.getElementById('emailStatusError');
+                const content = document.getElementById('emailStatusContent');
+                loading.style.display = 'block';
+                error.style.display = 'none';
+                content.style.display = 'none';
+
+                try {
+                    const response = await fetch(`${API_BASE}/api/admin/email/status`, {
+                        headers: adminHeaders()
+                    });
+                    const result = await response.json();
+                    if (handleAuthError(response, result)) return;
+                    if (!result.success) throw new Error(result.message || 'Impossible de charger le statut email');
+
+                    this.renderEmailStatus(result.data);
+                    this.emailStatusLoaded = true;
+                    content.style.display = 'block';
+                } catch (err) {
+                    error.textContent = err.message || 'Erreur lors du chargement du statut email.';
+                    error.style.display = 'block';
+                } finally {
+                    loading.style.display = 'none';
+                }
+            }
+
+            renderEmailStatus(status) {
+                const configuredPill = document.getElementById('emailConfiguredPill');
+                configuredPill.textContent = status.configured ? 'Configuré' : 'Non configuré';
+                configuredPill.className = `email-status-pill ${status.configured ? 'email-status-pill--ok' : 'email-status-pill--warn'}`;
+
+                document.getElementById('emailProvider').textContent = status.provider || '-';
+                document.getElementById('emailFrom').textContent = status.from || '-';
+                document.getElementById('emailReplyTo').textContent = status.replyTo || '-';
+                document.getElementById('emailSmtpConfigured').textContent = status.smtp?.configured ? 'Oui' : 'Non';
+                document.getElementById('emailSmtpHost').textContent = status.smtp?.host || '-';
+                document.getElementById('emailSmtpPort').textContent = status.smtp?.port ?? '-';
+                document.getElementById('emailSmtpSecure').textContent = status.smtp?.secure ? 'true' : 'false';
+                document.getElementById('emailResendConfigured').textContent = status.resend?.configured ? 'Oui' : 'Non';
+                document.getElementById('emailResendApiUrl').textContent = status.resend?.apiUrl || '-';
+            }
+
+            async sendTestEmail(e) {
+                e.preventDefault();
+                const input = document.getElementById('emailTestTo');
+                const button = document.getElementById('emailTestBtn');
+                const to = input.value.trim();
+
+                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) {
+                    this.showNotification('Adresse email de test invalide.', 'error');
+                    return;
+                }
+
+                button.disabled = true;
+                try {
+                    const response = await fetch(`${API_BASE}/api/admin/email/test`, {
+                        method: 'POST',
+                        headers: adminHeaders({ 'Content-Type': 'application/json' }),
+                        body: JSON.stringify({ to })
+                    });
+                    const result = await response.json();
+                    if (handleAuthError(response, result)) return;
+
+                    if (result.emailSent) {
+                        this.showNotification('Email de test envoyé.', 'success');
+                    } else {
+                        const code = result.emailErrorCode ? ` (${result.emailErrorCode})` : '';
+                        this.showNotification(`${result.message || "L'email de test n'a pas pu être envoyé."}${code}`, 'warning');
+                    }
+
+                    await this.loadEmailStatus(true);
+                } catch (err) {
+                    this.showNotification(err.message || "Erreur lors de l'envoi du test email.", 'error');
+                } finally {
+                    button.disabled = false;
+                }
             }
 
             async loadPendingLabs() {

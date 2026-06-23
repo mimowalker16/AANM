@@ -1,5 +1,6 @@
 import express from 'express';
 import { getPendingLabs, approveLab, deleteLab, getAdminStats } from '../controllers/adminController.js';
+import { adminGetEmailStatus, adminSendTestEmail } from '../controllers/adminEmailController.js';
 import { requireAdminAuth, createAdminToken } from '../middleware/auth.js';
 import { loginRateLimiter } from '../middleware/security.js';
 import {
@@ -32,6 +33,8 @@ router.get('/labs/pending', requireAdminAuth, getPendingLabs);
 router.put('/labs/:id/approve', requireAdminAuth, approveLab);
 router.delete('/labs/:id', requireAdminAuth, deleteLab);
 router.get('/stats', requireAdminAuth, getAdminStats);
+router.get('/email/status', requireAdminAuth, adminGetEmailStatus);
+router.post('/email/test', requireAdminAuth, adminSendTestEmail);
 
 // ─── Protected: Seminaire Management ────────────────────────────────────────
 router.get('/seminaires', requireAdminAuth, adminGetSeminaires);

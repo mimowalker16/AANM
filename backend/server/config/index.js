@@ -61,11 +61,14 @@ export const config = {
         jwtExpiresIn: process.env.JWT_EXPIRES_IN || '8h'
     },
     email: {
+        provider: (process.env.EMAIL_PROVIDER || 'auto').toLowerCase(),
         smtpHost: process.env.SMTP_HOST || '',
         smtpPort: parseInt(process.env.SMTP_PORT || '587', 10),
         smtpSecure: process.env.SMTP_SECURE === 'true',
         smtpUser: process.env.SMTP_USER || '',
         smtpPass: process.env.SMTP_PASS || '',
+        resendApiKey: process.env.RESEND_API_KEY || '',
+        resendApiUrl: process.env.RESEND_API_URL || 'https://api.resend.com/emails',
         from: process.env.EMAIL_FROM || process.env.SMTP_USER || 'AANM <no-reply@aanm-assal.org>',
         replyTo: process.env.EMAIL_REPLY_TO || process.env.EMAIL_FROM || process.env.SMTP_USER || ''
     }
