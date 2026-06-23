@@ -61,7 +61,15 @@ export const config = {
         jwtExpiresIn: process.env.JWT_EXPIRES_IN || '8h'
     },
     email: {
-        provider: (process.env.EMAIL_PROVIDER || 'auto').toLowerCase(),
+        provider: (() => {
+            const envProvider = (process.env.EMAIL_PROVIDER || 'auto').toLowerCase();
+            // If explicitly set to 'smtp' or 'resend', use that
+            if (envProvider === 'smtp' || envProvider === 'resend') {
+                return envProvider;
+            }
+            // Otherwise auto-detect: prefer Resend if available, fall back to SMTP
+            return process.env.RESEND_API_KEY ? 'resend' : 'smtp';
+        })(),
         smtpHost: process.env.SMTP_HOST || '',
         smtpPort: parseInt(process.env.SMTP_PORT || '587', 10),
         smtpSecure: process.env.SMTP_SECURE === 'true',

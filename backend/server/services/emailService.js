@@ -69,9 +69,16 @@ class EmailService {
                     user: config.email.smtpUser,
                     pass: config.email.smtpPass
                 },
-                connectionTimeout: 10000,
-                greetingTimeout: 10000,
-                socketTimeout: 20000
+                // Increased timeouts for restrictive network environments
+                connectionTimeout: 30000,  // 30s - for slow/restrictive networks
+                greetingTimeout: 30000,    // 30s
+                socketTimeout: 30000,      // 30s
+                pool: {
+                    maxConnections: 1,
+                    maxMessages: Infinity,
+                    rateDelta: 1000,
+                    rateLimit: 5  // Max 5 emails per second
+                }
             });
         }
 
@@ -291,6 +298,15 @@ class EmailService {
     }
 
     async sendWithResend(message) {
+        if (!config.email.resendApiKey) {
+            return {
+                sent: false,
+                skipped: true,
+                reason: 'Clé API Resend manquante',
+                code: 'RESEND_API_KEY_MISSING'
+            };
+        }
+
         try {
             const response = await fetch(config.email.resendApiUrl, {
                 method: 'POST',
@@ -311,6 +327,13 @@ class EmailService {
 
             if (!response.ok) {
                 const responseBody = await response.text();
+                
+                console.error('Resend API error response:', {
+                    status: response.status,
+                    statusText: response.statusText,
+                    body: responseBody.slice(0, 500)
+                });
+
                 const error = new Error(`Resend API error ${response.status}`);
                 error.code = 'RESEND_API_ERROR';
                 error.responseCode = response.status;
@@ -318,6 +341,8 @@ class EmailService {
                 throw error;
             }
 
+            const result = await response.json();
+            console.log(`Email sent successfully via Resend to ${message.to}`, { id: result.id });
             return { sent: true, skipped: false };
         } catch (error) {
             const failure = this.describeDeliveryError(error);
@@ -327,7 +352,8 @@ class EmailService {
                 code: error.code || error.name,
                 responseCode: error.responseCode,
                 response: error.response,
-                message: error.message
+                message: error.message,
+                apiUrl: config.email.resendApiUrl
             });
 
             return {
@@ -342,10 +368,35 @@ class EmailService {
     describeDeliveryError(error) {
         const code = error?.code || error?.command || error?.name || 'EMAIL_DELIVERY_FAILED';
 
-        if (error?.code === 'RESEND_API_ERROR') {
+        if (error?.code === 'RESEND_API_KEY_MISSING') {
             return {
                 code,
-                message: `Inscription approuvée, mais l'email n'a pas pu être envoyé : erreur du fournisseur email ${error.responseCode}.`
+                message: "Inscription approuvée, mais l'email n'a pas pu être envoyé : clé API Resend manquante."
+            };
+        }
+
+        if (error?.code === 'RESEND_API_ERROR') {
+            if (error?.responseCode === 401 || error?.responseCode === 403) {
+                return {
+                    code,
+                    message: "Inscription approuvée, mais l'email n'a pas pu être envoyé : clé API Resend invalide ou expirée."
+                };
+            }
+            if (error?.responseCode === 422) {
+                return {
+                    code,
+                    message: "Inscription approuvée, mais l'email n'a pas pu être envoyé : adresse email invalide pour Resend."
+                };
+            }
+            if (error?.responseCode === 429) {
+                return {
+                    code,
+                    message: "Inscription approuvée, mais l'email n'a pas pu être envoyé : limite de débit Resend dépassée."
+                };
+            }
+            return {
+                code,
+                message: `Inscription approuvée, mais l'email n'a pas pu être envoyé : erreur Resend ${error.responseCode}.`
             };
         }
 
@@ -386,7 +437,7 @@ class EmailService {
 
         return {
             code,
-            message: "Inscription approuvée, mais l'email n'a pas pu être envoyé. Vérifiez la configuration SMTP."
+            message: "Inscription approuvée, mais l'email n'a pas pu être envoyé. Vérifiez la configuration email."
         };
     }
 
