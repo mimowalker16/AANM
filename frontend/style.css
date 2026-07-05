@@ -6,6 +6,19 @@
 /* --- Google Fonts --- */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,700&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
 
+/*
+ * Everything below lives in the "base" layer.
+ * Unlayered CSS (e.g. the per-page <style> override blocks in about.html,
+ * activities.html, etc.) always wins the cascade over layered CSS,
+ * regardless of source order. This keeps behavior identical between
+ * `vite dev` (where the <link> comes before the inline <style> block)
+ * and the production build (where Vite moves the bundled stylesheet
+ * <link> to the end of <head>, after those inline <style> blocks).
+ * Without this, production would silently let base rules win instead
+ * of the intended page-specific overrides.
+ */
+@layer base {
+
 /* --- CSS Custom Properties (Design Tokens) --- */
 :root {
   /* Colors */
@@ -2663,3 +2676,5 @@ img.lazy-loaded {
     transform: scaleX(1);
   }
 }
+
+} /* end @layer base */
