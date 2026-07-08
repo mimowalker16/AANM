@@ -1,0 +1,63 @@
+services:
+  - type: web
+    name: aanm-backend
+    runtime: node
+    region: frankfurt     # closest to Algeria / North Africa
+    plan: free            # upgrade to "starter" ($7/mo) to eliminate cold starts
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeploy: true      # redeploy automatically on git push
+
+    envVars:
+      # Render injects PORT automatically — do not set it manually
+      - key: NODE_ENV
+        value: production
+
+      # Render sits behind a reverse proxy — required for rate-limiting by real IP
+      - key: TRUST_PROXY
+        value: "1"
+
+      # ── Database ─────────────────────────────────────────────────────────────
+      # Paste the Supabase "Transaction" connection string (port 6543) here.
+      # It looks like: postgresql://postgres.[ref]:[password]@aws-0-eu-west-3.pooler.supabase.com:6543/postgres
+      - key: DATABASE_URL
+        sync: false       # marks it as a secret — you fill it in the Render dashboard
+
+      # Supabase requires SSL. Use "true" so the server skips certificate validation
+      # (Supabase pooler uses self-signed certs on the internal chain).
+      - key: DATABASE_SSL
+        value: "true"
+
+      # ── CORS ─────────────────────────────────────────────────────────────────
+      # Replace with your actual Sevalla Pages URL once you have it.
+      # Add both the bare domain and www if you use both.
+      - key: ALLOWED_ORIGINS
+        value: https://aanmassal.org,https://www.aanmassal.org
+
+      # ── Admin auth ───────────────────────────────────────────────────────────
+      - key: ADMIN_USERNAME
+        sync: false
+
+      - key: ADMIN_PASSWORD
+        sync: false
+
+      - key: JWT_SECRET
+        sync: false       # generate with: node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+
+      - key: JWT_EXPIRES_IN
+        value: 8h
+
+      # ── Email (Resend) ────────────────────────────────────────────────────────
+      - key: EMAIL_PROVIDER
+        value: resend
+
+      - key: RESEND_API_KEY
+        sync: false
+
+      - key: EMAIL_FROM
+        value: "AANM <no-reply@aanmassal.org>"
+
+      - key: EMAIL_REPLY_TO
+        value: "cabinet@aanmassal.org"
