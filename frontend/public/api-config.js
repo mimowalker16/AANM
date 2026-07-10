@@ -4,5 +4,5 @@
 
     window.AANM_API_BASE = isLocal
         ? 'http://localhost:3001'
-        : "https://aanm-backend.onrender.com";
+        : "https://api.aanmassal.org";
 })();
