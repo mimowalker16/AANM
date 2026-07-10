@@ -9,7 +9,15 @@ const productionApiBase =
     process.env.AANM_API_BASE ||
     process.env.VITE_API_BASE_URL ||
     process.env.API_BASE_URL ||
-    'https://api.yourdomain.com';
+    'https://aanm-backend.onrender.com';
+
+if (!process.env.AANM_API_BASE && !process.env.VITE_API_BASE_URL && !process.env.API_BASE_URL) {
+    console.warn(
+        '\n⚠️  WARNING: No API base URL env var found (AANM_API_BASE / VITE_API_BASE_URL / API_BASE_URL).' +
+        `\n   Falling back to default: ${productionApiBase}` +
+        '\n   Set AANM_API_BASE in your hosting build environment to override.\n'
+    );
+}
 
 const content = `(function () {
     var localHosts = ['localhost', '127.0.0.1', '::1'];

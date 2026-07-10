@@ -24,6 +24,11 @@ class Database {
                 this.pool = new Pool({
                     connectionString: config.database.url,
                     ssl,
+                    // Keep the pool small for managed DBs (Supabase free tier caps
+                    // real connections at 15; the transaction pooler is generous but
+                    // the underlying limit still applies).
+                    max: parseInt(process.env.DB_POOL_MAX, 10) || 5,
+                    idleTimeoutMillis: 30000,
                     connectionTimeoutMillis: 10000
                 });
 
@@ -47,7 +52,14 @@ class Database {
 
         this.isConnected = true;
         console.log('✅ Connected to PostgreSQL database');
-        await this.initializeTables();
+
+        // Skip DDL migrations when the schema is managed externally (e.g. Supabase).
+        // Set SKIP_TABLE_INIT=true in production to avoid unnecessary round-trips.
+        if (process.env.SKIP_TABLE_INIT === 'true') {
+            console.log('⏭️  SKIP_TABLE_INIT=true — skipping table migration (schema managed externally)');
+        } else {
+            await this.initializeTables();
+        }
     }
 
     logConnectionTarget(databaseUrl, sslMode) {

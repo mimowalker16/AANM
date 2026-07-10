@@ -20,21 +20,28 @@ services:
         value: "1"
 
       # ── Database ─────────────────────────────────────────────────────────────
-      # Paste the Supabase "Transaction" connection string (port 6543) here.
-      # It looks like: postgresql://postgres.[ref]:[password]@aws-0-eu-west-3.pooler.supabase.com:6543/postgres
+      # Supabase Transaction pooler (port 6543) — set this in the Render dashboard.
+      # postgresql://postgres.rrpaajtctdavlhwuffsy:[password]@aws-0-eu-central-1.pooler.supabase.com:6543/postgres
       - key: DATABASE_URL
-        sync: false       # marks it as a secret — you fill it in the Render dashboard
+        sync: false       # secret — fill it in the Render dashboard, never commit
 
-      # Supabase requires SSL. Use "true" so the server skips certificate validation
-      # (Supabase pooler uses self-signed certs on the internal chain).
+      # Supabase pooler uses a self-signed cert chain; rejectUnauthorized: false.
       - key: DATABASE_SSL
         value: "true"
+
+      # Tables are managed in Supabase — skip the startup DDL migration.
+      - key: SKIP_TABLE_INIT
+        value: "true"
+
+      # Keep pool small — Supabase free tier caps underlying connections at 15.
+      - key: DB_POOL_MAX
+        value: "5"
 
       # ── CORS ─────────────────────────────────────────────────────────────────
       # Replace with your actual Sevalla Pages URL once you have it.
       # Add both the bare domain and www if you use both.
       - key: ALLOWED_ORIGINS
-        value: https://aanmassal.org,https://www.aanmassal.org
+        value: https://aanm-fwpwx.sevalla.page,https://aanmassal.org,https://www.aanmassal.org
 
       # ── Admin auth ───────────────────────────────────────────────────────────
       - key: ADMIN_USERNAME
