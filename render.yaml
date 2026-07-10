@@ -41,7 +41,8 @@ services:
       # Replace with your actual Sevalla Pages URL once you have it.
       # Add both the bare domain and www if you use both.
       - key: ALLOWED_ORIGINS
-        value: https://aanm-fwpwx.sevalla.page,https://aanmassal.org,https://www.aanmassal.org
+        value: https://aanm-front-0qv30.sevalla.page/,https://aanmassal.org,https://www.aanmassal.org
+        
 
       # ── Admin auth ───────────────────────────────────────────────────────────
       - key: ADMIN_USERNAME
