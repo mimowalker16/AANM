@@ -48,3 +48,4 @@ Thumbs.db
 scripts/seed/current-data.sql
 scripts/seed/run-seed.js
 scripts/seed/seed-current-data.sql
+.github/*
