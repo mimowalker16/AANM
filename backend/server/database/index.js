@@ -182,6 +182,114 @@ class Database {
         `);
 
         await this.pool.query(`
+            CREATE TABLE IF NOT EXISTS seminar_questions (
+                id SERIAL PRIMARY KEY,
+                seminar_id INTEGER NOT NULL REFERENCES seminaires(id) ON DELETE CASCADE,
+                question_key TEXT NOT NULL,
+                label TEXT NOT NULL,
+                description TEXT,
+                field_type TEXT NOT NULL,
+                is_required BOOLEAN DEFAULT false,
+                sort_order INTEGER DEFAULT 0,
+                is_active BOOLEAN DEFAULT true,
+                placeholder TEXT,
+                help_text TEXT,
+                options_json JSONB,
+                validation_json JSONB,
+                allow_multiple_files BOOLEAN DEFAULT false,
+                max_files INTEGER DEFAULT 1,
+                max_file_size_mb INTEGER DEFAULT 100,
+                allowed_mime_types_json JSONB,
+                created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE(seminar_id, question_key)
+            )
+        `);
+        await this.ensureIdSequence('seminar_questions');
+
+        await this.pool.query(`
+            DO $$
+            BEGIN
+                IF NOT EXISTS (
+                    SELECT 1 FROM pg_constraint WHERE conname = 'seminar_questions_field_type_check'
+                ) THEN
+                    ALTER TABLE seminar_questions
+                    ADD CONSTRAINT seminar_questions_field_type_check
+                    CHECK (field_type IN ('text','email','phone','textarea','single_choice','multiple_choice','file','info_block'));
+                END IF;
+            END
+            $$;
+        `);
+
+        await this.pool.query(`
+            CREATE TABLE IF NOT EXISTS seminar_registrations (
+                id SERIAL PRIMARY KEY,
+                seminar_id INTEGER NOT NULL REFERENCES seminaires(id) ON DELETE CASCADE,
+                status TEXT DEFAULT 'pending' NOT NULL,
+                approved_at TIMESTAMPTZ,
+                confirmation_email_sent_at TIMESTAMPTZ,
+                confirmation_email_error TEXT,
+                registered_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+        await this.ensureIdSequence('seminar_registrations');
+
+        await this.pool.query(`
+            DO $$
+            BEGIN
+                IF NOT EXISTS (
+                    SELECT 1 FROM pg_constraint WHERE conname = 'seminar_registrations_status_check'
+                ) THEN
+                    ALTER TABLE seminar_registrations
+                    ADD CONSTRAINT seminar_registrations_status_check
+                    CHECK (status IN ('pending', 'approved'));
+                END IF;
+            END
+            $$;
+        `);
+
+        await this.pool.query(`
+            CREATE TABLE IF NOT EXISTS seminar_registration_answers (
+                id SERIAL PRIMARY KEY,
+                registration_id INTEGER NOT NULL REFERENCES seminar_registrations(id) ON DELETE CASCADE,
+                question_id INTEGER NOT NULL REFERENCES seminar_questions(id) ON DELETE CASCADE,
+                answer_text TEXT,
+                answer_json JSONB,
+                created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE(registration_id, question_id)
+            )
+        `);
+        await this.ensureIdSequence('seminar_registration_answers');
+
+        await this.pool.query(`
+            CREATE TABLE IF NOT EXISTS seminar_registration_files (
+                id SERIAL PRIMARY KEY,
+                registration_id INTEGER NOT NULL REFERENCES seminar_registrations(id) ON DELETE CASCADE,
+                question_id INTEGER NOT NULL REFERENCES seminar_questions(id) ON DELETE CASCADE,
+                storage_bucket TEXT,
+                storage_path TEXT NOT NULL,
+                original_name TEXT,
+                mime_type TEXT,
+                size_bytes BIGINT,
+                uploaded_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+        await this.ensureIdSequence('seminar_registration_files');
+
+        const missingQuestions = await this.pool.query(`
+            SELECT s.id
+            FROM seminaires s
+            WHERE NOT EXISTS (
+                SELECT 1
+                FROM seminar_questions q
+                WHERE q.seminar_id = s.id
+            )
+        `);
+        for (const row of missingQuestions.rows) {
+            await this.seedDefaultSeminaireQuestions(row.id);
+        }
+
+        await this.pool.query(`
             CREATE TABLE IF NOT EXISTS labs (
                 id SERIAL PRIMARY KEY,
                 lab_name TEXT NOT NULL,
@@ -433,27 +541,126 @@ class Database {
         return { id: result.rows[0].id };
     }
 
+    async seedDefaultSeminaireQuestions(seminarId) {
+        const defaults = [
+            {
+                question_key: 'email',
+                label: 'Adresse e-mail',
+                field_type: 'email',
+                is_required: true,
+                sort_order: 0
+            },
+            {
+                question_key: 'full_name',
+                label: 'NOM PRENOM',
+                field_type: 'text',
+                is_required: true,
+                sort_order: 1
+            },
+            {
+                question_key: 'spouse_name',
+                label: "NOM DE L'EPOUX (pour les mariées)",
+                field_type: 'text',
+                is_required: false,
+                sort_order: 2
+            },
+            {
+                question_key: 'phone',
+                label: 'N° de Téléphone valide pour vous contacter ?',
+                field_type: 'phone',
+                is_required: true,
+                sort_order: 3
+            },
+            {
+                question_key: 'profession',
+                label: 'PROFESSION / FONCTION',
+                field_type: 'text',
+                is_required: true,
+                sort_order: 4
+            },
+            {
+                question_key: 'fees_info',
+                label: "FRAIS D'INSCRIPTION",
+                field_type: 'info_block',
+                is_required: false,
+                sort_order: 5,
+                description: "REGLEZ via guichets -Algérie poste- CCP : 433997/08 compte: Mr MERRAKCHI Nour Bachir (Alger) ou via BARIDIMOB RIP: 00799999000043399752. (15.000 DA) Professionnel de Santé ; (10.000 DA) Ancien Nutrithérapeute 2022 de l'AANM ; (10.000 DA) Etudiant + certificat de scolarité valide."
+            },
+            {
+                question_key: 'delivery_office',
+                label: 'LIVRAISON des polycopiés: précisez le bureau YALIDINE préféré (wilaya + commune + nom du bureau)',
+                field_type: 'textarea',
+                is_required: true,
+                sort_order: 6
+            },
+            {
+                question_key: 'payment_receipt',
+                label: 'RECU DE PAIEMENT',
+                field_type: 'file',
+                is_required: true,
+                sort_order: 7,
+                help_text: "Importez jusqu'à 5 fichiers compatibles : PDF, document, image ou spreadsheet. 100 MB max par fichier.",
+                allow_multiple_files: true,
+                max_files: 5,
+                max_file_size_mb: 100,
+                allowed_mime_types_json: ['application/pdf', 'image/jpeg', 'image/png', 'image/webp']
+            }
+        ];
+
+        for (const item of defaults) {
+            await this.pool.query(
+                `
+                    INSERT INTO seminar_questions (
+                        seminar_id, question_key, label, description, field_type, is_required,
+                        sort_order, is_active, help_text, allow_multiple_files, max_files,
+                        max_file_size_mb, allowed_mime_types_json
+                    )
+                    VALUES (
+                        $1, $2, $3, $4, $5, $6,
+                        $7, true, $8, $9, $10,
+                        $11, $12::jsonb
+                    )
+                    ON CONFLICT (seminar_id, question_key) DO NOTHING
+                `,
+                [
+                    seminarId,
+                    item.question_key,
+                    item.label,
+                    item.description || null,
+                    item.field_type,
+                    item.is_required,
+                    item.sort_order,
+                    item.help_text || null,
+                    Boolean(item.allow_multiple_files),
+                    item.max_files || 1,
+                    item.max_file_size_mb || 100,
+                    item.allowed_mime_types_json ? JSON.stringify(item.allowed_mime_types_json) : null
+                ]
+            );
+        }
+    }
+
     async getSeminaires() {
         const result = await this.pool.query(`
             SELECT s.*,
             (
                 SELECT COUNT(*)::int
-                FROM registrations r
+                FROM seminar_registrations r
                 WHERE r.seminar_id = s.id AND r.status = 'approved'
             ) AS registration_count,
             (
                 SELECT COUNT(*)::int
-                FROM registrations r
+                FROM seminar_registrations r
                 WHERE r.seminar_id = s.id AND r.status = 'approved'
             ) AS approved_registration_count,
             (
                 SELECT COUNT(*)::int
-                FROM registrations r
+                FROM seminar_registrations r
                 WHERE r.seminar_id = s.id AND r.status = 'pending'
             ) AS pending_registration_count,
             (
                 SELECT COUNT(*)::int
-                FROM registrations r
+                FROM seminar_registrations r
                 WHERE r.seminar_id = s.id
             ) AS total_registration_count
             FROM seminaires s
@@ -468,22 +675,22 @@ class Database {
                 SELECT s.*,
                 (
                     SELECT COUNT(*)::int
-                    FROM registrations r
+                        FROM seminar_registrations r
                     WHERE r.seminar_id = s.id AND r.status = 'approved'
                 ) AS registration_count,
                 (
                     SELECT COUNT(*)::int
-                    FROM registrations r
+                        FROM seminar_registrations r
                     WHERE r.seminar_id = s.id AND r.status = 'approved'
                 ) AS approved_registration_count,
                 (
                     SELECT COUNT(*)::int
-                    FROM registrations r
+                        FROM seminar_registrations r
                     WHERE r.seminar_id = s.id AND r.status = 'pending'
                 ) AS pending_registration_count,
                 (
                     SELECT COUNT(*)::int
-                    FROM registrations r
+                        FROM seminar_registrations r
                     WHERE r.seminar_id = s.id
                 ) AS total_registration_count
                 FROM seminaires s
@@ -493,6 +700,203 @@ class Database {
         );
         return result.rows[0] || null;
     }
+
+        async getSeminaireQuestions(seminarId, includeInactive = false) {
+            const params = [seminarId];
+            const inactiveFilter = includeInactive ? '' : 'AND is_active = true';
+            const result = await this.pool.query(
+                `
+                    SELECT *
+                    FROM seminar_questions
+                    WHERE seminar_id = $1 ${inactiveFilter}
+                    ORDER BY sort_order ASC, id ASC
+                `,
+                params
+            );
+            return result.rows;
+        }
+
+        async createSeminaireQuestion(seminarId, payload) {
+            const result = await this.pool.query(
+                `
+                    INSERT INTO seminar_questions (
+                        seminar_id, question_key, label, description, field_type,
+                        is_required, sort_order, is_active, placeholder, help_text,
+                        options_json, validation_json, allow_multiple_files,
+                        max_files, max_file_size_mb, allowed_mime_types_json
+                    ) VALUES (
+                        $1, $2, $3, $4, $5,
+                        $6, $7, $8, $9, $10,
+                        $11::jsonb, $12::jsonb, $13,
+                        $14, $15, $16::jsonb
+                    )
+                    RETURNING *
+                `,
+                [
+                    seminarId,
+                    payload.question_key,
+                    payload.label,
+                    payload.description,
+                    payload.field_type,
+                    payload.is_required,
+                    payload.sort_order,
+                    payload.is_active,
+                    payload.placeholder,
+                    payload.help_text,
+                    payload.options_json ? JSON.stringify(payload.options_json) : null,
+                    payload.validation_json ? JSON.stringify(payload.validation_json) : null,
+                    payload.allow_multiple_files,
+                    payload.max_files,
+                    payload.max_file_size_mb,
+                    payload.allowed_mime_types_json ? JSON.stringify(payload.allowed_mime_types_json) : null
+                ]
+            );
+            return result.rows[0];
+        }
+
+        async updateSeminaireQuestion(seminarId, questionId, payload) {
+            const result = await this.pool.query(
+                `
+                    UPDATE seminar_questions
+                    SET question_key = $1,
+                        label = $2,
+                        description = $3,
+                        field_type = $4,
+                        is_required = $5,
+                        sort_order = $6,
+                        is_active = $7,
+                        placeholder = $8,
+                        help_text = $9,
+                        options_json = $10::jsonb,
+                        validation_json = $11::jsonb,
+                        allow_multiple_files = $12,
+                        max_files = $13,
+                        max_file_size_mb = $14,
+                        allowed_mime_types_json = $15::jsonb,
+                        updated_at = CURRENT_TIMESTAMP
+                    WHERE seminar_id = $16 AND id = $17
+                    RETURNING *
+                `,
+                [
+                    payload.question_key,
+                    payload.label,
+                    payload.description,
+                    payload.field_type,
+                    payload.is_required,
+                    payload.sort_order,
+                    payload.is_active,
+                    payload.placeholder,
+                    payload.help_text,
+                    payload.options_json ? JSON.stringify(payload.options_json) : null,
+                    payload.validation_json ? JSON.stringify(payload.validation_json) : null,
+                    payload.allow_multiple_files,
+                    payload.max_files,
+                    payload.max_file_size_mb,
+                    payload.allowed_mime_types_json ? JSON.stringify(payload.allowed_mime_types_json) : null,
+                    seminarId,
+                    questionId
+                ]
+            );
+            return result.rows[0] || null;
+        }
+
+        async reorderSeminaireQuestions(seminarId, orderedQuestionIds) {
+            await this.pool.query('BEGIN');
+            try {
+                for (let i = 0; i < orderedQuestionIds.length; i += 1) {
+                    await this.pool.query(
+                        'UPDATE seminar_questions SET sort_order = $1, updated_at = CURRENT_TIMESTAMP WHERE seminar_id = $2 AND id = $3',
+                        [i, seminarId, orderedQuestionIds[i]]
+                    );
+                }
+                await this.pool.query('COMMIT');
+            } catch (error) {
+                await this.pool.query('ROLLBACK');
+                throw error;
+            }
+        }
+
+        async deactivateSeminaireQuestion(seminarId, questionId) {
+            const result = await this.pool.query(
+                'UPDATE seminar_questions SET is_active = false, updated_at = CURRENT_TIMESTAMP WHERE seminar_id = $1 AND id = $2',
+                [seminarId, questionId]
+            );
+            return { changes: result.rowCount };
+        }
+
+        async hasSeminarRegistrationByEmail(seminarId, email) {
+            const result = await this.pool.query(
+                `
+                    SELECT 1
+                    FROM seminar_registrations r
+                    JOIN seminar_registration_answers a ON a.registration_id = r.id
+                    JOIN seminar_questions q ON q.id = a.question_id
+                    WHERE r.seminar_id = $1
+                      AND q.field_type = 'email'
+                      AND lower(a.answer_text) = lower($2)
+                    LIMIT 1
+                `,
+                [seminarId, email]
+            );
+            return result.rowCount > 0;
+        }
+
+        async createDynamicRegistration(seminarId, answers, files) {
+            await this.pool.query('BEGIN');
+            try {
+                const registrationRes = await this.pool.query(
+                    `
+                        INSERT INTO seminar_registrations (seminar_id, status)
+                        VALUES ($1, 'pending')
+                        RETURNING id, status
+                    `,
+                    [seminarId]
+                );
+
+                const registrationId = registrationRes.rows[0].id;
+
+                for (const answer of answers) {
+                    await this.pool.query(
+                        `
+                            INSERT INTO seminar_registration_answers (registration_id, question_id, answer_text, answer_json)
+                            VALUES ($1, $2, $3, $4::jsonb)
+                        `,
+                        [
+                            registrationId,
+                            answer.question_id,
+                            answer.answer_text,
+                            answer.answer_json ? JSON.stringify(answer.answer_json) : null
+                        ]
+                    );
+                }
+
+                for (const file of files) {
+                    await this.pool.query(
+                        `
+                            INSERT INTO seminar_registration_files (
+                                registration_id, question_id, storage_bucket, storage_path,
+                                original_name, mime_type, size_bytes
+                            ) VALUES ($1, $2, $3, $4, $5, $6, $7)
+                        `,
+                        [
+                            registrationId,
+                            file.question_id,
+                            file.storage_bucket || null,
+                            file.storage_path,
+                            file.original_name || null,
+                            file.mime_type || null,
+                            file.size_bytes || null
+                        ]
+                    );
+                }
+
+                await this.pool.query('COMMIT');
+                return { id: registrationId, status: registrationRes.rows[0].status };
+            } catch (error) {
+                await this.pool.query('ROLLBACK');
+                throw error;
+            }
+        }
 
     async updateSeminaire(id, data) {
         const result = await this.pool.query(
@@ -556,8 +960,56 @@ class Database {
     async getRegistrationsBySeminar(seminarId) {
         const result = await this.pool.query(
             `
-                SELECT *
-                FROM registrations
+                SELECT r.*,
+                (
+                    SELECT a.answer_text
+                    FROM seminar_registration_answers a
+                    JOIN seminar_questions q ON q.id = a.question_id
+                    WHERE a.registration_id = r.id AND q.question_key = 'full_name'
+                    LIMIT 1
+                ) AS full_name,
+                (
+                    SELECT a.answer_text
+                    FROM seminar_registration_answers a
+                    JOIN seminar_questions q ON q.id = a.question_id
+                    WHERE a.registration_id = r.id AND q.field_type = 'email'
+                    LIMIT 1
+                ) AS email,
+                (
+                    SELECT a.answer_text
+                    FROM seminar_registration_answers a
+                    JOIN seminar_questions q ON q.id = a.question_id
+                    WHERE a.registration_id = r.id AND q.field_type = 'phone'
+                    LIMIT 1
+                ) AS phone,
+                COALESCE((
+                    SELECT json_agg(json_build_object(
+                        'question_id', a.question_id,
+                        'question_key', q.question_key,
+                        'label', q.label,
+                        'field_type', q.field_type,
+                        'answer_text', a.answer_text,
+                        'answer_json', a.answer_json
+                    ) ORDER BY q.sort_order, q.id)
+                    FROM seminar_registration_answers a
+                    JOIN seminar_questions q ON q.id = a.question_id
+                    WHERE a.registration_id = r.id
+                ), '[]'::json) AS answers,
+                COALESCE((
+                    SELECT json_agg(json_build_object(
+                        'id', f.id,
+                        'question_id', f.question_id,
+                        'storage_bucket', f.storage_bucket,
+                        'storage_path', f.storage_path,
+                        'original_name', f.original_name,
+                        'mime_type', f.mime_type,
+                        'size_bytes', f.size_bytes,
+                        'uploaded_at', f.uploaded_at
+                    ) ORDER BY f.uploaded_at DESC)
+                    FROM seminar_registration_files f
+                    WHERE f.registration_id = r.id
+                ), '[]'::json) AS files
+                FROM seminar_registrations r
                 WHERE seminar_id = $1
                 ORDER BY
                     CASE WHEN status = 'pending' THEN 0 ELSE 1 END,
@@ -571,7 +1023,7 @@ class Database {
     async approveRegistration(id) {
         const result = await this.pool.query(
             `
-                UPDATE registrations
+                UPDATE seminar_registrations
                 SET status = 'approved',
                     approved_at = COALESCE(approved_at, CURRENT_TIMESTAMP),
                     confirmation_email_error = NULL
@@ -588,13 +1040,61 @@ class Database {
             `
                 SELECT
                     r.*,
+                    (
+                        SELECT a.answer_text
+                        FROM seminar_registration_answers a
+                        JOIN seminar_questions q ON q.id = a.question_id
+                        WHERE a.registration_id = r.id AND q.question_key = 'full_name'
+                        LIMIT 1
+                    ) AS full_name,
+                    (
+                        SELECT a.answer_text
+                        FROM seminar_registration_answers a
+                        JOIN seminar_questions q ON q.id = a.question_id
+                        WHERE a.registration_id = r.id AND q.field_type = 'email'
+                        LIMIT 1
+                    ) AS email,
+                    (
+                        SELECT a.answer_text
+                        FROM seminar_registration_answers a
+                        JOIN seminar_questions q ON q.id = a.question_id
+                        WHERE a.registration_id = r.id AND q.field_type = 'phone'
+                        LIMIT 1
+                    ) AS phone,
+                    COALESCE((
+                        SELECT json_agg(json_build_object(
+                            'question_id', a.question_id,
+                            'question_key', q.question_key,
+                            'label', q.label,
+                            'field_type', q.field_type,
+                            'answer_text', a.answer_text,
+                            'answer_json', a.answer_json
+                        ) ORDER BY q.sort_order, q.id)
+                        FROM seminar_registration_answers a
+                        JOIN seminar_questions q ON q.id = a.question_id
+                        WHERE a.registration_id = r.id
+                    ), '[]'::json) AS answers,
+                    COALESCE((
+                        SELECT json_agg(json_build_object(
+                            'id', f.id,
+                            'question_id', f.question_id,
+                            'storage_bucket', f.storage_bucket,
+                            'storage_path', f.storage_path,
+                            'original_name', f.original_name,
+                            'mime_type', f.mime_type,
+                            'size_bytes', f.size_bytes,
+                            'uploaded_at', f.uploaded_at
+                        ) ORDER BY f.uploaded_at DESC)
+                        FROM seminar_registration_files f
+                        WHERE f.registration_id = r.id
+                    ), '[]'::json) AS files,
                     s.title AS seminar_title,
                     s.date AS seminar_date,
                     s.location AS seminar_location,
                     s.delivery_mode AS seminar_delivery_mode,
                     s.virtual_room_url AS seminar_virtual_room_url,
                     s.description AS seminar_description
-                FROM registrations r
+                FROM seminar_registrations r
                 JOIN seminaires s ON s.id = r.seminar_id
                 WHERE r.id = $1
             `,
@@ -606,7 +1106,7 @@ class Database {
     async markRegistrationEmailSent(id) {
         const result = await this.pool.query(
             `
-                UPDATE registrations
+                UPDATE seminar_registrations
                 SET confirmation_email_sent_at = CURRENT_TIMESTAMP,
                     confirmation_email_error = NULL
                 WHERE id = $1
@@ -619,7 +1119,7 @@ class Database {
     async markRegistrationEmailError(id, errorMessage) {
         const result = await this.pool.query(
             `
-                UPDATE registrations
+                UPDATE seminar_registrations
                 SET confirmation_email_error = $1
                 WHERE id = $2
             `,
@@ -629,13 +1129,13 @@ class Database {
     }
 
     async deleteRegistration(id) {
-        const result = await this.pool.query('DELETE FROM registrations WHERE id = $1', [id]);
+        const result = await this.pool.query('DELETE FROM seminar_registrations WHERE id = $1', [id]);
         return { changes: result.rowCount };
     }
 
     async getRegistrationCount(seminarId) {
         const result = await this.pool.query(
-            'SELECT COUNT(*)::int AS count FROM registrations WHERE seminar_id = $1',
+            'SELECT COUNT(*)::int AS count FROM seminar_registrations WHERE seminar_id = $1',
             [seminarId]
         );
         return result.rows[0].count;

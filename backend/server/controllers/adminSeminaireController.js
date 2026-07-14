@@ -1,6 +1,78 @@
 import database from '../database/index.js';
 import emailService from '../services/emailService.js';
 
+const QUESTION_TYPES = new Set([
+    'text',
+    'email',
+    'phone',
+    'textarea',
+    'single_choice',
+    'multiple_choice',
+    'file',
+    'info_block'
+]);
+
+function slugifyQuestionKey(value) {
+    return String(value || '')
+        .trim()
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]+/g, '_')
+        .replace(/^_+|_+$/g, '')
+        .slice(0, 64);
+}
+
+function normalizeQuestionPayload(body) {
+    const fieldType = QUESTION_TYPES.has(body.field_type) ? body.field_type : 'text';
+    const questionKey = slugifyQuestionKey(body.question_key || body.label);
+    const maxFiles = body.max_files === undefined || body.max_files === null || body.max_files === ''
+        ? 1
+        : Number(body.max_files);
+    const maxFileSizeMb = body.max_file_size_mb === undefined || body.max_file_size_mb === null || body.max_file_size_mb === ''
+        ? 100
+        : Number(body.max_file_size_mb);
+
+    return {
+        question_key: questionKey,
+        label: String(body.label || '').trim(),
+        description: body.description ? String(body.description).trim() : null,
+        field_type: fieldType,
+        is_required: Boolean(body.is_required),
+        sort_order: Number.isFinite(Number(body.sort_order)) ? Number(body.sort_order) : 0,
+        is_active: body.is_active === undefined ? true : Boolean(body.is_active),
+        placeholder: body.placeholder ? String(body.placeholder).trim() : null,
+        help_text: body.help_text ? String(body.help_text).trim() : null,
+        options_json: Array.isArray(body.options) ? body.options : body.options_json || null,
+        validation_json: body.validation_json || null,
+        allow_multiple_files: Boolean(body.allow_multiple_files),
+        max_files: Number.isFinite(maxFiles) ? maxFiles : 1,
+        max_file_size_mb: Number.isFinite(maxFileSizeMb) ? maxFileSizeMb : 100,
+        allowed_mime_types_json: Array.isArray(body.allowed_mime_types)
+            ? body.allowed_mime_types
+            : body.allowed_mime_types_json || null
+    };
+}
+
+function validateQuestionPayload(payload) {
+    if (!payload.question_key) {
+        return 'question_key invalide.';
+    }
+    if (!payload.label && payload.field_type !== 'info_block') {
+        return 'Le libellé de la question est requis.';
+    }
+    if (!QUESTION_TYPES.has(payload.field_type)) {
+        return 'Type de question invalide.';
+    }
+    if (payload.max_files < 1 || payload.max_files > 5) {
+        return 'max_files doit être entre 1 et 5.';
+    }
+    if (payload.max_file_size_mb < 1 || payload.max_file_size_mb > 100) {
+        return 'max_file_size_mb doit être entre 1 et 100.';
+    }
+    return null;
+}
+
 function normalizeSeminairePayload(body) {
     const deliveryMode = body.delivery_mode === 'virtual' ? 'virtual' : 'in_person';
     const capacity = body.capacity === '' || body.capacity === undefined || body.capacity === null
@@ -56,6 +128,7 @@ export async function adminCreateSeminaire(req, res) {
     }
     try {
         const result = await database.createSeminaire({ ...payload, is_open: true });
+        await database.seedDefaultSeminaireQuestions(result.id);
         res.status(201).json({ success: true, id: result.id });
     } catch (err) {
         console.error('Failed to create seminaire:', {
@@ -130,6 +203,81 @@ export async function adminDeleteRegistration(req, res) {
         if (!result.changes) return res.status(404).json({ success: false, message: 'Inscription introuvable.' });
         res.json({ success: true });
     } catch (err) {
+        res.status(500).json({ success: false, message: 'Erreur serveur.' });
+    }
+}
+
+export async function adminGetSeminaireQuestions(req, res) {
+    try {
+        const seminar = await database.getSeminaireById(req.params.id);
+        if (!seminar) return res.status(404).json({ success: false, message: 'Séminaire introuvable.' });
+        const questions = await database.getSeminaireQuestions(req.params.id, true);
+        res.json({ success: true, data: questions });
+    } catch {
+        res.status(500).json({ success: false, message: 'Erreur serveur.' });
+    }
+}
+
+export async function adminCreateSeminaireQuestion(req, res) {
+    const payload = normalizeQuestionPayload(req.body);
+    const validationError = validateQuestionPayload(payload);
+    if (validationError) {
+        return res.status(400).json({ success: false, message: validationError });
+    }
+
+    try {
+        const seminar = await database.getSeminaireById(req.params.id);
+        if (!seminar) return res.status(404).json({ success: false, message: 'Séminaire introuvable.' });
+        const question = await database.createSeminaireQuestion(req.params.id, payload);
+        res.status(201).json({ success: true, data: question });
+    } catch (err) {
+        if (err.code === '23505') {
+            return res.status(409).json({ success: false, message: 'question_key déjà utilisée pour ce séminaire.' });
+        }
+        res.status(500).json({ success: false, message: 'Erreur serveur.' });
+    }
+}
+
+export async function adminUpdateSeminaireQuestion(req, res) {
+    const payload = normalizeQuestionPayload(req.body);
+    const validationError = validateQuestionPayload(payload);
+    if (validationError) {
+        return res.status(400).json({ success: false, message: validationError });
+    }
+
+    try {
+        const question = await database.updateSeminaireQuestion(req.params.id, req.params.questionId, payload);
+        if (!question) return res.status(404).json({ success: false, message: 'Question introuvable.' });
+        res.json({ success: true, data: question });
+    } catch (err) {
+        if (err.code === '23505') {
+            return res.status(409).json({ success: false, message: 'question_key déjà utilisée pour ce séminaire.' });
+        }
+        res.status(500).json({ success: false, message: 'Erreur serveur.' });
+    }
+}
+
+export async function adminReorderSeminaireQuestions(req, res) {
+    const order = Array.isArray(req.body.order) ? req.body.order : [];
+    if (!order.length) {
+        return res.status(400).json({ success: false, message: 'Ordre invalide.' });
+    }
+
+    try {
+        await database.reorderSeminaireQuestions(req.params.id, order);
+        const questions = await database.getSeminaireQuestions(req.params.id, true);
+        res.json({ success: true, data: questions });
+    } catch {
+        res.status(500).json({ success: false, message: 'Erreur serveur.' });
+    }
+}
+
+export async function adminDeleteSeminaireQuestion(req, res) {
+    try {
+        const result = await database.deactivateSeminaireQuestion(req.params.id, req.params.questionId);
+        if (!result.changes) return res.status(404).json({ success: false, message: 'Question introuvable.' });
+        res.json({ success: true });
+    } catch {
         res.status(500).json({ success: false, message: 'Erreur serveur.' });
     }
 }
