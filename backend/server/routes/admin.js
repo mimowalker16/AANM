@@ -6,7 +6,10 @@ import { loginRateLimiter } from '../middleware/security.js';
 import {
     adminGetSeminaires, adminCreateSeminaire, adminUpdateSeminaire,
     adminToggleSeminaire, adminDeleteSeminaire,
-    adminGetRegistrations, adminApproveRegistration, adminDeleteRegistration
+    adminGetRegistrations, adminApproveRegistration, adminDeleteRegistration,
+    adminGetSeminaireQuestions, adminCreateSeminaireQuestion,
+    adminUpdateSeminaireQuestion, adminReorderSeminaireQuestions,
+    adminDeleteSeminaireQuestion
 } from '../controllers/adminSeminaireController.js';
 
 const router = express.Router();
@@ -42,6 +45,11 @@ router.post('/seminaires', requireAdminAuth, adminCreateSeminaire);
 router.put('/seminaires/:id', requireAdminAuth, adminUpdateSeminaire);
 router.put('/seminaires/:id/toggle', requireAdminAuth, adminToggleSeminaire);
 router.delete('/seminaires/:id', requireAdminAuth, adminDeleteSeminaire);
+router.get('/seminaires/:id/questions', requireAdminAuth, adminGetSeminaireQuestions);
+router.post('/seminaires/:id/questions', requireAdminAuth, adminCreateSeminaireQuestion);
+router.put('/seminaires/:id/questions/reorder', requireAdminAuth, adminReorderSeminaireQuestions);
+router.put('/seminaires/:id/questions/:questionId', requireAdminAuth, adminUpdateSeminaireQuestion);
+router.delete('/seminaires/:id/questions/:questionId', requireAdminAuth, adminDeleteSeminaireQuestion);
 router.get('/seminaires/:id/registrations', requireAdminAuth, adminGetRegistrations);
 router.put('/registrations/:id/approve', requireAdminAuth, adminApproveRegistration);
 router.delete('/registrations/:id', requireAdminAuth, adminDeleteRegistration);

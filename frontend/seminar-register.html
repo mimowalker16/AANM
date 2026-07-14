@@ -75,7 +75,9 @@
             color: #e53e3e;
             margin-left: 2px;
         }
-        .form-field input {
+        .form-field input,
+        .form-field textarea,
+        .form-field select {
             width: 100%;
             padding: 0.7rem 1rem;
             border: 2px solid var(--clr-border, #e2e8f0);
@@ -87,13 +89,46 @@
             transition: border-color 0.2s, box-shadow 0.2s;
             box-sizing: border-box;
         }
-        .form-field input:focus {
+        .form-field textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+        .form-field input:focus,
+        .form-field textarea:focus,
+        .form-field select:focus {
             outline: none;
             border-color: var(--clr-accent-teal);
             box-shadow: 0 0 0 3px rgba(59,169,156,0.15);
         }
-        .form-field input.error {
+        .form-field input.error,
+        .form-field textarea.error,
+        .form-field select.error {
             border-color: #e53e3e;
+        }
+        .question-info-block {
+            background: #f8fdfc;
+            border: 1px solid #d7eee9;
+            border-radius: var(--radius-md);
+            padding: 0.8rem 0.9rem;
+            margin-bottom: var(--space-md);
+            color: var(--clr-text);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        .choice-list {
+            display: grid;
+            gap: 0.5rem;
+            margin-top: 0.25rem;
+        }
+        .choice-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .choice-item input {
+            width: auto;
+            padding: 0;
+            margin: 0;
         }
         .form-field__error {
             color: #e53e3e;
@@ -459,20 +494,7 @@
                         </div>
                         <div class="reg-card__body">
                             <form id="regForm" novalidate>
-                                <div class="form-field">
-                                    <label for="full_name">Nom complet <span class="req">*</span></label>
-                                    <input type="text" id="full_name" name="full_name" placeholder="ex. Ahmed Benali" autocomplete="name" />
-                                    <p class="form-field__error" id="err_full_name">Ce champ est requis.</p>
-                                </div>
-                                <div class="form-field">
-                                    <label for="email">Adresse email <span class="req">*</span></label>
-                                    <input type="email" id="email" name="email" placeholder="ex. ahmed@example.com" autocomplete="email" />
-                                    <p class="form-field__error" id="err_email">Veuillez entrer une adresse email valide.</p>
-                                </div>
-                                <div class="form-field">
-                                    <label for="phone">Téléphone <span style="font-weight:400;color:#9ca3af;">(optionnel)</span></label>
-                                    <input type="tel" id="phone" name="phone" placeholder="ex. +213 541 939 878" autocomplete="tel" />
-                                </div>
+                                <div id="dynamicQuestions"></div>
 
                                 <!-- API error banner -->
                                 <div class="state-panel state-panel--error" id="formErrorPanel" style="padding:var(--space-sm) var(--space-md);text-align:left;border-radius:var(--radius-md);">
@@ -590,6 +612,177 @@
         const stateSuccess = document.getElementById('stateSuccess');
         const formErrorPanel = document.getElementById('formErrorPanel');
         const formErrorText  = document.getElementById('formErrorText');
+        const dynamicQuestionsRoot = document.getElementById('dynamicQuestions');
+
+        let seminarQuestions = [];
+
+        function escapeHtml(value) {
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function renderQuestionField(question) {
+            const required = question.is_required ? '<span class="req">*</span>' : '';
+            const description = question.description ? `<p style="margin:0 0 0.4rem;color:#6b7280;font-size:0.82rem;">${escapeHtml(question.description)}</p>` : '';
+            const help = question.help_text ? `<p style="margin:0.35rem 0 0;color:#6b7280;font-size:0.8rem;">${escapeHtml(question.help_text)}</p>` : '';
+            const common = `data-question-id="${question.id}" data-field-type="${question.field_type}" data-required="${question.is_required ? 'true' : 'false'}"`;
+            const inputId = `question_${question.id}`;
+
+            if (question.field_type === 'info_block') {
+                return `
+                    <div class="question-info-block" data-question-id="${question.id}" data-field-type="info_block">
+                        <strong>${escapeHtml(question.label)}</strong>
+                        ${question.description ? `<div>${escapeHtml(question.description)}</div>` : ''}
+                        ${question.help_text ? `<div style="margin-top:0.45rem;">${escapeHtml(question.help_text)}</div>` : ''}
+                    </div>
+                `;
+            }
+
+            if (question.field_type === 'single_choice') {
+                const options = Array.isArray(question.options_json) ? question.options_json : [];
+                const optionsHtml = options
+                    .map((opt) => `<option value="${escapeHtml(opt)}">${escapeHtml(opt)}</option>`)
+                    .join('');
+                return `
+                    <div class="form-field" ${common}>
+                        <label for="${inputId}">${escapeHtml(question.label)} ${required}</label>
+                        ${description}
+                        <select id="${inputId}">
+                            <option value="">Sélectionner...</option>
+                            ${optionsHtml}
+                        </select>
+                        <p class="form-field__error">Ce champ est requis.</p>
+                        ${help}
+                    </div>
+                `;
+            }
+
+            if (question.field_type === 'multiple_choice') {
+                const options = Array.isArray(question.options_json) ? question.options_json : [];
+                const optionsHtml = options
+                    .map((opt, idx) => `
+                        <label class="choice-item" for="${inputId}_${idx}">
+                            <input type="checkbox" id="${inputId}_${idx}" value="${escapeHtml(opt)}" />
+                            <span>${escapeHtml(opt)}</span>
+                        </label>
+                    `)
+                    .join('');
+                return `
+                    <div class="form-field" ${common}>
+                        <label>${escapeHtml(question.label)} ${required}</label>
+                        ${description}
+                        <div class="choice-list" id="${inputId}">${optionsHtml}</div>
+                        <p class="form-field__error">Veuillez sélectionner au moins une option.</p>
+                        ${help}
+                    </div>
+                `;
+            }
+
+            if (question.field_type === 'file') {
+                const multiple = question.allow_multiple_files ? 'multiple' : '';
+                return `
+                    <div class="form-field" ${common}>
+                        <label for="${inputId}">${escapeHtml(question.label)} ${required}</label>
+                        ${description}
+                        <input type="file" id="${inputId}" ${multiple} />
+                        <p class="form-field__error">Veuillez joindre un fichier valide.</p>
+                        ${help}
+                    </div>
+                `;
+            }
+
+            if (question.field_type === 'textarea') {
+                return `
+                    <div class="form-field" ${common}>
+                        <label for="${inputId}">${escapeHtml(question.label)} ${required}</label>
+                        ${description}
+                        <textarea id="${inputId}" placeholder="${escapeHtml(question.placeholder || '')}"></textarea>
+                        <p class="form-field__error">Ce champ est requis.</p>
+                        ${help}
+                    </div>
+                `;
+            }
+
+            const typeMap = {
+                email: 'email',
+                phone: 'tel',
+                text: 'text'
+            };
+            const inputType = typeMap[question.field_type] || 'text';
+            const autocompleteMap = {
+                email: 'email',
+                phone: 'tel',
+                text: question.question_key === 'full_name' ? 'name' : 'off'
+            };
+            return `
+                <div class="form-field" ${common}>
+                    <label for="${inputId}">${escapeHtml(question.label)} ${required}</label>
+                    ${description}
+                    <input type="${inputType}" id="${inputId}" placeholder="${escapeHtml(question.placeholder || '')}" autocomplete="${autocompleteMap[question.field_type] || 'off'}" />
+                    <p class="form-field__error">Ce champ est requis.</p>
+                    ${help}
+                </div>
+            `;
+        }
+
+        async function loadQuestions() {
+            const res = await fetch(`${API_BASE}/api/seminaires/${seminarId}/questions`);
+            if (!res.ok) {
+                throw new Error('questions');
+            }
+            const json = await res.json();
+            seminarQuestions = Array.isArray(json.data) ? json.data : [];
+            dynamicQuestionsRoot.innerHTML = seminarQuestions.map(renderQuestionField).join('');
+        }
+
+        function collectAnswers() {
+            const answers = [];
+            for (const question of seminarQuestions) {
+                const wrapper = dynamicQuestionsRoot.querySelector(`[data-question-id="${question.id}"]`);
+                if (!wrapper || question.field_type === 'info_block') continue;
+
+                const errorEl = wrapper.querySelector('.form-field__error');
+                let value;
+                let valid = true;
+
+                if (question.field_type === 'multiple_choice') {
+                    const checked = Array.from(wrapper.querySelectorAll('input[type="checkbox"]:checked')).map((el) => el.value);
+                    value = checked;
+                    if (question.is_required && checked.length === 0) valid = false;
+                } else if (question.field_type === 'file') {
+                    const input = wrapper.querySelector('input[type="file"]');
+                    const files = Array.from(input?.files || []);
+                    value = files.map((f) => ({ name: f.name, size: f.size, type: f.type }));
+
+                    if (question.is_required && files.length === 0) valid = false;
+                    if (files.length > (question.max_files || 1)) valid = false;
+                    if (files.some((f) => f.size > (Number(question.max_file_size_mb || 100) * 1024 * 1024))) valid = false;
+                } else {
+                    const input = wrapper.querySelector('input, textarea, select');
+                    value = (input?.value || '').trim();
+                    if (question.is_required && !value) valid = false;
+                    if (question.field_type === 'email' && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) valid = false;
+                    if (question.field_type === 'phone' && value && !/^\+?[0-9\s\-().]{7,25}$/.test(value)) valid = false;
+                    input?.classList.toggle('error', !valid);
+                }
+
+                if (errorEl) {
+                    errorEl.style.display = valid ? 'none' : 'block';
+                }
+
+                if (!valid) {
+                    return { valid: false, answers: [] };
+                }
+
+                answers.push({ question_id: question.id, value });
+            }
+
+            return { valid: true, answers };
+        }
 
         function formatDate(dateStr) {
             const d = new Date(dateStr);
@@ -654,7 +847,11 @@
                 return;
             }
             try {
-                const res = await fetch(`${API_BASE}/api/seminaires/${seminarId}`);
+                const [seminarRes] = await Promise.all([
+                    fetch(`${API_BASE}/api/seminaires/${seminarId}`),
+                    loadQuestions()
+                ]);
+                const res = seminarRes;
                 if (!res.ok) throw new Error('not found');
                 const { data } = await res.json();
                 renderSeminar(data);
@@ -669,32 +866,12 @@
             e.preventDefault();
             formErrorPanel.classList.remove('is-visible');
 
-            const nameVal  = document.getElementById('full_name').value.trim();
-            const emailVal = document.getElementById('email').value.trim();
-            const phoneVal = document.getElementById('phone').value.trim();
-            const emailRx  = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-            let valid = true;
-
-            if (!nameVal) {
-                document.getElementById('full_name').classList.add('error');
-                document.getElementById('err_full_name').style.display = 'block';
-                valid = false;
-            } else {
-                document.getElementById('full_name').classList.remove('error');
-                document.getElementById('err_full_name').style.display = 'none';
+            const collected = collectAnswers();
+            if (!collected.valid) {
+                formErrorText.textContent = 'Veuillez corriger les champs en erreur.';
+                formErrorPanel.classList.add('is-visible');
+                return;
             }
-
-            if (!emailVal || !emailRx.test(emailVal)) {
-                document.getElementById('email').classList.add('error');
-                document.getElementById('err_email').style.display = 'block';
-                valid = false;
-            } else {
-                document.getElementById('email').classList.remove('error');
-                document.getElementById('err_email').style.display = 'none';
-            }
-
-            if (!valid) return;
 
             const btn = document.getElementById('submitBtn');
             btn.disabled = true;
@@ -704,7 +881,7 @@
                 const res = await fetch(`${API_BASE}/api/seminaires/${seminarId}/register`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ full_name: nameVal, email: emailVal, phone: phoneVal || undefined })
+                    body: JSON.stringify({ answers: collected.answers })
                 });
                 const json = await res.json();
 

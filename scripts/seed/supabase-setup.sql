@@ -31,8 +31,33 @@ CREATE TABLE IF NOT EXISTS registrations (
     approved_at                 TIMESTAMPTZ,
     confirmation_email_sent_at  TIMESTAMPTZ,
     confirmation_email_error    TEXT,
+    answers_json                JSONB DEFAULT '[]'::jsonb,
+    files_json                  JSONB DEFAULT '[]'::jsonb,
     registered_at               TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (seminar_id, email)
+);
+
+CREATE TABLE IF NOT EXISTS seminar_questions (
+    id                      SERIAL PRIMARY KEY,
+    seminar_id              INTEGER NOT NULL REFERENCES seminaires(id) ON DELETE CASCADE,
+    question_key            TEXT NOT NULL,
+    label                   TEXT NOT NULL,
+    description             TEXT,
+    field_type              TEXT NOT NULL CHECK (field_type IN ('text','email','phone','textarea','single_choice','multiple_choice','file','info_block')),
+    is_required             BOOLEAN DEFAULT false,
+    sort_order              INTEGER DEFAULT 0,
+    is_active               BOOLEAN DEFAULT true,
+    placeholder             TEXT,
+    help_text               TEXT,
+    options_json            JSONB,
+    validation_json         JSONB,
+    allow_multiple_files    BOOLEAN DEFAULT false,
+    max_files               INTEGER DEFAULT 1,
+    max_file_size_mb        INTEGER DEFAULT 100,
+    allowed_mime_types_json JSONB,
+    created_at              TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at              TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (seminar_id, question_key)
 );
 
 CREATE TABLE IF NOT EXISTS labs (

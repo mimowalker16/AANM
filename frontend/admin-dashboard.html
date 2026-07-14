@@ -140,6 +140,56 @@
         .sem-field--full { grid-column: 1 / -1; }
         .sem-field textarea { resize: vertical; }
         .sem-form-actions { margin-top: var(--space-md); display: flex; gap: 0.6rem; flex-wrap: wrap; }
+        .sem-question-builder {
+            grid-column: 1 / -1;
+            border: 1px solid #e5e7eb;
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            background: #fafafa;
+        }
+        .sem-question-builder__header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-sm);
+            flex-wrap: wrap;
+        }
+        .sem-question-builder__title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--clr-primary);
+        }
+        .sem-question-list {
+            display: grid;
+            gap: var(--space-sm);
+        }
+        .sem-question-row {
+            display: grid;
+            grid-template-columns: minmax(160px, 1.4fr) 150px 1fr auto;
+            gap: 0.55rem;
+            align-items: end;
+            padding: 0.7rem;
+            border: 1px solid #e5e7eb;
+            border-radius: var(--radius-md);
+            background: #fff;
+        }
+        .sem-question-row .sem-field { gap: 0.2rem; }
+        .sem-question-row .sem-field label { font-size: 0.72rem; color: #6b7280; }
+        .sem-question-actions {
+            display: flex;
+            gap: 0.25rem;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+        .sem-question-options { display: none; }
+        .sem-question-row[data-choice="true"] .sem-question-options { display: flex; }
+        .sem-question-help {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.55rem;
+        }
         .seminar-card {
             background: var(--clr-white, #fff);
             border-radius: var(--radius-lg);
@@ -212,6 +262,8 @@
         .email-status-pill--warn { background: #fef3c7; color: #92400e; }
         @media (max-width: 600px) {
             .sem-form-grid { grid-template-columns: 1fr; }
+            .sem-question-row,
+            .sem-question-help { grid-template-columns: 1fr; }
             .email-status-grid { grid-template-columns: 1fr; }
             .seminar-card__header { flex-direction: column; align-items: flex-start; }
             .seminar-card__actions { width: 100%; }
@@ -756,6 +808,18 @@
                                     <label for="semDesc">Description</label>
                                     <textarea id="semDesc" rows="3" placeholder="Description du séminaire…"></textarea>
                                 </div>
+                                <div class="sem-question-builder">
+                                    <div class="sem-question-builder__header">
+                                        <div>
+                                            <div class="sem-question-builder__title">Questions d'inscription</div>
+                                        </div>
+                                        <div class="sem-form-actions" style="margin:0;">
+                                            <button type="button" class="action-btn" id="semDefaultQuestionsBtn">Modèle par défaut</button>
+                                            <button type="button" class="action-btn approve" id="semAddQuestionBtn">Ajouter une question</button>
+                                        </div>
+                                    </div>
+                                    <div class="sem-question-list" id="semQuestionsList"></div>
+                                </div>
                             </div>
                             <div class="sem-form-actions">
                                 <button type="submit" class="action-btn approve" id="semSubmitBtn">Créer le séminaire</button>
@@ -937,6 +1001,7 @@
                 this.pendingLabs = [];
                 this.approvedLabs = [];
                 this.emailStatusLoaded = false;
+                this.currentSeminarQuestions = this.defaultSeminarQuestions();
                 this.init();
             }
 
@@ -956,7 +1021,10 @@
                 // Seminar form
                 document.getElementById('semForm').addEventListener('submit', (e) => this.submitSeminarForm(e));
                 document.getElementById('semDeliveryMode').addEventListener('change', () => this.updateSeminarModeFields());
+                document.getElementById('semAddQuestionBtn').addEventListener('click', () => this.addSeminarQuestion());
+                document.getElementById('semDefaultQuestionsBtn').addEventListener('click', () => this.setDefaultSeminarQuestions());
                 this.updateSeminarModeFields();
+                this.renderSeminarQuestionsEditor();
 
                 document.getElementById('emailTestForm').addEventListener('submit', (e) => this.sendTestEmail(e));
                 document.getElementById('emailRefreshBtn').addEventListener('click', () => this.loadEmailStatus(true));
@@ -1319,6 +1387,197 @@
                 );
             }
 
+            defaultSeminarQuestions() {
+                return [
+                    { question_key: 'email', label: 'Adresse e-mail', field_type: 'email', is_required: true },
+                    { question_key: 'full_name', label: 'NOM PRENOM', field_type: 'text', is_required: true },
+                    { question_key: 'spouse_name', label: "NOM DE L'EPOUX (pour les mariées)", field_type: 'text', is_required: false },
+                    { question_key: 'phone', label: 'N° de Téléphone valide pour vous contacter ?', field_type: 'phone', is_required: true },
+                    { question_key: 'profession', label: 'PROFESSION / FONCTION', field_type: 'text', is_required: true },
+                    {
+                        question_key: 'fees_info',
+                        label: "FRAIS D'INSCRIPTION",
+                        field_type: 'single_choice',
+                        is_required: true,
+                        description: 'REGLEZ via guichets -Algérie poste- CCP : 433997/08 compte: Mr MERRAKCHI Nour Bachir (Alger) ou via BARIDIMOB RIP: 00799999000043399752.',
+                        options_json: [
+                            '15.000 DA - Professionnel de Santé',
+                            "10.000 DA - Ancien Nutrithérapeute 2022 de l'AANM",
+                            '10.000 DA - Etudiant + certificat de scolarité valide'
+                        ]
+                    },
+                    {
+                        question_key: 'delivery_office',
+                        label: 'LIVRAISON des polycopiés: précisez le bureau YALIDINE préféré (wilaya + commune + nom du bureau)',
+                        field_type: 'textarea',
+                        is_required: true
+                    },
+                    {
+                        question_key: 'payment_receipt',
+                        label: 'RECU DE PAIEMENT',
+                        field_type: 'file',
+                        is_required: true,
+                        help_text: "Importez jusqu'à 5 fichiers compatibles : PDF, document, image ou spreadsheet. 100 MB max par fichier.",
+                        allow_multiple_files: true,
+                        max_files: 5,
+                        max_file_size_mb: 100,
+                        allowed_mime_types_json: ['application/pdf', 'image/jpeg', 'image/png', 'image/webp']
+                    }
+                ];
+            }
+
+            normalizeQuestionForEditor(question = {}) {
+                return {
+                    question_key: question.question_key || '',
+                    label: question.label || '',
+                    description: question.description || '',
+                    field_type: question.field_type || 'text',
+                    is_required: Boolean(question.is_required),
+                    help_text: question.help_text || '',
+                    options_json: Array.isArray(question.options_json) ? question.options_json : [],
+                    allow_multiple_files: Boolean(question.allow_multiple_files),
+                    max_files: question.max_files || 1,
+                    max_file_size_mb: question.max_file_size_mb || 100,
+                    allowed_mime_types_json: Array.isArray(question.allowed_mime_types_json) ? question.allowed_mime_types_json : []
+                };
+            }
+
+            questionTypeOptions(activeType) {
+                const labels = {
+                    text: 'Texte court',
+                    email: 'E-mail',
+                    phone: 'Téléphone',
+                    textarea: 'Texte long',
+                    single_choice: 'Choix unique',
+                    multiple_choice: 'Choix multiple',
+                    file: 'Fichier',
+                    info_block: 'Bloc information'
+                };
+                return Object.entries(labels)
+                    .map(([value, label]) => `<option value="${value}" ${value === activeType ? 'selected' : ''}>${label}</option>`)
+                    .join('');
+            }
+
+            renderSeminarQuestionsEditor() {
+                const list = document.getElementById('semQuestionsList');
+                list.innerHTML = this.currentSeminarQuestions.map((question, index) => {
+                    const q = this.normalizeQuestionForEditor(question);
+                    const isChoice = q.field_type === 'single_choice' || q.field_type === 'multiple_choice';
+                    return `
+                        <div class="sem-question-row" data-question-index="${index}" data-choice="${isChoice ? 'true' : 'false'}">
+                            <div class="sem-field">
+                                <label>Libellé</label>
+                                <input type="text" data-q-field="label" value="${this.escapeAttribute(q.label)}" placeholder="Question" />
+                            </div>
+                            <div class="sem-field">
+                                <label>Type</label>
+                                <select data-q-field="field_type" onchange="adminDashboard.updateQuestionType(${index}, this.value)">
+                                    ${this.questionTypeOptions(q.field_type)}
+                                </select>
+                            </div>
+                            <div class="sem-field sem-question-options">
+                                <label>Options (une par ligne)</label>
+                                <textarea data-q-field="options_json" rows="2">${this.escapeHtml(q.options_json.join('\n'))}</textarea>
+                            </div>
+                            <div class="sem-question-actions">
+                                <label style="display:flex;align-items:center;gap:0.3rem;font-size:0.75rem;">
+                                    <input type="checkbox" data-q-field="is_required" ${q.is_required ? 'checked' : ''} /> Requis
+                                </label>
+                                <button type="button" class="action-btn" onclick="adminDashboard.moveSeminarQuestion(${index}, -1)">↑</button>
+                                <button type="button" class="action-btn" onclick="adminDashboard.moveSeminarQuestion(${index}, 1)">↓</button>
+                                <button type="button" class="action-btn reject" onclick="adminDashboard.removeSeminarQuestion(${index})">Retirer</button>
+                            </div>
+                            <div class="sem-question-help">
+                                <div class="sem-field">
+                                    <label>Clé</label>
+                                    <input type="text" data-q-field="question_key" value="${this.escapeAttribute(q.question_key)}" placeholder="ex. profession" />
+                                </div>
+                                <div class="sem-field">
+                                    <label>Description / aide</label>
+                                    <input type="text" data-q-field="description" value="${this.escapeAttribute(q.description || q.help_text)}" />
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            syncSeminarQuestionsFromEditor() {
+                const rows = Array.from(document.querySelectorAll('#semQuestionsList .sem-question-row'));
+                this.currentSeminarQuestions = rows.map((row) => {
+                    const get = (field) => row.querySelector(`[data-q-field="${field}"]`);
+                    const type = get('field_type')?.value || 'text';
+                    const options = (get('options_json')?.value || '')
+                        .split('\n')
+                        .map(item => item.trim())
+                        .filter(Boolean);
+                    return {
+                        question_key: (get('question_key')?.value || get('label')?.value || '').trim(),
+                        label: (get('label')?.value || '').trim(),
+                        description: (get('description')?.value || '').trim() || null,
+                        field_type: type,
+                        is_required: Boolean(get('is_required')?.checked),
+                        options_json: (type === 'single_choice' || type === 'multiple_choice') ? options : null,
+                        allow_multiple_files: type === 'file',
+                        max_files: type === 'file' ? 5 : 1,
+                        max_file_size_mb: 100,
+                        allowed_mime_types_json: type === 'file' ? ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'] : null
+                    };
+                });
+                return this.currentSeminarQuestions;
+            }
+
+            validateSeminarQuestions(questions) {
+                if (!questions.length) return "Ajoutez au moins une question d'inscription.";
+                const hasEmail = questions.some(q => q.field_type === 'email');
+                const hasFullName = questions.some(q => ['full_name', 'nom_prenom', 'nom_complet'].includes(q.question_key));
+                if (!hasEmail || !hasFullName) return 'Gardez au moins NOM PRENOM et une question e-mail.';
+                for (const question of questions) {
+                    if (!question.label && question.field_type !== 'info_block') return 'Chaque question doit avoir un libellé.';
+                    if ((question.field_type === 'single_choice' || question.field_type === 'multiple_choice') && !question.options_json?.length) {
+                        return `Ajoutez les options pour "${question.label}".`;
+                    }
+                }
+                return null;
+            }
+
+            addSeminarQuestion() {
+                this.syncSeminarQuestionsFromEditor();
+                this.currentSeminarQuestions.push({ question_key: '', label: '', field_type: 'text', is_required: false });
+                this.renderSeminarQuestionsEditor();
+            }
+
+            setDefaultSeminarQuestions() {
+                this.currentSeminarQuestions = this.defaultSeminarQuestions();
+                this.renderSeminarQuestionsEditor();
+            }
+
+            removeSeminarQuestion(index) {
+                this.syncSeminarQuestionsFromEditor();
+                this.currentSeminarQuestions.splice(index, 1);
+                this.renderSeminarQuestionsEditor();
+            }
+
+            moveSeminarQuestion(index, direction) {
+                this.syncSeminarQuestionsFromEditor();
+                const nextIndex = index + direction;
+                if (nextIndex < 0 || nextIndex >= this.currentSeminarQuestions.length) return;
+                const [question] = this.currentSeminarQuestions.splice(index, 1);
+                this.currentSeminarQuestions.splice(nextIndex, 0, question);
+                this.renderSeminarQuestionsEditor();
+            }
+
+            updateQuestionType(index, type) {
+                this.syncSeminarQuestionsFromEditor();
+                if (this.currentSeminarQuestions[index]) {
+                    this.currentSeminarQuestions[index].field_type = type;
+                    if ((type === 'single_choice' || type === 'multiple_choice') && !this.currentSeminarQuestions[index].options_json?.length) {
+                        this.currentSeminarQuestions[index].options_json = ['Option 1'];
+                    }
+                }
+                this.renderSeminarQuestionsEditor();
+            }
+
             // ─── Séminaires Management ─────────────────────────────────────────
 
             async loadSeminaires() {
@@ -1409,7 +1668,7 @@
                         return;
                     }
                     panel.innerHTML = `<div class="sem-regs-scroll"><table class="sem-regs-table">
-                        <thead><tr><th>#</th><th>Nom</th><th>Email</th><th>Téléphone</th><th>Statut</th><th>Inscrit le</th><th></th></tr></thead>
+                        <thead><tr><th>#</th><th>Nom</th><th>Email</th><th>Téléphone</th><th>Réponses</th><th>Statut</th><th>Inscrit le</th><th></th></tr></thead>
                         <tbody>${result.data.map((r, i) => {
                             const registrationId = Number(r.id);
                             const currentSeminarId = Number(seminarId);
@@ -1437,6 +1696,7 @@
                                 <td>${this.escapeHtml(r.full_name)}</td>
                                 <td>${this.escapeHtml(r.email)}</td>
                                 <td>${r.phone ? this.escapeHtml(r.phone) : '—'}</td>
+                                <td>${this.renderRegistrationAnswers(r.answers)}</td>
                                 <td>${statusBadge}${emailNote}</td>
                                 <td>${new Date(r.registered_at).toLocaleString('fr-FR')}</td>
                                 <td><div class="sem-reg-actions">${approveButton}${deleteButton}</div></td>
@@ -1449,7 +1709,7 @@
                 }
             }
 
-            editSeminar(seminarId) {
+            async editSeminar(seminarId) {
                 const s = this.seminaires.find(x => x.id === seminarId);
                 if (!s) return;
                 document.getElementById('semEditId').value = s.id;
@@ -1465,6 +1725,17 @@
                 document.getElementById('semSubmitBtn').textContent = 'Enregistrer les modifications';
                 document.getElementById('semCancelBtn').style.display = '';
                 document.querySelector('[data-tab="seminaires"]').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                try {
+                    const res = await fetch(`${API_BASE}/api/admin/seminaires/${seminarId}/questions`, { headers: adminHeaders() });
+                    const result = await res.json();
+                    if (handleAuthError(res, result)) return;
+                    this.currentSeminarQuestions = Array.isArray(result.data) && result.data.length
+                        ? result.data.map(q => this.normalizeQuestionForEditor(q))
+                        : this.defaultSeminarQuestions();
+                    this.renderSeminarQuestionsEditor();
+                } catch {
+                    this.showNotification("Impossible de charger les questions d'inscription.", 'error');
+                }
             }
 
             cancelEditSeminar() {
@@ -1473,6 +1744,8 @@
                 document.getElementById('semFormTitle').textContent = 'Créer un séminaire';
                 document.getElementById('semSubmitBtn').textContent = 'Créer le séminaire';
                 document.getElementById('semCancelBtn').style.display = 'none';
+                this.currentSeminarQuestions = this.defaultSeminarQuestions();
+                this.renderSeminarQuestionsEditor();
                 this.updateSeminarModeFields();
             }
 
@@ -1487,7 +1760,8 @@
                     delivery_mode: deliveryMode,
                     virtual_room_url: document.getElementById('semVirtualRoomUrl').value.trim() || null,
                     capacity: document.getElementById('semCapacity').value ? parseInt(document.getElementById('semCapacity').value) : null,
-                    description: document.getElementById('semDesc').value.trim() || null
+                    description: document.getElementById('semDesc').value.trim() || null,
+                    questions: this.syncSeminarQuestionsFromEditor()
                 };
                 if (!payload.title || !payload.date) {
                     this.showNotification('Titre et date sont requis.', 'error');
@@ -1499,6 +1773,11 @@
                 }
                 if (deliveryMode === 'in_person' && !payload.location) {
                     this.showNotification('Le lieu est requis pour un séminaire en présentiel.', 'error');
+                    return;
+                }
+                const questionError = this.validateSeminarQuestions(payload.questions);
+                if (questionError) {
+                    this.showNotification(questionError, 'error');
                     return;
                 }
                 const btn = document.getElementById('semSubmitBtn');
@@ -1618,6 +1897,37 @@
                         }
                     }
                 );
+            }
+
+            renderRegistrationAnswers(answers) {
+                const list = Array.isArray(answers) ? answers : [];
+                if (!list.length) return '<span style="color:#9ca3af;">—</span>';
+                return `
+                    <div style="display:grid;gap:0.35rem;min-width:220px;">
+                        ${list.map((answer) => `
+                            <div>
+                                <strong style="font-size:0.76rem;color:#374151;">${this.escapeHtml(answer.label || answer.question_key || 'Question')}</strong><br>
+                                <span style="font-size:0.78rem;color:#4b5563;">${this.escapeHtml(this.formatRegistrationAnswerValue(answer))}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            formatRegistrationAnswerValue(answer) {
+                if (Array.isArray(answer.answer_json)) {
+                    if (answer.field_type === 'file') {
+                        return answer.answer_json.map(file => {
+                            const size = file.size ? ` (${Math.round(Number(file.size) / 1024)} Ko)` : '';
+                            return `${file.name || 'Fichier'}${size}`;
+                        }).join(', ') || '-';
+                    }
+                    return answer.answer_json.join(', ') || '-';
+                }
+                if (answer.answer_json && typeof answer.answer_json === 'object') {
+                    return JSON.stringify(answer.answer_json);
+                }
+                return answer.answer_text || '-';
             }
 
             showConfirmModal(title, message, confirmText, confirmClass, onConfirm) {
