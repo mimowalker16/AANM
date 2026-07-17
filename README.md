@@ -46,16 +46,27 @@ server/
 # Install dependencies
 npm install
 
-# Recommended on Windows: starts frontend, backend, and a local PostgreSQL dev DB
+# Recommended on Windows: starts frontend and backend against the live Supabase DB
 dev.bat
 ```
 
-If you run the backend without `dev.bat`, set `DATABASE_URL` to a PostgreSQL
-connection string first, for example:
+Development uses the live Supabase database. Copy the example env file and fill
+in the database password from the Supabase dashboard:
 
 ```bash
-DATABASE_URL=postgres://postgres@127.0.0.1:55432/aanm
+copy backend\.env.example backend\.env
 ```
+
+`backend\.env` should keep:
+- `DATABASE_URL` set to the Supabase pooler URL
+- `DATABASE_SSL=true`
+- `SKIP_TABLE_INIT=true`
+
+`dev.bat` also reads the legacy `backend\server\.env` file if you already keep
+your local settings there.
+
+If you run the backend without `dev.bat`, set the same variables in your shell
+first.
 
 ### **2. No API Keys Required! 🎉**
 We use **OpenStreetMap + Leaflet** (completely free):
@@ -79,33 +90,11 @@ npm run server:dev # Backend → http://localhost:3001
 ## 📊 **Database Structure**
 
 ### **Automatic Setup**
-- `dev.bat` starts a project-local PostgreSQL database on port `55432` when `DATABASE_URL` is not already set.
-- Local PostgreSQL data lives in `.local/postgres-data`.
-- Production uses the PostgreSQL URL supplied through `DATABASE_URL`.
+- `dev.bat` loads `.env`, `backend/.env`, and `backend/server/.env`, then uses `DATABASE_URL`.
+- Development and production both use the Supabase PostgreSQL URL supplied through `DATABASE_URL`.
+- To deliberately use a disposable local PostgreSQL database, set `USE_LOCAL_POSTGRES=true` before running `dev.bat`.
+- Local PostgreSQL data, when explicitly enabled, lives in `.local/postgres-data`.
 
-### **Schema**
-```sql
-CREATE TABLE labs (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  lab_name TEXT NOT NULL,
-  institution_name TEXT,
-  contact_person TEXT NOT NULL,
-  contact_email TEXT NOT NULL,
-  phone TEXT,
-  website TEXT,
-  address TEXT NOT NULL,           -- Auto from coordinates
-  city TEXT NOT NULL,              -- Auto from coordinates  
-  country TEXT NOT NULL,           -- Auto from coordinates
-  coordinates_lat REAL NOT NULL,   -- Primary location data
-  coordinates_lng REAL NOT NULL,   -- Primary location data
-  research_areas TEXT NOT NULL,    -- JSON array
-  description TEXT,
-  established_year INTEGER,
-  submitted_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  approved BOOLEAN DEFAULT 0,      -- Requires admin approval
-  admin_notes TEXT
-);
-```
 
 ## 🔧 **API Endpoints**
 
@@ -131,12 +120,13 @@ CREATE TABLE labs (
 - **Error Handling**: Sanitized error responses
 
 ### **Environment Variables**
-All sensitive config in `.env`:
+All sensitive config in `backend/.env`:
 ```bash
 PORT=3001
-DATABASE_URL=postgres://postgres@127.0.0.1:55432/aanm
-DATABASE_SSL=false
-ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
+DATABASE_URL=
+DATABASE_SSL=true
+SKIP_TABLE_INIT=true
+ALLOWED_ORIGINS=
 ```
 
 ## 🗺️ **Location System**
@@ -180,56 +170,3 @@ ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
 - Comprehensive input validation
 - Environment-based configuration
 - Graceful shutdown handling
-
-## 🚧 **Todo (Future Enhancements)**
-
-### **Phase 1**
-- [ ] Lab directory public page (`/lab-directory.html`)
-- [ ] Interactive map view of all approved labs
-- [ ] Search and filter by research area/location
-
-### **Phase 2**  
-- [ ] Admin dashboard UI for approving submissions
-- [ ] Authentication system for admin routes
-- [ ] Email notifications for new submissions
-- [ ] Export functionality (CSV/JSON)
-
-### **Phase 3**
-- [ ] User accounts for lab updates
-- [ ] Lab collaboration features
-- [ ] Advanced search with research matching
-- [ ] Analytics and usage statistics
-
-## 🐛 **Troubleshooting**
-
-### **Server won't start?**
-```bash
-# Check if port is in use
-lsof -i :3001  # macOS/Linux
-netstat -ano | findstr :3001  # Windows
-
-# Check database permissions
-ls -la server/database/  # Ensure write access
-```
-
-### **Maps not loading?**
-- Check internet connection (needs to fetch OpenStreetMap tiles)
-- Verify Leaflet.js CDN is accessible
-- Check browser console for JavaScript errors
-- No API keys needed!
-
-### **Database errors?**
-- Database auto-creates on first run
-- Check `server/database/` directory permissions  
-- Verify SQLite3 installation: `npm ls sqlite3`
-
-## 📝 **Best Practices Implemented**
-
-✅ **Modular architecture** - Separated concerns into logical modules  
-✅ **Environment configuration** - All config in `.env` files  
-✅ **Error handling** - Comprehensive async error handling  
-✅ **Security** - Rate limiting, validation, sanitization  
-✅ **Database abstraction** - Clean database interface layer  
-✅ **Validation layer** - Centralized input validation  
-✅ **Logging** - Structured logging with context  
-✅ **Graceful shutdown** - Proper cleanup on termination

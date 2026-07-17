@@ -45,7 +45,5 @@ backend/server/database/*.db-journal
 
 # OS files
 Thumbs.db
-scripts/seed/current-data.sql
-scripts/seed/run-seed.js
-scripts/seed/seed-current-data.sql
+scripts/
 .github/*

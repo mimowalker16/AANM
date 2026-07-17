@@ -7,6 +7,10 @@ echo.
 echo Starting AANM Development Environment...
 echo.
 
+REM Load ignored local environment files before deciding which database to use.
+REM Values from .env are loaded first, then backend\.env and backend\server\.env can override them.
+for /f "usebackq delims=" %%A in (`powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\load-env-for-cmd.ps1"`) do %%A
+
 REM Check if Node.js is installed
 node --version >nul 2>&1
 if errorlevel 1 (
@@ -27,21 +31,31 @@ if not exist "node_modules" (
     )
 )
 
-REM Start a project-local PostgreSQL instance when DATABASE_URL is not set.
+REM Development uses the live Supabase database by default.
+REM Set USE_LOCAL_POSTGRES=true only when you deliberately want a disposable local DB.
 if not defined DATABASE_URL (
-    echo.
-    echo Preparing local PostgreSQL database...
-    powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\start-dev-postgres.ps1"
-    if errorlevel 1 (
+    if /I "%USE_LOCAL_POSTGRES%"=="true" (
         echo.
-        echo [ERROR] Could not prepare the local PostgreSQL database.
-        echo Set DATABASE_URL manually, or install PostgreSQL 17 and try again.
+        echo Preparing local PostgreSQL database...
+        powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\start-dev-postgres.ps1"
+        if errorlevel 1 (
+            echo.
+            echo [ERROR] Could not prepare the local PostgreSQL database.
+            echo Set DATABASE_URL manually, or install PostgreSQL 17 and try again.
+            pause
+            exit /b 1
+        )
+
+        set "DATABASE_URL=postgres://postgres@127.0.0.1:55432/aanm"
+        set "DATABASE_SSL=false"
+    ) else (
+        echo.
+        echo [ERROR] DATABASE_URL is not set.
+        echo Development now expects the live Supabase database.
+        echo Create backend\.env from backend\.env.example, or set DATABASE_URL in backend\server\.env.
         pause
         exit /b 1
     )
-
-    set "DATABASE_URL=postgres://postgres@127.0.0.1:55432/aanm"
-    set "DATABASE_SSL=false"
 )
 
 echo.
