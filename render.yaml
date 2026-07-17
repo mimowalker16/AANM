@@ -37,6 +37,16 @@ services:
       - key: DB_POOL_MAX
         value: "5"
 
+      # ── Supabase Storage ───────────────────────────────────────────────────
+      - key: SUPABASE_URL
+        value: https://rrpaajtctdavlhwuffsy.supabase.co
+
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false       # secret — required for private receipt uploads/downloads
+
+      - key: SUPABASE_REGISTRATION_FILES_BUCKET
+        value: seminar-registration-files
+
       # ── CORS ─────────────────────────────────────────────────────────────────
       # Replace with your actual Sevalla Pages URL once you have it.
       # Add both the bare domain and www if you use both.

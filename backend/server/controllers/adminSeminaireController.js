@@ -1,5 +1,6 @@
 import database from '../database/index.js';
 import emailService from '../services/emailService.js';
+import supabaseStorageService from '../services/supabaseStorageService.js';
 
 const QUESTION_TYPES = new Set([
     'text',
@@ -357,6 +358,34 @@ export async function adminApproveRegistration(req, res) {
                 : emailStatus.reason || "L'inscription a été approuvée, mais l'email n'a pas été envoyé."
         });
     } catch (err) {
+        res.status(500).json({ success: false, message: 'Erreur serveur.' });
+    }
+}
+
+export async function adminDownloadRegistrationFile(req, res) {
+    try {
+        const registration = await database.getRegistrationWithSeminar(req.params.id);
+        if (!registration) {
+            return res.status(404).json({ success: false, message: 'Inscription introuvable.' });
+        }
+
+        const fileIndex = Number(req.params.fileIndex);
+        const files = Array.isArray(registration.files) ? registration.files : [];
+        const file = Number.isInteger(fileIndex) ? files[fileIndex] : null;
+
+        if (!file?.storage_bucket || !file?.storage_path) {
+            return res.status(404).json({ success: false, message: 'Fichier introuvable.' });
+        }
+
+        const downloaded = await supabaseStorageService.downloadBuffer(file.storage_bucket, file.storage_path);
+        const filename = String(file.original_name || 'recu-inscription').replace(/["\r\n]/g, '_');
+
+        res.setHeader('Content-Type', file.mime_type || downloaded.contentType);
+        res.setHeader('Content-Length', downloaded.buffer.length);
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+        res.send(downloaded.buffer);
+    } catch (err) {
+        console.error('Failed to download registration file:', err);
         res.status(500).json({ success: false, message: 'Erreur serveur.' });
     }
 }

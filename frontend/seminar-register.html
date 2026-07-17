@@ -741,6 +741,7 @@
 
         function collectAnswers() {
             const answers = [];
+            const filesByQuestion = {};
             for (const question of seminarQuestions) {
                 const wrapper = dynamicQuestionsRoot.querySelector(`[data-question-id="${question.id}"]`);
                 if (!wrapper || question.field_type === 'info_block') continue;
@@ -757,6 +758,7 @@
                     const input = wrapper.querySelector('input[type="file"]');
                     const files = Array.from(input?.files || []);
                     value = files.map((f) => ({ name: f.name, size: f.size, type: f.type }));
+                    filesByQuestion[String(question.id)] = files;
 
                     if (question.is_required && files.length === 0) valid = false;
                     if (files.length > (question.max_files || 1)) valid = false;
@@ -781,7 +783,7 @@
                 answers.push({ question_id: question.id, value });
             }
 
-            return { valid: true, answers };
+            return { valid: true, answers, filesByQuestion };
         }
 
         function formatDate(dateStr) {
@@ -878,10 +880,17 @@
             btn.classList.add('loading');
 
             try {
+                const formData = new FormData();
+                formData.append('answers', JSON.stringify(collected.answers));
+                Object.entries(collected.filesByQuestion).forEach(([questionId, files]) => {
+                    files.forEach((file) => {
+                        formData.append(`file_${questionId}`, file, file.name);
+                    });
+                });
+
                 const res = await fetch(`${API_BASE}/api/seminaires/${seminarId}/register`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ answers: collected.answers })
+                    body: formData
                 });
                 const json = await res.json();
 

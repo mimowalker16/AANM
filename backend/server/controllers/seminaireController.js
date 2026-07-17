@@ -1,6 +1,8 @@
 import database from '../database/index.js';
+import supabaseStorageService from '../services/supabaseStorageService.js';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const FILE_FIELD_PREFIX = 'file_';
 
 function normalizeString(value) {
     return typeof value === 'string' ? value.trim() : '';
@@ -21,6 +23,16 @@ function parseOptions(question) {
         return Array.isArray(parsed) ? parsed : [];
     } catch {
         return [];
+    }
+}
+
+function parseJsonField(value, fallback) {
+    if (value === undefined || value === null || value === '') return fallback;
+    if (typeof value !== 'string') return value;
+    try {
+        return JSON.parse(value);
+    } catch {
+        return fallback;
     }
 }
 
@@ -88,8 +100,9 @@ function validateAnswer(question, rawValue) {
 }
 
 function buildRawAnswersMap(body) {
-    const fromArray = Array.isArray(body.answers)
-        ? body.answers
+    const answers = parseJsonField(body.answers, body.answers);
+    const fromArray = Array.isArray(answers)
+        ? answers
               .filter((item) => item && item.question_id)
               .reduce((acc, item) => {
                   acc[String(item.question_id)] = item.value;
@@ -132,6 +145,62 @@ function resolveCandidateValue(question, rawAnswers) {
     }
 
     return undefined;
+}
+
+function filesByQuestionId(files = []) {
+    return files.reduce((acc, file) => {
+        if (!file.fieldname?.startsWith(FILE_FIELD_PREFIX)) return acc;
+        const questionId = file.fieldname.slice(FILE_FIELD_PREFIX.length);
+        if (!questionId) return acc;
+        acc[questionId] = acc[questionId] || [];
+        acc[questionId].push(file);
+        return acc;
+    }, {});
+}
+
+function safeFileName(value) {
+    return String(value || 'file')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-zA-Z0-9._-]+/g, '_')
+        .replace(/^_+|_+$/g, '')
+        .slice(0, 120) || 'file';
+}
+
+function safePathPart(value) {
+    return String(value || 'unknown')
+        .toLowerCase()
+        .replace(/[^a-z0-9._-]+/g, '_')
+        .replace(/^_+|_+$/g, '')
+        .slice(0, 80) || 'unknown';
+}
+
+function validateQuestionFiles(question, files) {
+    if (question.field_type !== 'file') return { ok: true };
+
+    const maxFiles = Number(question.max_files || 1);
+    const maxBytes = Number(question.max_file_size_mb || 100) * 1024 * 1024;
+    const allowedMimeTypes = Array.isArray(question.allowed_mime_types_json)
+        ? question.allowed_mime_types_json
+        : parseJsonField(question.allowed_mime_types_json, []);
+
+    if (question.is_required && files.length === 0) {
+        return { ok: false, message: `La question "${question.label}" est obligatoire.` };
+    }
+
+    if (files.length > maxFiles) {
+        return { ok: false, message: `Trop de fichiers pour "${question.label}" (${maxFiles} maximum).` };
+    }
+
+    if (files.some((file) => file.size > maxBytes)) {
+        return { ok: false, message: `Un fichier dépasse la taille maximale pour "${question.label}".` };
+    }
+
+    if (allowedMimeTypes.length && files.some((file) => !allowedMimeTypes.includes(file.mimetype))) {
+        return { ok: false, message: `Type de fichier invalide pour "${question.label}".` };
+    }
+
+    return { ok: true };
 }
 
 export async function getSeminaires(req, res) {
@@ -186,13 +255,29 @@ export async function registerForSeminaire(req, res) {
         }
 
         const rawAnswers = buildRawAnswersMap(req.body);
+        const uploadedFilesByQuestion = filesByQuestionId(req.files || []);
         const validatedAnswers = [];
+        const fileUploads = [];
         let emailValue = null;
         let fullNameValue = null;
         let phoneValue = null;
 
         for (const question of questions) {
-            const candidateValue = resolveCandidateValue(question, rawAnswers);
+            const questionFiles = uploadedFilesByQuestion[String(question.id)] || [];
+            if (question.field_type === 'file') {
+                const fileValidation = validateQuestionFiles(question, questionFiles);
+                if (!fileValidation.ok) {
+                    return res.status(400).json({ success: false, message: fileValidation.message });
+                }
+            }
+
+            const candidateValue = question.field_type === 'file'
+                ? questionFiles.map((file) => ({
+                    name: file.originalname,
+                    size: file.size,
+                    type: file.mimetype
+                }))
+                : resolveCandidateValue(question, rawAnswers);
             const validated = validateAnswer(question, candidateValue);
             if (!validated.ok) {
                 return res.status(400).json({ success: false, message: validated.message });
@@ -218,6 +303,10 @@ export async function registerForSeminaire(req, res) {
                     answer_json: validated.answerJson
                 });
             }
+
+            if (question.field_type === 'file' && questionFiles.length) {
+                fileUploads.push({ question, files: questionFiles });
+            }
         }
 
         if (!emailValue) {
@@ -238,17 +327,64 @@ export async function registerForSeminaire(req, res) {
             return res.status(409).json({ success: false, message: 'Cette adresse email est déjà inscrite à ce séminaire.' });
         }
 
+        const storedFiles = [];
+        const timestamp = Date.now();
+        for (const uploadGroup of fileUploads) {
+            for (let i = 0; i < uploadGroup.files.length; i += 1) {
+                const file = uploadGroup.files[i];
+                const storagePath = [
+                    `seminar-${req.params.id}`,
+                    safePathPart(emailValue),
+                    `${timestamp}-${uploadGroup.question.id}-${i + 1}-${safeFileName(file.originalname)}`
+                ].join('/');
+
+                const stored = await supabaseStorageService.uploadBuffer(
+                    storagePath,
+                    file.buffer,
+                    file.mimetype
+                );
+
+                const fileRecord = {
+                    question_id: uploadGroup.question.id,
+                    question_key: uploadGroup.question.question_key,
+                    label: uploadGroup.question.label,
+                    storage_bucket: stored.bucket,
+                    storage_path: stored.path,
+                    original_name: file.originalname,
+                    mime_type: file.mimetype,
+                    size_bytes: file.size
+                };
+
+                storedFiles.push(fileRecord);
+            }
+        }
+
+        for (const answer of validatedAnswers) {
+            if (answer.field_type !== 'file') continue;
+            const matchingFiles = storedFiles
+                .filter((file) => file.question_id === answer.question_id)
+                .map((file) => ({
+                    name: file.original_name,
+                    size: file.size_bytes,
+                    type: file.mime_type,
+                    bucket: file.storage_bucket,
+                    path: file.storage_path
+                }));
+            answer.answer_json = matchingFiles;
+        }
+
         await database.createDynamicRegistration(
             req.params.id,
             { full_name: fullNameValue, email: emailValue, phone: phoneValue },
             validatedAnswers,
-            []
+            storedFiles
         );
         res.status(201).json({
             success: true,
             message: "Votre demande d'inscription a été enregistrée. Elle sera confirmée après vérification du paiement."
         });
-    } catch {
+    } catch (err) {
+        console.error('Failed to register for seminaire:', err);
         res.status(500).json({ success: false, message: 'Erreur serveur.' });
     }
 }

@@ -1696,7 +1696,7 @@
                                 <td>${this.escapeHtml(r.full_name)}</td>
                                 <td>${this.escapeHtml(r.email)}</td>
                                 <td>${r.phone ? this.escapeHtml(r.phone) : '—'}</td>
-                                <td>${this.renderRegistrationAnswers(r.answers)}</td>
+                                <td>${this.renderRegistrationAnswers(r.answers, r.files, registrationId)}</td>
                                 <td>${statusBadge}${emailNote}</td>
                                 <td>${new Date(r.registered_at).toLocaleString('fr-FR')}</td>
                                 <td><div class="sem-reg-actions">${approveButton}${deleteButton}</div></td>
@@ -1899,35 +1899,73 @@
                 );
             }
 
-            renderRegistrationAnswers(answers) {
+            renderRegistrationAnswers(answers, files = [], registrationId = null) {
                 const list = Array.isArray(answers) ? answers : [];
                 if (!list.length) return '<span style="color:#9ca3af;">—</span>';
+                const storedFiles = Array.isArray(files) ? files : [];
                 return `
                     <div style="display:grid;gap:0.35rem;min-width:220px;">
                         ${list.map((answer) => `
                             <div>
                                 <strong style="font-size:0.76rem;color:#374151;">${this.escapeHtml(answer.label || answer.question_key || 'Question')}</strong><br>
-                                <span style="font-size:0.78rem;color:#4b5563;">${this.escapeHtml(this.formatRegistrationAnswerValue(answer))}</span>
+                                <span style="font-size:0.78rem;color:#4b5563;">${this.renderRegistrationAnswerValue(answer, storedFiles, registrationId)}</span>
                             </div>
                         `).join('')}
                     </div>
                 `;
             }
 
-            formatRegistrationAnswerValue(answer) {
+            renderRegistrationAnswerValue(answer, files, registrationId) {
                 if (Array.isArray(answer.answer_json)) {
                     if (answer.field_type === 'file') {
+                        const matchingFiles = files
+                            .map((file, index) => ({ ...file, index }))
+                            .filter(file => String(file.question_id) === String(answer.question_id));
+                        if (matchingFiles.length) {
+                            return matchingFiles.map(file => {
+                                const size = file.size_bytes ? ` (${Math.round(Number(file.size_bytes) / 1024)} Ko)` : '';
+                                return `<button type="button" class="action-btn view" style="font-size:0.72rem;min-height:28px;padding:0.25rem 0.45rem;margin:0.1rem 0.2rem 0.1rem 0;" onclick="adminDashboard.downloadRegistrationFile(${registrationId}, ${file.index})">${this.escapeHtml(file.original_name || 'Fichier')}${this.escapeHtml(size)}</button>`;
+                            }).join('');
+                        }
                         return answer.answer_json.map(file => {
                             const size = file.size ? ` (${Math.round(Number(file.size) / 1024)} Ko)` : '';
-                            return `${file.name || 'Fichier'}${size}`;
+                            return this.escapeHtml(`${file.name || 'Fichier'}${size}`);
                         }).join(', ') || '-';
                     }
-                    return answer.answer_json.join(', ') || '-';
+                    return this.escapeHtml(answer.answer_json.join(', ') || '-');
                 }
                 if (answer.answer_json && typeof answer.answer_json === 'object') {
-                    return JSON.stringify(answer.answer_json);
+                    return this.escapeHtml(JSON.stringify(answer.answer_json));
                 }
-                return answer.answer_text || '-';
+                return this.escapeHtml(answer.answer_text || '-');
+            }
+
+            async downloadRegistrationFile(registrationId, fileIndex) {
+                try {
+                    const res = await fetch(`${API_BASE}/api/admin/registrations/${registrationId}/files/${fileIndex}`, {
+                        headers: adminHeaders()
+                    });
+                    if (!res.ok) {
+                        const result = await res.json().catch(() => ({}));
+                        if (handleAuthError(res, result)) return;
+                        throw new Error(result.message || 'Téléchargement impossible.');
+                    }
+
+                    const blob = await res.blob();
+                    const disposition = res.headers.get('content-disposition') || '';
+                    const match = disposition.match(/filename="([^"]+)"/);
+                    const filename = match ? match[1] : 'recu-inscription';
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = filename;
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                    URL.revokeObjectURL(url);
+                } catch (err) {
+                    this.showNotification(err.message || 'Erreur lors du téléchargement.', 'error');
+                }
             }
 
             showConfirmModal(title, message, confirmText, confirmClass, onConfirm) {

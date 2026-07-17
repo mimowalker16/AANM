@@ -9,7 +9,7 @@ import {
     adminGetRegistrations, adminApproveRegistration, adminDeleteRegistration,
     adminGetSeminaireQuestions, adminCreateSeminaireQuestion,
     adminUpdateSeminaireQuestion, adminReorderSeminaireQuestions,
-    adminDeleteSeminaireQuestion
+    adminDeleteSeminaireQuestion, adminDownloadRegistrationFile
 } from '../controllers/adminSeminaireController.js';
 
 const router = express.Router();
@@ -52,6 +52,7 @@ router.put('/seminaires/:id/questions/:questionId', requireAdminAuth, adminUpdat
 router.delete('/seminaires/:id/questions/:questionId', requireAdminAuth, adminDeleteSeminaireQuestion);
 router.get('/seminaires/:id/registrations', requireAdminAuth, adminGetRegistrations);
 router.put('/registrations/:id/approve', requireAdminAuth, adminApproveRegistration);
+router.get('/registrations/:id/files/:fileIndex', requireAdminAuth, adminDownloadRegistrationFile);
 router.delete('/registrations/:id', requireAdminAuth, adminDeleteRegistration);
 
 export default router;

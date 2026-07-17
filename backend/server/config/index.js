@@ -13,6 +13,29 @@ const databaseUrl = process.env.DATABASE_URL || '';
 const databaseSsl = process.env.DATABASE_SSL || 'auto';
 const nodeEnv = process.env.NODE_ENV || 'development';
 
+function deriveSupabaseUrl(explicitUrl, dbUrl) {
+    if (explicitUrl) {
+        return explicitUrl.replace(/\/+$/, '');
+    }
+
+    try {
+        const url = new URL(dbUrl);
+        const directHostMatch = url.hostname.match(/^db\.([a-z0-9]+)\.supabase\.co$/i);
+        if (directHostMatch) {
+            return `https://${directHostMatch[1]}.supabase.co`;
+        }
+
+        const poolerUserMatch = decodeURIComponent(url.username || '').match(/^postgres\.([a-z0-9]+)$/i);
+        if (poolerUserMatch) {
+            return `https://${poolerUserMatch[1]}.supabase.co`;
+        }
+    } catch {
+        return '';
+    }
+
+    return '';
+}
+
 function parseTrustProxy(value) {
     if (value === undefined || value === '') {
         return nodeEnv === 'production' ? 1 : false;
@@ -79,6 +102,11 @@ export const config = {
         resendApiUrl: process.env.RESEND_API_URL || 'https://api.resend.com/emails',
         from: process.env.EMAIL_FROM || process.env.SMTP_USER || 'AANM <no-reply@aanm-assal.org>',
         replyTo: process.env.EMAIL_REPLY_TO || process.env.EMAIL_FROM || process.env.SMTP_USER || ''
+    },
+    supabase: {
+        url: deriveSupabaseUrl(process.env.SUPABASE_URL || '', databaseUrl),
+        serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY || '',
+        storageBucket: process.env.SUPABASE_REGISTRATION_FILES_BUCKET || 'seminar-registration-files'
     }
     // Note: No API keys needed! Using free OpenStreetMap + Leaflet
 };
