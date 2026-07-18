@@ -385,6 +385,18 @@ export async function registerForSeminaire(req, res) {
         });
     } catch (err) {
         console.error('Failed to register for seminaire:', err);
+        if (err.message?.includes('Supabase Storage is not configured')) {
+            return res.status(503).json({
+                success: false,
+                message: "Le stockage des reçus n'est pas configuré. Ajoutez SUPABASE_SERVICE_ROLE_KEY côté serveur."
+            });
+        }
+        if (err.message?.startsWith('Supabase upload failed')) {
+            return res.status(502).json({
+                success: false,
+                message: "Le reçu n'a pas pu être envoyé vers Supabase Storage. Vérifiez la clé service_role et le bucket."
+            });
+        }
         res.status(500).json({ success: false, message: 'Erreur serveur.' });
     }
 }

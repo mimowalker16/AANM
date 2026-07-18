@@ -24,6 +24,7 @@ export default defineConfig({
                 advancedSearch: resolve(__dirname, 'advanced-search.html'),
                 adminLogin: resolve(__dirname, 'admin-login.html'),
                 adminDashboard: resolve(__dirname, 'admin-dashboard.html'),
+                adminSeminarDetail: resolve(__dirname, 'admin-seminar-detail.html'),
                 seminarRegister: resolve(__dirname, 'seminar-register.html'),
                 mobileTest: resolve(__dirname, 'mobile-test.html')
             },

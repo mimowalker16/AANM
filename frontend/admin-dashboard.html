@@ -125,6 +125,9 @@
         .sem-field { display: flex; flex-direction: column; gap: 0.3rem; }
         .sem-field label { font-size: 0.82rem; font-weight: 600; }
         .sem-field input, .sem-field textarea, .sem-field select {
+            width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
             padding: 0.6rem 0.8rem;
             border: 1.5px solid #d1d5db;
             border-radius: var(--radius-md);
@@ -146,6 +149,7 @@
             border-radius: var(--radius-md);
             padding: var(--space-md);
             background: #fafafa;
+            min-width: 0;
         }
         .sem-question-builder__header {
             display: flex;
@@ -173,6 +177,7 @@
             border: 1px solid #e5e7eb;
             border-radius: var(--radius-md);
             background: #fff;
+            min-width: 0;
         }
         .sem-question-row .sem-field { gap: 0.2rem; }
         .sem-question-row .sem-field label { font-size: 0.72rem; color: #6b7280; }
@@ -213,14 +218,6 @@
         .sem-badge--open { background: #dcfce7; color: #166534; }
         .sem-badge--closed { background: #fee2e2; color: #991b1b; }
         .sem-badge--mode { background: #e0f2fe; color: #075985; }
-        .seminar-card__body { padding: var(--space-md) var(--space-lg); }
-        .sem-regs-scroll { width: 100%; overflow-x: auto; }
-        .sem-regs-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
-        .sem-regs-table th, .sem-regs-table td { padding: 0.5rem 0.7rem; text-align: left; border-bottom: 1px solid #f0f0f0; }
-        .sem-regs-table th { font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; }
-        .sem-regs-table td { vertical-align: middle; }
-        .sem-reg-actions { display: flex; gap: 0.35rem; flex-wrap: wrap; justify-content: flex-end; }
-        .sem-regs-empty { font-size: 0.88rem; color: #9ca3af; text-align: center; padding: var(--space-md); }
         .action-btn.toggle-open { background: rgba(59,169,156,0.08); color: var(--clr-accent-teal-dark, #2A7A70); border: 1px solid rgba(59,169,156,0.3); }
         .action-btn.toggle-open:hover { background: rgba(59,169,156,0.18); }
         .action-btn.toggle-close { background: rgba(220,38,38,0.08); color: #991b1b; border: 1px solid rgba(220,38,38,0.25); }
@@ -268,7 +265,68 @@
             .seminar-card__header { flex-direction: column; align-items: flex-start; }
             .seminar-card__actions { width: 100%; }
             .seminar-card__actions .action-btn { flex: 1 1 46%; }
-            .sem-reg-actions { justify-content: flex-start; }
+        }
+
+        @media (max-width: 370px) {
+            .sem-form-card {
+                padding: 0.85rem;
+                border-radius: var(--radius-md);
+            }
+
+            .sem-form-grid,
+            .sem-question-list {
+                gap: 0.65rem;
+            }
+
+            .sem-question-builder {
+                padding: 0.65rem;
+            }
+
+            .sem-question-builder__header,
+            .sem-question-actions,
+            .sem-form-actions {
+                gap: 0.4rem;
+            }
+
+            .sem-field label,
+            .sem-question-row .sem-field label {
+                font-size: 0.72rem;
+                overflow-wrap: anywhere;
+            }
+
+            .sem-field input,
+            .sem-field textarea,
+            .sem-field select {
+                padding: 0.5rem 0.6rem;
+                font-size: 0.84rem;
+                max-width: 100%;
+            }
+
+            .sem-question-row {
+                padding: 0.55rem;
+                gap: 0.45rem;
+            }
+
+            .sem-question-actions {
+                justify-content: stretch;
+            }
+
+            .sem-question-actions .action-btn,
+            .sem-question-builder .sem-form-actions .action-btn,
+            #semForm > .sem-form-actions .action-btn {
+                width: auto;
+                flex: 1 1 calc(50% - 0.25rem);
+                min-width: 0;
+                padding: 0.45rem 0.5rem;
+                font-size: 0.76rem;
+                min-height: 36px;
+                white-space: normal;
+            }
+
+            .sem-question-actions label {
+                flex: 1 1 100%;
+                font-size: 0.78rem;
+            }
         }
 
         .labs-table {
@@ -1642,71 +1700,11 @@
                             <div class="seminar-card__actions">
                                 <button class="action-btn view" onclick="adminDashboard.editSeminar(${s.id})">Modifier</button>
                                 ${toggleBtn}
-                                <button class="action-btn" onclick="adminDashboard.expandRegistrations(${s.id})" id="regToggleBtn-${s.id}">Inscriptions (${totalCount})</button>
+                                <a class="action-btn view" href="./admin-seminar-detail.html?id=${s.id}">Inscriptions (${totalCount})</a>
                                 <button class="action-btn reject" onclick="adminDashboard.deleteSeminar(${s.id})">Supprimer</button>
                             </div>
                         </div>
-                        <div class="seminar-card__body" id="regsPanel-${s.id}" style="display:none;"></div>
                     </div>`;
-            }
-
-            async expandRegistrations(seminarId) {
-                const panel = document.getElementById(`regsPanel-${seminarId}`);
-                if (panel.style.display !== 'none') {
-                    panel.style.display = 'none';
-                    return;
-                }
-                panel.style.display = '';
-                panel.innerHTML = '<p style="color:#9ca3af;font-size:0.85rem;">Chargement…</p>';
-                try {
-                    const res = await fetch(`${API_BASE}/api/admin/seminaires/${seminarId}/registrations`, { headers: adminHeaders() });
-                    const result = await res.json();
-                    if (handleAuthError(res, result)) return;
-                    if (!result.success) throw new Error();
-                    if (result.data.length === 0) {
-                        panel.innerHTML = '<p class="sem-regs-empty">Aucune inscription pour ce séminaire.</p>';
-                        return;
-                    }
-                    panel.innerHTML = `<div class="sem-regs-scroll"><table class="sem-regs-table">
-                        <thead><tr><th>#</th><th>Nom</th><th>Email</th><th>Téléphone</th><th>Réponses</th><th>Statut</th><th>Inscrit le</th><th></th></tr></thead>
-                        <tbody>${result.data.map((r, i) => {
-                            const registrationId = Number(r.id);
-                            const currentSeminarId = Number(seminarId);
-                            const canDelete = Number.isFinite(registrationId) && Number.isFinite(currentSeminarId);
-                            const isApproved = r.status === 'approved';
-                            const statusBadge = isApproved
-                                ? '<span class="status-badge approved">Approuvée</span>'
-                                : '<span class="status-badge pending">Paiement à vérifier</span>';
-                            const emailNote = isApproved && r.confirmation_email_sent_at
-                                ? '<br><span style="font-size:0.72rem;color:#16a34a;">Email envoyé</span>'
-                                : isApproved && r.confirmation_email_error
-                                    ? `<br><span style="font-size:0.72rem;color:#dc2626;">Email non envoyé</span>`
-                                    : '';
-                            const approveButton = canDelete && !isApproved
-                                ? `<button type="button" class="action-btn approve" style="font-size:0.75rem;padding:0.25rem 0.5rem;" title="Approuver après paiement" aria-label="Approuver l'inscription de ${this.escapeAttribute(r.full_name)}" onclick="adminDashboard.approveRegistration(${registrationId}, ${currentSeminarId})">Approuver</button>`
-                                : canDelete && isApproved && !r.confirmation_email_sent_at
-                                    ? `<button type="button" class="action-btn approve" style="font-size:0.75rem;padding:0.25rem 0.5rem;" title="Envoyer l'email de confirmation" aria-label="Envoyer l'email de confirmation à ${this.escapeAttribute(r.full_name)}" onclick="adminDashboard.approveRegistration(${registrationId}, ${currentSeminarId}, true)">Envoyer email</button>`
-                                    : '';
-                            const deleteButton = canDelete
-                                ? `<button type="button" class="action-btn reject" style="font-size:0.75rem;padding:0.25rem 0.5rem;" title="Supprimer l'inscription" aria-label="Supprimer l'inscription de ${this.escapeAttribute(r.full_name)}" onclick="adminDashboard.deleteRegistration(${registrationId}, ${currentSeminarId})">Supprimer</button>`
-                                : '';
-                            return `
-                            <tr>
-                                <td>${i + 1}</td>
-                                <td>${this.escapeHtml(r.full_name)}</td>
-                                <td>${this.escapeHtml(r.email)}</td>
-                                <td>${r.phone ? this.escapeHtml(r.phone) : '—'}</td>
-                                <td>${this.renderRegistrationAnswers(r.answers, r.files, registrationId)}</td>
-                                <td>${statusBadge}${emailNote}</td>
-                                <td>${new Date(r.registered_at).toLocaleString('fr-FR')}</td>
-                                <td><div class="sem-reg-actions">${approveButton}${deleteButton}</div></td>
-                            </tr>`;
-                        }).join('')}
-                        </tbody>
-                    </table></div>`;
-                } catch {
-                    panel.innerHTML = '<p class="sem-regs-empty" style="color:#e53e3e;">Erreur lors du chargement.</p>';
-                }
             }
 
             async editSeminar(seminarId) {
@@ -1866,7 +1864,6 @@
                                 this.showNotification(`${result.emailMessage || "Inscription approuvée. Email non envoyé."}${emailCode}`, 'warning');
                             }
                             await this.loadSeminaires();
-                            this.expandRegistrations(seminarId);
                         } catch (err) {
                             this.showNotification(err.message || "Erreur lors de l'approbation.", 'error');
                         }
@@ -1891,81 +1888,11 @@
                             if (!result.success) throw new Error(result.message);
                             this.showNotification('Inscription supprimée.', 'success');
                             await this.loadSeminaires();
-                            this.expandRegistrations(seminarId);
                         } catch {
                             this.showNotification('Erreur lors de la suppression.', 'error');
                         }
                     }
                 );
-            }
-
-            renderRegistrationAnswers(answers, files = [], registrationId = null) {
-                const list = Array.isArray(answers) ? answers : [];
-                if (!list.length) return '<span style="color:#9ca3af;">—</span>';
-                const storedFiles = Array.isArray(files) ? files : [];
-                return `
-                    <div style="display:grid;gap:0.35rem;min-width:220px;">
-                        ${list.map((answer) => `
-                            <div>
-                                <strong style="font-size:0.76rem;color:#374151;">${this.escapeHtml(answer.label || answer.question_key || 'Question')}</strong><br>
-                                <span style="font-size:0.78rem;color:#4b5563;">${this.renderRegistrationAnswerValue(answer, storedFiles, registrationId)}</span>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-            }
-
-            renderRegistrationAnswerValue(answer, files, registrationId) {
-                if (Array.isArray(answer.answer_json)) {
-                    if (answer.field_type === 'file') {
-                        const matchingFiles = files
-                            .map((file, index) => ({ ...file, index }))
-                            .filter(file => String(file.question_id) === String(answer.question_id));
-                        if (matchingFiles.length) {
-                            return matchingFiles.map(file => {
-                                const size = file.size_bytes ? ` (${Math.round(Number(file.size_bytes) / 1024)} Ko)` : '';
-                                return `<button type="button" class="action-btn view" style="font-size:0.72rem;min-height:28px;padding:0.25rem 0.45rem;margin:0.1rem 0.2rem 0.1rem 0;" onclick="adminDashboard.downloadRegistrationFile(${registrationId}, ${file.index})">${this.escapeHtml(file.original_name || 'Fichier')}${this.escapeHtml(size)}</button>`;
-                            }).join('');
-                        }
-                        return answer.answer_json.map(file => {
-                            const size = file.size ? ` (${Math.round(Number(file.size) / 1024)} Ko)` : '';
-                            return this.escapeHtml(`${file.name || 'Fichier'}${size}`);
-                        }).join(', ') || '-';
-                    }
-                    return this.escapeHtml(answer.answer_json.join(', ') || '-');
-                }
-                if (answer.answer_json && typeof answer.answer_json === 'object') {
-                    return this.escapeHtml(JSON.stringify(answer.answer_json));
-                }
-                return this.escapeHtml(answer.answer_text || '-');
-            }
-
-            async downloadRegistrationFile(registrationId, fileIndex) {
-                try {
-                    const res = await fetch(`${API_BASE}/api/admin/registrations/${registrationId}/files/${fileIndex}`, {
-                        headers: adminHeaders()
-                    });
-                    if (!res.ok) {
-                        const result = await res.json().catch(() => ({}));
-                        if (handleAuthError(res, result)) return;
-                        throw new Error(result.message || 'Téléchargement impossible.');
-                    }
-
-                    const blob = await res.blob();
-                    const disposition = res.headers.get('content-disposition') || '';
-                    const match = disposition.match(/filename="([^"]+)"/);
-                    const filename = match ? match[1] : 'recu-inscription';
-                    const url = URL.createObjectURL(blob);
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.download = filename;
-                    document.body.appendChild(link);
-                    link.click();
-                    link.remove();
-                    URL.revokeObjectURL(url);
-                } catch (err) {
-                    this.showNotification(err.message || 'Erreur lors du téléchargement.', 'error');
-                }
             }
 
             showConfirmModal(title, message, confirmText, confirmClass, onConfirm) {

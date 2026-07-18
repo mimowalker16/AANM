@@ -141,6 +141,49 @@ function validateSeminairePayload(payload) {
     return null;
 }
 
+function extractRegistrationFiles(registration) {
+    const files = Array.isArray(registration.files) ? registration.files : [];
+    const answers = Array.isArray(registration.answers) ? registration.answers : [];
+    const merged = [];
+    const seen = new Set();
+
+    const addFile = (file, answer = {}) => {
+        if (!file || typeof file !== 'object') return;
+        const storageBucket = file.storage_bucket || file.bucket;
+        const storagePath = file.storage_path || file.path;
+        if (!storageBucket || !storagePath) return;
+
+        const key = `${storageBucket}:${storagePath}`;
+        if (seen.has(key)) return;
+        seen.add(key);
+
+        merged.push({
+            question_id: file.question_id || answer.question_id || null,
+            question_key: file.question_key || answer.question_key || null,
+            label: file.label || answer.label || 'Reçu',
+            storage_bucket: storageBucket,
+            storage_path: storagePath,
+            original_name: file.original_name || file.name || 'recu-inscription',
+            mime_type: file.mime_type || file.type || null,
+            size_bytes: file.size_bytes || file.size || null
+        });
+    };
+
+    files.forEach((file) => addFile(file));
+    answers
+        .filter((answer) => answer.field_type === 'file' && Array.isArray(answer.answer_json))
+        .forEach((answer) => answer.answer_json.forEach((file) => addFile(file, answer)));
+
+    return merged;
+}
+
+function withRegistrationFiles(registration) {
+    return {
+        ...registration,
+        files: extractRegistrationFiles(registration)
+    };
+}
+
 export async function adminGetSeminaires(req, res) {
     try {
         const seminaires = await database.getSeminaires();
@@ -230,7 +273,8 @@ export async function adminGetRegistrations(req, res) {
     try {
         const seminar = await database.getSeminaireById(req.params.id);
         if (!seminar) return res.status(404).json({ success: false, message: 'Séminaire introuvable.' });
-        const registrations = await database.getRegistrationsBySeminar(req.params.id);
+        const registrations = (await database.getRegistrationsBySeminar(req.params.id))
+            .map(withRegistrationFiles);
         res.json({ success: true, data: registrations, seminar });
     } catch (err) {
         res.status(500).json({ success: false, message: 'Erreur serveur.' });
@@ -370,7 +414,7 @@ export async function adminDownloadRegistrationFile(req, res) {
         }
 
         const fileIndex = Number(req.params.fileIndex);
-        const files = Array.isArray(registration.files) ? registration.files : [];
+        const files = extractRegistrationFiles(registration);
         const file = Number.isInteger(fileIndex) ? files[fileIndex] : null;
 
         if (!file?.storage_bucket || !file?.storage_path) {
