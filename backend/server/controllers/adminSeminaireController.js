@@ -193,17 +193,6 @@ function csvLine(values) {
     return values.map(csvEscape).join(';');
 }
 
-function csvDate(value) {
-    if (!value) return '';
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return '';
-    return date.toISOString();
-}
-
-function csvStatus(status) {
-    return status === 'approved' ? 'Approuvée' : 'Paiement à vérifier';
-}
-
 function slugifyFilename(value) {
     return String(value || 'seminaire')
         .trim()
@@ -278,47 +267,17 @@ function registrationAnswerLookup(registration) {
 }
 
 function buildRegistrationsCsv(seminar, questions, registrations) {
-    const fixedHeaders = [
-        'ID',
-        'Nom complet',
-        'Email',
-        'Téléphone',
-        'Statut',
-        'Inscrit le',
-        'Approuvé le',
-        'Email de confirmation envoyé le',
-        'Erreur email',
-        'Nombre de reçus',
-        'Reçus'
-    ];
     const activeQuestions = questions.filter((question) => question.is_active !== false);
-    const headers = [
-        ...fixedHeaders,
-        ...activeQuestions.map((question) => question.label || question.question_key || `Question ${question.id}`)
-    ];
+    const headers = activeQuestions.map((question) => question.label || question.question_key || `Question ${question.id}`);
 
     const rows = registrations.map((registration) => {
         const registrationFiles = extractRegistrationFiles(registration);
-        const receiptNames = registrationFiles.map((file) => file.original_name || 'recu-inscription');
         const { byKey, byId } = registrationAnswerLookup(registration);
-        const fixedValues = [
-            registration.id,
-            registration.full_name,
-            registration.email,
-            registration.phone,
-            csvStatus(registration.status),
-            csvDate(registration.registered_at),
-            csvDate(registration.approved_at),
-            csvDate(registration.confirmation_email_sent_at),
-            registration.confirmation_email_error,
-            registrationFiles.length,
-            receiptNames.join(' | ')
-        ];
-        const dynamicValues = activeQuestions.map((question) => {
+        const values = activeQuestions.map((question) => {
             const answer = byKey.get(question.question_key) || byId.get(String(question.id));
             return formatAnswerForCsv(question, answer, registrationFiles);
         });
-        return csvLine([...fixedValues, ...dynamicValues]);
+        return csvLine(values);
     });
 
     return `\uFEFF${[csvLine(headers), ...rows].join('\r\n')}\r\n`;
