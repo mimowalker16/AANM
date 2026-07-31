@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Soumettre votre laboratoire - AANM</title>
-    <meta name="description" content="Soumettez votre laboratoire pour l'inclure dans l'annuaire de l'AANM." />
+    <title>Soumettre votre cabinet - AANM</title>
+    <meta name="description" content="Soumettez votre cabinet pour l'inclure dans l'annuaire de l'AANM." />
     
     <!-- Performance Optimizations -->
     <meta name="theme-color" content="#2e7d32" />
@@ -199,6 +199,13 @@
             box-shadow: 0 0 0 3px rgba(27, 94, 58, 0.1);
         }
 
+        .form-group input.error,
+        .form-group textarea.error,
+        .form-group select.error {
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+        }
+
         .form-group input::placeholder,
         .form-group textarea::placeholder {
             color: var(--clr-text-light);
@@ -266,6 +273,15 @@
             color: var(--clr-dark);
             font-weight: 700;
             box-shadow: 0 2px 8px rgba(212, 168, 67, 0.3);
+        }
+
+        .conditional-field {
+            display: none;
+            margin-top: var(--space-sm);
+        }
+
+        .conditional-field.show {
+            display: block;
         }
 
         /* === Map === */
@@ -401,9 +417,9 @@
                 <a href="./activities.html" class="navbar__link">Activités</a>
                 <a href="./news.html" class="navbar__link">Actualités</a>
                 <a href="./contact.html" class="navbar__link">Contact</a>
-                <a href="./lab-submission.html" class="navbar__link navbar__link--active">Soumettre un labo</a>
-                <a href="./lab-directory.html" class="navbar__link">Annuaire des labos</a>
-                <a href="./lab-map.html" class="navbar__link">Carte des labos</a>
+                <a href="./lab-submission.html" class="navbar__link navbar__link--active">Soumettre un cabinet</a>
+                <a href="./lab-directory.html" class="navbar__link">Annuaire des cabinets</a>
+                <a href="./lab-map.html" class="navbar__link">Carte des cabinets</a>
                 <a href="./contact.html" class="navbar__cta">Nous Rejoindre →</a>
             </div>
             <button class="navbar__toggle" id="navToggle" aria-label="Menu">
@@ -418,8 +434,8 @@
         <header class="page-header">
             <div class="container">
                 <span class="section-label">Soumission</span>
-                <h1 class="page-header__title">Soumettre votre laboratoire</h1>
-                <p class="page-header__subtitle">Rejoignez notre réseau de laboratoires de recherche en Afrique du Nord</p>
+                <h1 class="page-header__title">Soumettre votre cabinet</h1>
+                <p class="page-header__subtitle">Rejoignez notre annuaire des cabinets et praticiens de nutrition au Maghreb</p>
             </div>
         </header>
 
@@ -431,7 +447,7 @@
                     <div class="form-steps" aria-label="Étapes du formulaire">
                         <div class="form-step form-step--done">
                             <div class="form-step__dot">1</div>
-                            <span class="form-step__label">Infos labo</span>
+                            <span class="form-step__label">Identité</span>
                         </div>
                         <div class="form-step form-step--done">
                             <div class="form-step__dot">2</div>
@@ -443,37 +459,32 @@
                         </div>
                         <div class="form-step form-step--done">
                             <div class="form-step__dot">4</div>
-                            <span class="form-step__label">Recherche</span>
+                            <span class="form-step__label">Pratiques</span>
                         </div>
                     </div>
 
                     <form id="labSubmissionForm">
 
-                        <!-- Section 1: Informations du laboratoire -->
+                        <!-- Section 1: Identité du cabinet -->
                         <div class="form-card">
                             <div class="form-card__header">
                                 <div class="form-card__icon">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16M3 21h18M9 21V12h6v9"/></svg>
                                 </div>
                                 <div>
-                                    <h2 class="form-card__title">Informations du laboratoire</h2>
-                                    <p class="form-card__subtitle">Informations essentielles sur votre laboratoire</p>
+                                    <h2 class="form-card__title">Identité du cabinet</h2>
+                                    <p class="form-card__subtitle">Informations essentielles du professionnel à référencer</p>
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <label for="labName">Nom du laboratoire <span class="required">*</span></label>
-                                <input type="text" id="labName" name="labName" placeholder="ex. Laboratoire de nutrition et sciences alimentaires" required>
-                            </div>
-
-                            <div class="form-row form-row--wide">
+                            <div class="form-row">
                                 <div class="form-group">
-                                    <label for="institutionName">Institution / Université</label>
-                                    <input type="text" id="institutionName" name="institutionName" placeholder="ex. Université d'Alger">
+                                    <label for="fullName">Nom complet <span class="required">*</span></label>
+                                    <input type="text" id="fullName" name="fullName" placeholder="Nom et prénom" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="establishedYear">Année de création</label>
-                                    <input type="number" id="establishedYear" name="establishedYear" min="1800" max="2026" placeholder="ex. 1998">
+                                    <label for="wilaya">Wilaya <span class="required">*</span></label>
+                                    <input type="text" id="wilaya" name="wilaya" placeholder="ex. Alger" required>
                                 </div>
                             </div>
                         </div>
@@ -486,29 +497,24 @@
                                 </div>
                                 <div>
                                     <h2 class="form-card__title">Coordonnées</h2>
-                                    <p class="form-card__subtitle">Qui devons-nous contacter ?</p>
+                                    <p class="form-card__subtitle">Comment joindre le cabinet ?</p>
                                 </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="contactPerson">Nom de la personne à contacter <span class="required">*</span></label>
-                                <input type="text" id="contactPerson" name="contactPerson" placeholder="Nom complet du responsable du laboratoire ou du contact" required>
                             </div>
 
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="contactEmail">E-mail de contact <span class="required">*</span></label>
-                                    <input type="email" id="contactEmail" name="contactEmail" placeholder="contact@lab.dz" required>
+                                    <label for="email">Adresse e-mail <span class="required">*</span></label>
+                                    <input type="email" id="email" name="email" placeholder="contact@cabinet.dz" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="phone">Numéro de téléphone</label>
-                                    <input type="tel" id="phone" name="phone" placeholder="+213 5XX XXX XXX">
+                                    <label for="telephones">Téléphones <span class="required">*</span></label>
+                                    <input type="tel" id="telephones" name="telephones" placeholder="+213 5XX XXX XXX" required>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label for="website">Site web</label>
-                                <input type="url" id="website" name="website" placeholder="https://site-de-votre-labo.com">
+                                <label for="address">Adresse <span class="required">*</span></label>
+                                <input type="text" id="address" name="address" placeholder="Adresse complète du cabinet" required>
                             </div>
                         </div>
 
@@ -519,14 +525,14 @@
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
                                 </div>
                                 <div>
-                                    <h2 class="form-card__title">Localisation du laboratoire <span class="required">*</span></h2>
-                                    <p class="form-card__subtitle">Placez votre labo sur la carte</p>
+                                    <h2 class="form-card__title">Localisation Maps <span class="required">*</span></h2>
+                                    <p class="form-card__subtitle">Placez votre cabinet sur la carte</p>
                                 </div>
                             </div>
 
                             <div class="map-instructions">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-                                <span><strong>Cliquez n'importe où sur la carte</strong> pour indiquer précisément la position de votre laboratoire. Vous pouvez zoomer pour plus de précision.</span>
+                                <span><strong>Cliquez n'importe où sur la carte</strong> pour indiquer précisément la position de votre cabinet. Vous pouvez zoomer pour plus de précision.</span>
                             </div>
                             <div class="map-wrapper">
                                 <div id="map"></div>
@@ -538,71 +544,125 @@
                             </div>
                         </div>
 
-                        <!-- Section 4: Axes de recherche -->
+                        <!-- Section 4: Qualifications et pratiques -->
                         <div class="form-card form-card--research">
                             <div class="form-card__header">
                                 <div class="form-card__icon">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
                                 </div>
                                 <div>
-                                    <h2 class="form-card__title">Axes de recherche</h2>
-                                    <p class="form-card__subtitle">Sur quoi travaille votre laboratoire ?</p>
+                                    <h2 class="form-card__title">Fonctions et pratiques</h2>
+                                    <p class="form-card__subtitle">Présentez vos qualifications et pratiques</p>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label>Domaines de recherche <span class="required">*</span></label>
-                                <p style="font-size:var(--fs-small);color:var(--clr-text-light);margin-bottom:var(--space-sm);margin-top:-0.2rem">Sélectionnez tous les domaines correspondant aux travaux de votre laboratoire</p>
+                                <label>Fonctions / Qualifications <span class="required">*</span></label>
+                                <p style="font-size:var(--fs-small);color:var(--clr-text-light);margin-bottom:var(--space-sm);margin-top:-0.2rem">Sélectionnez toutes les qualifications applicables</p>
                                 <div class="research-areas">
                                     <div class="research-chip">
-                                        <input type="checkbox" id="genetics" name="researchAreas" value="genetics">
-                                        <label for="genetics">Génétique</label>
+                                        <input type="checkbox" id="qual-nutritherapeute" name="qualifications" value="nutritherapeute">
+                                        <label for="qual-nutritherapeute">Nutrithérapeute</label>
                                     </div>
                                     <div class="research-chip">
-                                        <input type="checkbox" id="biochemistry" name="researchAreas" value="biochemistry">
-                                        <label for="biochemistry">Biochimie</label>
+                                        <input type="checkbox" id="qual-medecin-generaliste" name="qualifications" value="medecin-generaliste">
+                                        <label for="qual-medecin-generaliste">Médecin généraliste</label>
                                     </div>
                                     <div class="research-chip">
-                                        <input type="checkbox" id="microbiology" name="researchAreas" value="microbiology">
-                                        <label for="microbiology">Microbiologie</label>
+                                        <input type="checkbox" id="qual-medecin-specialiste" name="qualifications" value="medecin-specialiste">
+                                        <label for="qual-medecin-specialiste">Médecin spécialiste</label>
                                     </div>
                                     <div class="research-chip">
-                                        <input type="checkbox" id="ecology" name="researchAreas" value="ecology">
-                                        <label for="ecology">Écologie</label>
+                                        <input type="checkbox" id="qual-pharmacien" name="qualifications" value="pharmacien">
+                                        <label for="qual-pharmacien">Pharmacien</label>
                                     </div>
                                     <div class="research-chip">
-                                        <input type="checkbox" id="biotechnology" name="researchAreas" value="biotechnology">
-                                        <label for="biotechnology">Biotechnologie</label>
+                                        <input type="checkbox" id="qual-biologiste" name="qualifications" value="biologiste">
+                                        <label for="qual-biologiste">Biologiste</label>
                                     </div>
                                     <div class="research-chip">
-                                        <input type="checkbox" id="medical-research" name="researchAreas" value="medical-research">
-                                        <label for="medical-research">Recherche médicale</label>
+                                        <input type="checkbox" id="qual-chirurgien-dentiste" name="qualifications" value="chirurgien-dentiste">
+                                        <label for="qual-chirurgien-dentiste">Chirurgien dentiste</label>
                                     </div>
                                     <div class="research-chip">
-                                        <input type="checkbox" id="environmental-science" name="researchAreas" value="environmental-science">
-                                        <label for="environmental-science">Sciences de l'environnement</label>
+                                        <input type="checkbox" id="qual-naturopathe" name="qualifications" value="naturopathe">
+                                        <label for="qual-naturopathe">Naturopathe</label>
                                     </div>
                                     <div class="research-chip">
-                                        <input type="checkbox" id="agriculture" name="researchAreas" value="agriculture">
-                                        <label for="agriculture">Agriculture</label>
+                                        <input type="checkbox" id="qual-phytotherapeute" name="qualifications" value="phytotherapeute">
+                                        <label for="qual-phytotherapeute">Phytothérapeute</label>
                                     </div>
                                     <div class="research-chip">
-                                        <input type="checkbox" id="other" name="researchAreas" value="other">
-                                        <label for="other">Autre</label>
+                                        <input type="checkbox" id="qual-sage-femme" name="qualifications" value="sage-femme">
+                                        <label for="qual-sage-femme">Sage femme</label>
                                     </div>
+                                    <div class="research-chip">
+                                        <input type="checkbox" id="qual-autre" name="qualifications" value="autre">
+                                        <label for="qual-autre">Autre</label>
+                                    </div>
+                                </div>
+                                <div class="conditional-field" id="specialistSpecialtyGroup">
+                                    <label for="specialistSpecialty">Spécialité du médecin spécialiste <span class="required">*</span></label>
+                                    <input type="text" id="specialistSpecialty" name="specialistSpecialty" placeholder="Précisez la spécialité">
+                                </div>
+                                <div class="conditional-field" id="qualificationOtherGroup">
+                                    <label for="qualificationOther">Autre qualification <span class="required">*</span></label>
+                                    <input type="text" id="qualificationOther" name="qualificationOther" placeholder="Précisez votre qualification">
                                 </div>
                             </div>
 
                             <div class="form-group" style="margin-top: var(--space-md)">
-                                <label for="description">Description du laboratoire</label>
-                                <textarea id="description" name="description" placeholder="Décrivez brièvement les axes de recherche, les équipements majeurs, les projets clés, ainsi que les publications ou partenariats de votre laboratoire…"></textarea>
+                                <label>Je pratique <span class="required">*</span></label>
+                                <div class="research-areas">
+                                    <div class="research-chip">
+                                        <input type="checkbox" id="practice-hidjama" name="practices" value="hidjama">
+                                        <label for="practice-hidjama">Hidjama</label>
+                                    </div>
+                                    <div class="research-chip">
+                                        <input type="checkbox" id="practice-mesotherapie" name="practices" value="mesotherapie">
+                                        <label for="practice-mesotherapie">Mésothérapie</label>
+                                    </div>
+                                    <div class="research-chip">
+                                        <input type="checkbox" id="practice-nutritherapie" name="practices" value="nutritherapie">
+                                        <label for="practice-nutritherapie">Nutrithérapie</label>
+                                    </div>
+                                    <div class="research-chip">
+                                        <input type="checkbox" id="practice-auriculotherapie" name="practices" value="auriculotherapie">
+                                        <label for="practice-auriculotherapie">Auriculothérapie</label>
+                                    </div>
+                                    <div class="research-chip">
+                                        <input type="checkbox" id="practice-naturotherapie" name="practices" value="naturotherapie">
+                                        <label for="practice-naturotherapie">Naturothérapie</label>
+                                    </div>
+                                    <div class="research-chip">
+                                        <input type="checkbox" id="practice-phytotherapie" name="practices" value="phytotherapie">
+                                        <label for="practice-phytotherapie">Phytothérapie</label>
+                                    </div>
+                                    <div class="research-chip">
+                                        <input type="checkbox" id="practice-ozonotherapie" name="practices" value="ozonotherapie">
+                                        <label for="practice-ozonotherapie">Ozonothérapie</label>
+                                    </div>
+                                    <div class="research-chip">
+                                        <input type="checkbox" id="practice-autre" name="practices" value="autre">
+                                        <label for="practice-autre">Autre</label>
+                                    </div>
+                                </div>
+                                <div class="conditional-field" id="practiceOtherGroup">
+                                    <label for="practiceOther">Autre pratique <span class="required">*</span></label>
+                                    <input type="text" id="practiceOther" name="practiceOther" placeholder="Précisez votre pratique">
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="margin-top: var(--space-md)">
+                                <label for="comments">Commentaires</label>
+                                <textarea id="comments" name="comments" placeholder="Ajoutez toute information utile sur votre cabinet, vos horaires, ou vos prises en charge…"></textarea>
                             </div>
                         </div>
 
                         <!-- Envoi -->
                         <div class="form-submit-area">
                             <button type="submit" class="submit-btn" id="submitBtn" disabled>
-                                Soumettre le laboratoire
+                                Soumettre le cabinet
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                             </button>
                             <p class="form-submit-note">Les champs marqués <span class="required">*</span> sont obligatoires. Nous examinerons votre soumission sous 5 jours ouvrables.</p>
@@ -640,10 +700,10 @@
                     </div>
                     <div class="footer__column">
                         <h4 class="footer__heading">ANNUAIRE</h4>
-                        <a href="./lab-directory.html" class="footer__link">Annuaire des Labos</a>
-                        <a href="./lab-map.html" class="footer__link">Carte des Labos</a>
+                        <a href="./lab-directory.html" class="footer__link">Annuaire des Cabinets</a>
+                        <a href="./lab-map.html" class="footer__link">Carte des Cabinets</a>
                         <a href="./advanced-search.html" class="footer__link">Recherche Avancée</a>
-                        <a href="./lab-submission.html" class="footer__link">Soumettre un Labo</a>
+                        <a href="./lab-submission.html" class="footer__link">Soumettre un Cabinet</a>
                     </div>
                     <div class="footer__column">
                         <h4 class="footer__heading">CONTACT</h4>
@@ -703,7 +763,7 @@
                 draggable: true
             }).addTo(map);
             
-            marker.bindPopup("Localisation du laboratoire sélectionnée").openPopup();
+            marker.bindPopup("Localisation du cabinet sélectionnée").openPopup();
 
             // Allow marker dragging
             marker.on('dragend', function(e) {
@@ -771,22 +831,65 @@
             }
         }
 
+        function isValidAlgerianPhone(value) {
+            let normalized = String(value || '')
+                .trim()
+                .replace(/[()\s.-]/g, '')
+                .replace(/^00/, '+');
+
+            if (!normalized) return false;
+            if (normalized.startsWith('+213')) {
+                normalized = normalized.slice(4);
+            } else if (normalized.startsWith('213')) {
+                normalized = normalized.slice(3);
+            } else if (normalized.startsWith('0')) {
+                normalized = normalized.slice(1);
+            }
+
+            return /^([567]\d{8}|[234]\d{7})$/.test(normalized);
+        }
+
+        function areValidAlgerianPhones(value) {
+            const phones = String(value || '')
+                .split(/[,;/\n\r]+/)
+                .map(item => item.trim())
+                .filter(Boolean);
+            return phones.length > 0 && phones.every(isValidAlgerianPhone);
+        }
+
         function validateForm() {
-            const labName = document.getElementById("labName").value.trim();
-            const contactPerson = document.getElementById("contactPerson").value.trim();
-            const contactEmail = document.getElementById("contactEmail").value.trim();
-            const researchAreas = document.querySelectorAll('input[name="researchAreas"]:checked');
+            const fullName = document.getElementById("fullName").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const wilaya = document.getElementById("wilaya").value.trim();
+            const telephones = document.getElementById("telephones").value.trim();
+            const address = document.getElementById("address").value.trim();
+            const qualifications = Array.from(document.querySelectorAll('input[name="qualifications"]:checked')).map(cb => cb.value);
+            const practices = Array.from(document.querySelectorAll('input[name="practices"]:checked')).map(cb => cb.value);
+            const specialistSelected = qualifications.includes('medecin-specialiste');
+            const qualificationOtherSelected = qualifications.includes('autre');
+            const practiceOtherSelected = practices.includes('autre');
+
+            document.getElementById('specialistSpecialtyGroup').classList.toggle('show', specialistSelected);
+            document.getElementById('qualificationOtherGroup').classList.toggle('show', qualificationOtherSelected);
+            document.getElementById('practiceOtherGroup').classList.toggle('show', practiceOtherSelected);
+
+            const hasSpecialty = !specialistSelected || document.getElementById('specialistSpecialty').value.trim();
+            const hasQualificationOther = !qualificationOtherSelected || document.getElementById('qualificationOther').value.trim();
+            const hasPracticeOther = !practiceOtherSelected || document.getElementById('practiceOther').value.trim();
+            const hasValidPhones = areValidAlgerianPhones(telephones);
+            const isValid = fullName && email && wilaya && hasValidPhones && address && selectedLocation
+                && qualifications.length > 0 && practices.length > 0
+                && hasSpecialty && hasQualificationOther && hasPracticeOther;
             
-            const isValid = labName && contactPerson && contactEmail && selectedLocation && researchAreas.length > 0;
-            
+            document.getElementById("telephones").classList.toggle("error", Boolean(telephones && !hasValidPhones));
             document.getElementById("submitBtn").disabled = !isValid;
         }
 
         // Form validation listeners
-        document.getElementById("labName").addEventListener("input", validateForm);
-        document.getElementById("contactPerson").addEventListener("input", validateForm);
-        document.getElementById("contactEmail").addEventListener("input", validateForm);
-        document.querySelectorAll('input[name="researchAreas"]').forEach(checkbox => {
+        ['fullName', 'email', 'wilaya', 'telephones', 'address', 'specialistSpecialty', 'qualificationOther', 'practiceOther'].forEach((id) => {
+            document.getElementById(id).addEventListener("input", validateForm);
+        });
+        document.querySelectorAll('input[name="qualifications"], input[name="practices"]').forEach(checkbox => {
             checkbox.addEventListener("change", validateForm);
         });
 
@@ -795,20 +898,27 @@
             e.preventDefault();
             
             if (!selectedLocation) {
-                alert("Veuillez sélectionner la localisation de votre laboratoire sur la carte.");
+                alert("Veuillez sélectionner la localisation de votre cabinet sur la carte.");
+                return;
+            }
+
+            if (!areValidAlgerianPhones(document.getElementById("telephones").value)) {
+                alert("Veuillez saisir un numéro algérien valide, par exemple 0551 23 45 67 ou +213 551 23 45 67.");
                 return;
             }
 
             const formData = {
-                labName: document.getElementById("labName").value.trim(),
-                institutionName: document.getElementById("institutionName").value.trim(),
-                establishedYear: document.getElementById("establishedYear").value || null,
-                contactPerson: document.getElementById("contactPerson").value.trim(),
-                contactEmail: document.getElementById("contactEmail").value.trim(),
-                phone: document.getElementById("phone").value.trim(),
-                website: document.getElementById("website").value.trim(),
-                description: document.getElementById("description").value.trim(),
-                researchAreas: Array.from(document.querySelectorAll('input[name="researchAreas"]:checked')).map(cb => cb.value),
+                fullName: document.getElementById("fullName").value.trim(),
+                email: document.getElementById("email").value.trim(),
+                wilaya: document.getElementById("wilaya").value.trim(),
+                telephones: document.getElementById("telephones").value.trim(),
+                address: document.getElementById("address").value.trim(),
+                qualifications: Array.from(document.querySelectorAll('input[name="qualifications"]:checked')).map(cb => cb.value),
+                specialistSpecialty: document.getElementById("specialistSpecialty").value.trim(),
+                qualificationOther: document.getElementById("qualificationOther").value.trim(),
+                practices: Array.from(document.querySelectorAll('input[name="practices"]:checked')).map(cb => cb.value),
+                practiceOther: document.getElementById("practiceOther").value.trim(),
+                comments: document.getElementById("comments").value.trim(),
                 location: selectedLocation
             };
 
@@ -830,7 +940,7 @@
                 const result = await response.json();
 
                 if (result.success) {
-                    alert("Merci ! Les informations de votre laboratoire ont bien été envoyées. Nous les examinerons avant de les ajouter à l'annuaire.");
+                    alert("Merci ! Les informations de votre cabinet ont bien été envoyées. Nous les examinerons avant de les ajouter à l'annuaire.");
                     
                     // Reset form
                     document.getElementById("labSubmissionForm").reset();

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Recherche avancée - AANM</title>
-    <meta name="description" content="Recherche avancée et filtres pour les laboratoires et institutions de recherche africains." />
+    <meta name="description" content="Recherche avancée et filtres pour les cabinets référencés par l'AANM." />
     
     <!-- Performance Optimizations -->
     <meta name="theme-color" content="#2e7d32" />
@@ -430,9 +430,9 @@
                 <a href="./activities.html" class="navbar__link">Activités</a>
                 <a href="./news.html" class="navbar__link">Actualités</a>
                 <a href="./contact.html" class="navbar__link">Contact</a>
-                <a href="./lab-submission.html" class="navbar__link">Soumettre un labo</a>
-                <a href="./lab-directory.html" class="navbar__link">Annuaire des labos</a>
-                <a href="./lab-map.html" class="navbar__link">Carte des labos</a>
+                <a href="./lab-submission.html" class="navbar__link">Soumettre un cabinet</a>
+                <a href="./lab-directory.html" class="navbar__link">Annuaire des cabinets</a>
+                <a href="./lab-map.html" class="navbar__link">Carte des cabinets</a>
                 <a href="./advanced-search.html" class="navbar__link navbar__link--active">Recherche</a>
                 <a href="./contact.html" class="navbar__cta">Nous Rejoindre →</a>
             </div>
@@ -448,8 +448,8 @@
         <header class="page-header">
             <div class="container">
                 <span class="section-label">Recherche</span>
-                <h1 class="page-header__title">Recherche avancée de laboratoires</h1>
-                <p class="page-header__subtitle">Trouvez des laboratoires de recherche avec des options avancées de recherche et de filtrage</p>
+                <h1 class="page-header__title">Recherche avancée de cabinets</h1>
+                <p class="page-header__subtitle">Trouvez des cabinets par wilaya, qualification et pratique</p>
             </div>
         </header>
 
@@ -480,7 +480,7 @@
                                         type="text" 
                                         id="searchQuery" 
                                         class="form-input" 
-                                        placeholder="Rechercher dans les noms, descriptions et localisations des labos..."
+                                        placeholder="Rechercher par nom, commentaire, wilaya, qualification ou pratique..."
                                     >
                                 </div>
                             </div>
@@ -496,19 +496,19 @@
                             </h3>
                             <div class="form-grid">
                                 <div class="form-group">
-                                    <label class="form-label" for="countryFilter">Pays</label>
+                                    <label class="form-label" for="countryFilter">Wilaya</label>
                                     <select id="countryFilter" class="form-input">
-                                        <option value="">Tous les pays</option>
+                                        <option value="">Toutes les wilayas</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label" for="cityFilter">Ville</label>
+                                    <label class="form-label" for="cityFilter">Wilaya libre</label>
                                     <div class="autocomplete-container">
                                         <input 
                                             type="text" 
                                             id="cityFilter" 
                                             class="form-input" 
-                                            placeholder="Saisir le nom de la ville..."
+                                            placeholder="Saisir le nom de la wilaya..."
                                             autocomplete="off"
                                         >
                                         <div id="citySuggestions" class="autocomplete-suggestions"></div>
@@ -517,29 +517,29 @@
                             </div>
                         </div>
 
-                        <!-- Filtres d'institution -->
+                        <!-- Filtres professionnels -->
                         <div class="form-section">
                             <h3 class="section-title">
                                 <svg class="icon" viewBox="0 0 20 20">
                                     <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
                                 </svg>
-                                Institution
+                                Qualification
                             </h3>
                             <div class="form-grid">
                                 <div class="form-group">
-                                    <label class="form-label" for="institutionFilter">Nom de l'institution</label>
+                                    <label class="form-label" for="institutionFilter">Qualification</label>
                                     <div class="autocomplete-container">
                                         <input 
                                             type="text" 
                                             id="institutionFilter" 
                                             class="form-input" 
-                                            placeholder="Saisir le nom de l'institution..."
+                                            placeholder="ex. médecin, pharmacien, nutrithérapeute..."
                                             autocomplete="off"
                                         >
                                         <div id="institutionSuggestions" class="autocomplete-suggestions"></div>
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group" style="display:none;">
                                     <label class="form-label">Période de création</label>
                                     <div class="year-range">
                                         <input 
@@ -564,13 +564,13 @@
                             </div>
                         </div>
 
-                        <!-- Domaines de recherche -->
+                        <!-- Pratiques -->
                         <div class="form-section">
                             <h3 class="section-title">
                                 <svg class="icon" viewBox="0 0 20 20">
                                     <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                 </svg>
-                                Domaines de recherche
+                                Pratiques
                             </h3>
                             <div id="researchAreasContainer" class="checkbox-group">
                                 <!-- Recherche area checkboxes will be populated here -->
@@ -583,7 +583,7 @@
                                 <svg class="icon" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"/>
                                 </svg>
-                                Rechercher des laboratoires
+                                Rechercher des cabinets
                             </button>
                             <button type="button" id="clearForm" class="search-btn secondary">
                                 <svg class="icon" viewBox="0 0 20 20">
@@ -608,11 +608,8 @@
                         <div class="results-sort">
                             <label class="sort-label" for="sortBy">Trier par :</label>
                             <select id="sortBy" class="sort-select">
-                                <option value="lab_name">Nom du labo</option>
-                                <option value="institution_name">Institution</option>
-                                <option value="city">Ville</option>
-                                <option value="country">Pays</option>
-                                <option value="established_year">Année de création</option>
+                                <option value="full_name">Nom</option>
+                                <option value="wilaya">Wilaya</option>
                                 <option value="submitted_at">Date d'ajout</option>
                             </select>
                             <select id="sortOrder" class="sort-select">
@@ -623,12 +620,12 @@
                     </div>
                     
                     <div id="loadingResults" class="loading-results" style="display: none;">
-                        <p>Recherche des laboratoires...</p>
+                        <p>Recherche des cabinets...</p>
                     </div>
                     
                     <div id="noResults" class="no-results" style="display: none;">
-                        <h3>Aucun laboratoire trouvé</h3>
-                        <p>Essayez de modifier vos critères de recherche ou consultez tous les laboratoires dans <a href="/lab-directory.html">l’annuaire</a>.</p>
+                        <h3>Aucun cabinet trouvé</h3>
+                        <p>Essayez de modifier vos critères de recherche ou consultez tous les cabinets dans <a href="/lab-directory.html">l’annuaire</a>.</p>
                     </div>
                     
                     <div id="resultsGrid" class="results-grid"></div>
@@ -663,10 +660,10 @@
                     </div>
                     <div class="footer__column">
                         <h4 class="footer__heading">ANNUAIRE</h4>
-                        <a href="./lab-directory.html" class="footer__link">Annuaire des Labos</a>
-                        <a href="./lab-map.html" class="footer__link">Carte des Labos</a>
+                        <a href="./lab-directory.html" class="footer__link">Annuaire des Cabinets</a>
+                        <a href="./lab-map.html" class="footer__link">Carte des Cabinets</a>
                         <a href="./advanced-search.html" class="footer__link">Recherche Avancée</a>
-                        <a href="./lab-submission.html" class="footer__link">Soumettre un Labo</a>
+                        <a href="./lab-submission.html" class="footer__link">Soumettre un Cabinet</a>
                     </div>
                     <div class="footer__column">
                         <h4 class="footer__heading">CONTACT</h4>
@@ -731,10 +728,6 @@
                 document.getElementById('clearForm').addEventListener('click', () => {
                     this.clearForm();
                 });
-
-                // Autocomplete inputs
-                this.setupAutocomplete('cityFilter', 'city');
-                this.setupAutocomplete('institutionFilter', 'institution_name');
 
                 // Sort change
                 document.getElementById('sortBy').addEventListener('change', () => {
@@ -836,7 +829,17 @@
             populatePaysFilter() {
                 // This would be populated from the API or search stats
                 // For now, using known countries from our sample data
-                const countries = ['Algeria', 'Egypt', 'Libya', 'Morocco', 'Tunisia'];
+                const countries = [
+                    'Adrar', 'Chlef', 'Laghouat', 'Oum El Bouaghi', 'Batna', 'Béjaïa',
+                    'Biskra', 'Béchar', 'Blida', 'Bouira', 'Tamanrasset', 'Tébessa',
+                    'Tlemcen', 'Tiaret', 'Tizi Ouzou', 'Alger', 'Djelfa', 'Jijel',
+                    'Sétif', 'Saïda', 'Skikda', 'Sidi Bel Abbès', 'Annaba', 'Guelma',
+                    'Constantine', 'Médéa', 'Mostaganem', "M'Sila", 'Mascara', 'Ouargla',
+                    'Oran', 'El Bayadh', 'Illizi', 'Bordj Bou Arréridj', 'Boumerdès',
+                    'El Tarf', 'Tindouf', 'Tissemsilt', 'El Oued', 'Khenchela',
+                    'Souk Ahras', 'Tipaza', 'Mila', 'Aïn Defla', 'Naâma',
+                    'Aïn Témouchent', 'Ghardaïa', 'Relizane'
+                ];
                 const select = document.getElementById('countryFilter');
                 
                 countries.forEach(country => {
@@ -849,24 +852,14 @@
 
             populateResearchAreas() {
                 const researchAreas = [
-                    'medicinal-plants',
-                    'pharmacology',
-                    'toxicology',
-                    'phytotherapy',
-                    'essential-oils',
-                    'clinical-trials',
-                    'pharmacognosy',
-                    'natural-products',
-                    'drug-discovery',
-                    'traditional-medicine',
-                    'antimicrobial',
-                    'wound-healing',
-                    'herbal-medicine',
-                    'quality-control',
-                    'standardization',
-                    'bioactive-compounds',
-                    'antioxidants',
-                    'nutraceuticals'
+                    'hidjama',
+                    'mesotherapie',
+                    'nutritherapie',
+                    'auriculotherapie',
+                    'naturotherapie',
+                    'phytotherapie',
+                    'ozonotherapie',
+                    'autre'
                 ];
 
                 const container = document.getElementById('researchAreasContainer');
@@ -937,25 +930,19 @@
                 if (searchQuery) formData.search = searchQuery;
                 
                 const country = document.getElementById('countryFilter').value;
-                if (country) formData.country = country;
+                if (country) formData.wilaya = country;
                 
                 const city = document.getElementById('cityFilter').value.trim();
-                if (city) formData.city = city;
+                if (city) formData.wilaya = city;
                 
                 const institution = document.getElementById('institutionFilter').value.trim();
-                if (institution) formData.institution = institution;
-                
-                const yearFrom = document.getElementById('yearFrom').value;
-                if (yearFrom) formData.yearFrom = yearFrom;
-                
-                const yearTo = document.getElementById('yearTo').value;
-                if (yearTo) formData.yearTo = yearTo;
+                if (institution) formData.qualification = institution;
                 
                 // Get selected research areas
                 const selectedAreas = Array.from(document.querySelectorAll('#researchAreasContainer input:checked'))
                     .map(input => input.value);
                 if (selectedAreas.length > 0) {
-                    formData.researchArea = selectedAreas.join(',');
+                    formData.practice = selectedAreas.join(',');
                 }
                 
                 // Get sort preferences
@@ -980,7 +967,7 @@
                     resultsInfo.textContent = '';
                 } else {
                     noResults.style.display = 'none';
-                    resultsInfo.textContent = `Trouvé ${labs.length} ${labs.length === 1 ? 'laboratoire' : 'laboratoires'}`;
+                    resultsInfo.textContent = `Trouvé ${labs.length} ${labs.length === 1 ? 'cabinet' : 'cabinets'}`;
                     resultsGrid.innerHTML = labs.map(lab => this.createResultCard(lab, searchParams)).join('');
                 }
                 
@@ -988,33 +975,41 @@
             }
 
             createResultCard(lab, searchParams) {
-                const researchTags = lab.researchAreas.map(area => 
+                const qualificationTags = (lab.qualifications || []).map(area =>
+                    `<span class="research-tag">${this.formatResearchArea(area)}</span>`
+                ).join('');
+                const practiceTags = (lab.practices || lab.researchAreas || []).map(area =>
                     `<span class="research-tag">${this.formatResearchArea(area)}</span>`
                 ).join('');
 
                 // Highlight search terms
                 const searchTerm = searchParams.search || '';
-                const labName = this.highlightText(lab.lab_name, searchTerm);
-                const institution = lab.institution_name ? this.highlightText(lab.institution_name, searchTerm) : '';
+                const labName = this.highlightText(lab.full_name || lab.lab_name, searchTerm);
+                const wilaya = this.highlightText(lab.wilaya || lab.city || '-', searchTerm);
                 const description = lab.description ? this.highlightText(lab.description, searchTerm) : '';
 
                 return `
                     <div class="result-card lab-card">
                         <div class="lab-header">
                             <h3 class="lab-name">${labName}</h3>
-                            ${institution ? `<p class="lab-institution">${institution}</p>` : ''}
+                            <p class="lab-institution">${wilaya}</p>
                         </div>
                         
                         <div class="lab-location">
                             <svg class="icon" viewBox="0 0 20 20">
                                 <path d="M10 2C6.69 2 4 4.69 4 8c0 5.25 6 12 6 12s6-6.75 6-12c0-3.31-2.69-6-6-6zm0 8c-1.1 0-2-0.9-2-2s0.9-2 2-2 2 0.9 2 2-0.9 2-2 2z"/>
                             </svg>
-                            <span>${this.escapeHtml(lab.city)}, ${this.escapeHtml(lab.country)}</span>
+                            <span>${this.escapeHtml(lab.wilaya || lab.city)}, ${this.escapeHtml(lab.country || 'Algérie')}</span>
                         </div>
 
                         <div class="lab-research-areas">
-                            <h4>Domaines de recherche</h4>
-                            <div class="research-tags">${researchTags}</div>
+                            <h4>Qualifications</h4>
+                            <div class="research-tags">${qualificationTags || '<span class="research-tag">Non renseigné</span>'}</div>
+                        </div>
+
+                        <div class="lab-research-areas">
+                            <h4>Pratiques</h4>
+                            <div class="research-tags">${practiceTags || '<span class="research-tag">Non renseigné</span>'}</div>
                         </div>
 
                         ${description ? `<p class="lab-description">${description}</p>` : ''}
@@ -1026,8 +1021,7 @@
                                 </svg>
                                 Voir le profil
                             </a>
-                            <a href="${this.escapeAttribute(this.safeMailto(lab.contact_email))}" class="lab-contact">Contacter le labo</a>
-                            ${lab.established_year ? `<span class="lab-established">Est. ${lab.established_year}</span>` : ''}
+                            <a href="${this.escapeAttribute(this.safeMailto(lab.contact_email))}" class="lab-contact">Contacter le cabinet</a>
                         </div>
                     </div>
                 `;
@@ -1087,12 +1081,9 @@
                 const parts = [];
                 
                 if (params.search) parts.push(`"${params.search}"`);
-                if (params.country) parts.push(params.country);
-                if (params.city) parts.push(params.city);
-                if (params.institution) parts.push(params.institution);
-                if (params.yearFrom || params.yearTo) {
-                    parts.push(`${params.yearFrom || '?'}-${params.yearTo || '?'}`);
-                }
+                if (params.wilaya) parts.push(params.wilaya);
+                if (params.qualification) parts.push(params.qualification);
+                if (params.practice) parts.push(params.practice);
                 
                 return parts.length > 0 ? parts.join(' • ') : null;
             }
@@ -1123,12 +1114,12 @@
 
             populateFormFromParams(params) {
                 document.getElementById('searchQuery').value = params.search || '';
-                document.getElementById('countryFilter').value = params.country || '';
-                document.getElementById('cityFilter').value = params.city || '';
-                document.getElementById('institutionFilter').value = params.institution || '';
+                document.getElementById('countryFilter').value = params.wilaya || '';
+                document.getElementById('cityFilter').value = params.wilaya || '';
+                document.getElementById('institutionFilter').value = params.qualification || '';
                 document.getElementById('yearFrom').value = params.yearFrom || '';
                 document.getElementById('yearTo').value = params.yearTo || '';
-                document.getElementById('sortBy').value = params.sortBy || 'lab_name';
+                document.getElementById('sortBy').value = params.sortBy || 'full_name';
                 document.getElementById('sortOrder').value = params.sortOrder || 'asc';
                 
                 // Clear and set research areas
@@ -1136,8 +1127,8 @@
                     input.checked = false;
                 });
                 
-                if (params.researchArea) {
-                    const areas = params.researchArea.split(',');
+                if (params.practice) {
+                    const areas = params.practice.split(',');
                     areas.forEach(area => {
                         const checkbox = document.getElementById(`research_${area}`);
                         if (checkbox) checkbox.checked = true;
@@ -1175,7 +1166,27 @@
             }
 
             formatResearchArea(area) {
-                return area.split('-').map(word => 
+                const labels = {
+                    'nutritherapeute': 'Nutrithérapeute',
+                    'medecin-generaliste': 'Médecin généraliste',
+                    'medecin-specialiste': 'Médecin spécialiste',
+                    'pharmacien': 'Pharmacien',
+                    'biologiste': 'Biologiste',
+                    'chirurgien-dentiste': 'Chirurgien dentiste',
+                    'naturopathe': 'Naturopathe',
+                    'phytotherapeute': 'Phytothérapeute',
+                    'sage-femme': 'Sage femme',
+                    'hidjama': 'Hidjama',
+                    'mesotherapie': 'Mésothérapie',
+                    'nutritherapie': 'Nutrithérapie',
+                    'auriculotherapie': 'Auriculothérapie',
+                    'naturotherapie': 'Naturothérapie',
+                    'phytotherapie': 'Phytothérapie',
+                    'ozonotherapie': 'Ozonothérapie',
+                    'autre': 'Autre'
+                };
+                if (labels[area]) return labels[area];
+                return String(area || '').split('-').map(word =>
                     word.charAt(0).toUpperCase() + word.slice(1)
                 ).join(' ');
             }

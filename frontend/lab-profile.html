@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Profil du laboratoire - AANM</title>
-    <meta name="description" content="Detailed laboratoire profile with information, contact details, and location." />
+    <title>Profil du cabinet - AANM</title>
+    <meta name="description" content="Profil détaillé d'un cabinet référencé dans l'annuaire AANM." />
     
     <!-- Performance Optimizations -->
     <meta name="theme-color" content="#2e7d32" />
@@ -400,9 +400,9 @@
                 <a href="./activities.html" class="navbar__link">Activités</a>
                 <a href="./news.html" class="navbar__link">Actualités</a>
                 <a href="./contact.html" class="navbar__link">Contact</a>
-                <a href="./lab-submission.html" class="navbar__link">Soumettre un labo</a>
-                <a href="./lab-directory.html" class="navbar__link navbar__link--active">Annuaire des labos</a>
-                <a href="./lab-map.html" class="navbar__link">Carte des labos</a>
+                <a href="./lab-submission.html" class="navbar__link">Soumettre un cabinet</a>
+                <a href="./lab-directory.html" class="navbar__link navbar__link--active">Annuaire des cabinets</a>
+                <a href="./lab-map.html" class="navbar__link">Carte des cabinets</a>
                 <a href="./contact.html" class="navbar__cta">Nous Rejoindre →</a>
             </div>
             <button class="navbar__toggle" id="navToggle" aria-label="Menu">
@@ -415,9 +415,9 @@
 
     <header class="page-header">
         <div class="container">
-            <span class="section-label">Profil du laboratoire</span>
-            <h1 class="page-header__title">Profil du laboratoire</h1>
-            <p class="page-header__subtitle">Informations détaillées sur ce laboratoire de recherche</p>
+            <span class="section-label">Profil du cabinet</span>
+            <h1 class="page-header__title">Profil du cabinet</h1>
+            <p class="page-header__subtitle">Informations détaillées sur ce cabinet référencé</p>
         </div>
     </header>
 
@@ -426,18 +426,18 @@
             <div class="container">
                 <!-- Chargement State -->
                 <div id="loadingState" class="loading-state">
-                    <p>Chargement des informations du laboratoire...</p>
+                    <p>Chargement des informations du cabinet...</p>
                 </div>
 
                 <!-- Error State -->
                 <div id="errorState" class="error-state" style="display: none;">
-                    <h3>Laboratoire introuvable</h3>
-                    <p>Le laboratoire recherché est introuvable ou indisponible.</p>
+                    <h3>Cabinet introuvable</h3>
+                    <p>Le cabinet recherché est introuvable ou indisponible.</p>
                     <a href="/lab-directory.html" class="action-btn primary">
                         <svg class="icon" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/>
                         </svg>
-                        Voir tous les laboratoires
+                        Voir tous les cabinets
                     </a>
                 </div>
 
@@ -448,7 +448,7 @@
                         <svg class="icon" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"/>
                         </svg>
-                        Retour à l'annuaire des laboratoires
+                        Retour à l'annuaire des cabinets
                     </a>
 
                     <!-- Profile Header -->
@@ -479,23 +479,35 @@
                                     <svg class="icon" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/>
                                     </svg>
-                                    À propos de ce laboratoire
+                                    À propos de ce cabinet
                                 </h2>
                                 <div id="descriptionContent" class="description-text">
                                     <!-- Description content will be inserted here -->
                                 </div>
                             </div>
 
-                            <!-- Domaines de recherche Section -->
+                            <!-- Qualifications Section -->
                             <div class="profile-section">
                                 <h2 class="section-title">
                                     <svg class="icon" viewBox="0 0 20 20">
                                         <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                     </svg>
-                                    Domaines de recherche
+                                    Qualifications
                                 </h2>
                                 <div id="researchAreasGrid" class="research-areas-grid">
-                                    <!-- Recherche areas will be inserted here -->
+                                    <!-- Qualifications will be inserted here -->
+                                </div>
+                            </div>
+
+                            <div class="profile-section">
+                                <h2 class="section-title">
+                                    <svg class="icon" viewBox="0 0 20 20">
+                                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                    Pratiques
+                                </h2>
+                                <div id="practicesGrid" class="research-areas-grid">
+                                    <!-- Practices will be inserted here -->
                                 </div>
                             </div>
                         </div>
@@ -516,22 +528,22 @@
                                 </div>
                             </div>
 
-                            <!-- Statistiques du labo -->
+                            <!-- Statistiques du cabinet -->
                             <div class="profile-section">
                                 <h3 class="section-title">
                                     <svg class="icon" viewBox="0 0 20 20">
                                         <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/>
                                     </svg>
-                                    Quick Stats
+                                    Synthèse
                                 </h3>
                                 <div class="stats-grid">
                                     <div class="stat-item">
                                         <span id="researchAreaCount" class="stat-number">0</span>
-                                        <span class="stat-label">Domaines de recherche</span>
+                                        <span class="stat-label">Pratiques</span>
                                     </div>
                                     <div class="stat-item">
                                         <span id="joinedDate" class="stat-number">-</span>
-                                        <span class="stat-label">Member Since</span>
+                                        <span class="stat-label">Référencé depuis</span>
                                     </div>
                                 </div>
                             </div>
@@ -559,7 +571,7 @@
                                 <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
                                 <path d="m18 8.118-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
                             </svg>
-                            Contacter le laboratoire
+                            Contacter le cabinet
                         </a>
                         <a href="/lab-map.html" class="action-btn secondary">
                             <svg class="icon" viewBox="0 0 20 20">
@@ -572,7 +584,7 @@
                                 <path d="M9 9a2 2 0 114 0 2 2 0 01-4 0z"/>
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a4 4 0 00-3.446 6.032l-2.261 2.26a1 1 0 101.414 1.415l2.261-2.261A4 4 0 1011 5z"/>
                             </svg>
-                            Trouver des labos similaires
+                            Trouver des cabinets similaires
                         </a>
                     </div>
                 </div>
@@ -606,10 +618,10 @@
                     </div>
                     <div class="footer__column">
                         <h4 class="footer__heading">ANNUAIRE</h4>
-                        <a href="./lab-directory.html" class="footer__link">Annuaire des Labos</a>
-                        <a href="./lab-map.html" class="footer__link">Carte des Labos</a>
+                        <a href="./lab-directory.html" class="footer__link">Annuaire des Cabinets</a>
+                        <a href="./lab-map.html" class="footer__link">Carte des Cabinets</a>
                         <a href="./advanced-search.html" class="footer__link">Recherche Avancée</a>
-                        <a href="./lab-submission.html" class="footer__link">Soumettre un Labo</a>
+                        <a href="./lab-submission.html" class="footer__link">Soumettre un Cabinet</a>
                     </div>
                     <div class="footer__column">
                         <h4 class="footer__heading">CONTACT</h4>
@@ -670,10 +682,10 @@
                         this.labData = result.data.lab;
                         this.renderLabProfile();
                     } else {
-                        throw new Error(result.message || 'Laboratoire introuvable');
+                        throw new Error(result.message || 'Cabinet introuvable');
                     }
                 } catch (error) {
-                    console.error('Erreur lors du chargement du laboratoire :', error);
+                    console.error('Erreur lors du chargement du cabinet :', error);
                     this.showError();
                 }
             }
@@ -683,7 +695,7 @@
                 document.getElementById('profileContent').style.display = 'block';
 
                 // Update page title
-                document.title = `${this.labData.lab_name} - Profil du laboratoire AANM`;
+                document.title = `${this.labData.full_name || this.labData.lab_name} - Profil du cabinet AANM`;
 
                 // Render header information
                 this.renderHeader();
@@ -691,6 +703,7 @@
                 // Render main content sections
                 this.renderDescription();
                 this.renderResearchAreas();
+                this.renderPractices();
                 this.renderContactInfo();
                 this.renderStats();
                 this.renderLocalisation();
@@ -700,21 +713,18 @@
             }
 
             renderHeader() {
-                document.getElementById('labName').textContent = this.labData.lab_name;
+                document.getElementById('labName').textContent = this.labData.full_name || this.labData.lab_name;
                 
-                if (this.labData.institution_name) {
-                    document.getElementById('institutionName').textContent = this.labData.institution_name;
+                if (this.labData.wilaya || this.labData.city) {
+                    document.getElementById('institutionName').textContent = this.labData.wilaya || this.labData.city;
                 } else {
                     document.getElementById('institutionName').style.display = 'none';
                 }
 
                 document.getElementById('locationText').textContent = 
-                    `${this.labData.city}, ${this.labData.country}`;
+                    `${this.labData.wilaya || this.labData.city}, ${this.labData.country || 'Algérie'}`;
 
-                if (this.labData.established_year) {
-                    document.getElementById('establishedYear').style.display = 'flex';
-                    document.getElementById('yearText').textContent = this.labData.established_year;
-                }
+                document.getElementById('establishedYear').style.display = 'none';
             }
 
             renderDescription() {
@@ -722,23 +732,43 @@
                 if (this.labData.description) {
                     descriptionContent.innerHTML = `<p>${this.escapeHtml(this.labData.description)}</p>`;
                 } else {
-                    descriptionContent.innerHTML = `<p class="text-muted">Aucune description disponible pour ce laboratoire.</p>`;
+                    descriptionContent.innerHTML = `<p class="text-muted">Aucun commentaire disponible pour ce cabinet.</p>`;
                 }
             }
 
             renderResearchAreas() {
                 const researchAreasGrid = document.getElementById('researchAreasGrid');
-                
-                if (this.labData.researchAreas && this.labData.researchAreas.length > 0) {
-                    researchAreasGrid.innerHTML = this.labData.researchAreas.map(area => `
+                const qualifications = this.labData.qualifications || [];
+
+                if (qualifications.length > 0) {
+                    researchAreasGrid.innerHTML = qualifications.map(area => `
                         <div class="research-area-card">
-                            <div class="research-area-title">${this.formatResearchArea(area)}</div>
+                            <div class="research-area-title">${this.formatResearchArea(area)}${this.renderQualificationDetail(area)}</div>
                         </div>
                     `).join('');
                 } else {
                     researchAreasGrid.innerHTML = `
                         <div class="research-area-card">
-                            <div class="research-area-title">Aucun domaine de recherche indiqué</div>
+                            <div class="research-area-title">Aucune qualification indiquée</div>
+                        </div>
+                    `;
+                }
+            }
+
+            renderPractices() {
+                const practicesGrid = document.getElementById('practicesGrid');
+                const practices = this.labData.practices || this.labData.researchAreas || [];
+
+                if (practices.length > 0) {
+                    practicesGrid.innerHTML = practices.map(area => `
+                        <div class="research-area-card">
+                            <div class="research-area-title">${this.formatResearchArea(area)}${this.renderPracticeDetail(area)}</div>
+                        </div>
+                    `).join('');
+                } else {
+                    practicesGrid.innerHTML = `
+                        <div class="research-area-card">
+                            <div class="research-area-title">Aucune pratique indiquée</div>
                         </div>
                     `;
                 }
@@ -802,7 +832,7 @@
 
             renderStats() {
                 // Recherche area count
-                const researchAreaCount = this.labData.researchAreas ? this.labData.researchAreas.length : 0;
+                const researchAreaCount = this.labData.practices ? this.labData.practices.length : 0;
                 document.getElementById('researchAreaCount').textContent = researchAreaCount;
 
                 // Member since date
@@ -869,7 +899,7 @@
                 // Add popup
                 const popupContent = `
                     <div style="text-align: center; min-width: 200px;">
-                        <h4 style="margin: 0 0 8px 0; color: var(--clr-primary);">${this.escapeHtml(this.labData.lab_name)}</h4>
+                        <h4 style="margin: 0 0 8px 0; color: var(--clr-primary);">${this.escapeHtml(this.labData.full_name || this.labData.lab_name)}</h4>
                         <p style="margin: 0; color: #666; font-size: 14px;">${this.escapeHtml(this.labData.address)}</p>
                     </div>
                 `;
@@ -885,13 +915,50 @@
             showError() {
                 document.getElementById('loadingState').style.display = 'none';
                 document.getElementById('errorState').style.display = 'block';
-                document.title = 'Laboratoire introuvable - AANM';
+                document.title = 'Cabinet introuvable - AANM';
             }
 
             formatResearchArea(area) {
-                return area.split('-').map(word => 
+                const labels = {
+                    'nutritherapeute': 'Nutrithérapeute',
+                    'medecin-generaliste': 'Médecin généraliste',
+                    'medecin-specialiste': 'Médecin spécialiste',
+                    'pharmacien': 'Pharmacien',
+                    'biologiste': 'Biologiste',
+                    'chirurgien-dentiste': 'Chirurgien dentiste',
+                    'naturopathe': 'Naturopathe',
+                    'phytotherapeute': 'Phytothérapeute',
+                    'sage-femme': 'Sage femme',
+                    'hidjama': 'Hidjama',
+                    'mesotherapie': 'Mésothérapie',
+                    'nutritherapie': 'Nutrithérapie',
+                    'auriculotherapie': 'Auriculothérapie',
+                    'naturotherapie': 'Naturothérapie',
+                    'phytotherapie': 'Phytothérapie',
+                    'ozonotherapie': 'Ozonothérapie',
+                    'autre': 'Autre'
+                };
+                if (labels[area]) return labels[area];
+                return String(area || '').split('-').map(word =>
                     word.charAt(0).toUpperCase() + word.slice(1)
                 ).join(' ');
+            }
+
+            renderQualificationDetail(area) {
+                if (area === 'medecin-specialiste' && this.labData.specialist_specialty) {
+                    return ` - ${this.escapeHtml(this.labData.specialist_specialty)}`;
+                }
+                if (area === 'autre' && this.labData.qualification_other) {
+                    return ` - ${this.escapeHtml(this.labData.qualification_other)}`;
+                }
+                return '';
+            }
+
+            renderPracticeDetail(area) {
+                if (area === 'autre' && this.labData.practice_other) {
+                    return ` - ${this.escapeHtml(this.labData.practice_other)}`;
+                }
+                return '';
             }
 
             escapeHtml(text) {

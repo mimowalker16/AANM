@@ -571,10 +571,10 @@
                     </div>
                     <div class="footer__column">
                         <h4 class="footer__heading">ANNUAIRE</h4>
-                        <a href="./lab-directory.html" class="footer__link">Annuaire des Labos</a>
-                        <a href="./lab-map.html" class="footer__link">Carte des Labos</a>
+                        <a href="./lab-directory.html" class="footer__link">Annuaire des Cabinets</a>
+                        <a href="./lab-map.html" class="footer__link">Carte des Cabinets</a>
                         <a href="./advanced-search.html" class="footer__link">Recherche Avancée</a>
-                        <a href="./lab-submission.html" class="footer__link">Soumettre un Labo</a>
+                        <a href="./lab-submission.html" class="footer__link">Soumettre un Cabinet</a>
                     </div>
                     <div class="footer__column">
                         <h4 class="footer__heading">CONTACT</h4>
@@ -623,6 +623,24 @@
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;')
                 .replace(/'/g, '&#039;');
+        }
+
+        function isValidAlgerianPhone(value) {
+            let normalized = String(value || '')
+                .trim()
+                .replace(/[()\s.-]/g, '')
+                .replace(/^00/, '+');
+
+            if (!normalized) return false;
+            if (normalized.startsWith('+213')) {
+                normalized = normalized.slice(4);
+            } else if (normalized.startsWith('213')) {
+                normalized = normalized.slice(3);
+            } else if (normalized.startsWith('0')) {
+                normalized = normalized.slice(1);
+            }
+
+            return /^([567]\d{8}|[234]\d{7})$/.test(normalized);
         }
 
         function renderQuestionField(question) {
@@ -718,12 +736,15 @@
                 phone: 'tel',
                 text: question.question_key === 'full_name' ? 'name' : 'off'
             };
+            const errorMessage = question.field_type === 'phone'
+                ? 'Veuillez saisir un numéro algérien valide.'
+                : 'Ce champ est requis.';
             return `
                 <div class="form-field" ${common}>
                     <label for="${inputId}">${escapeHtml(question.label)} ${required}</label>
                     ${description}
                     <input type="${inputType}" id="${inputId}" placeholder="${escapeHtml(question.placeholder || '')}" autocomplete="${autocompleteMap[question.field_type] || 'off'}" />
-                    <p class="form-field__error">Ce champ est requis.</p>
+                    <p class="form-field__error">${errorMessage}</p>
                     ${help}
                 </div>
             `;
@@ -768,7 +789,7 @@
                     value = (input?.value || '').trim();
                     if (question.is_required && !value) valid = false;
                     if (question.field_type === 'email' && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) valid = false;
-                    if (question.field_type === 'phone' && value && !/^\+?[0-9\s\-().]{7,25}$/.test(value)) valid = false;
+                    if (question.field_type === 'phone' && value && !isValidAlgerianPhone(value)) valid = false;
                     input?.classList.toggle('error', !valid);
                 }
 

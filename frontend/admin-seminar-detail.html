@@ -102,6 +102,12 @@
             vertical-align: middle;
             white-space: nowrap;
         }
+        .participants-table td.answer-cell {
+            max-width: 260px;
+            white-space: normal;
+            overflow-wrap: anywhere;
+            color: #334155;
+        }
         .participants-table th {
             color: #64748b;
             font-size: 0.75rem;
@@ -301,10 +307,6 @@
             .detail-actions { justify-content: stretch; }
             .detail-actions .action-btn { flex: 1; }
             .participants-toolbar { flex-direction: column; align-items: stretch; }
-            .participants-table th:nth-child(4),
-            .participants-table td:nth-child(4),
-            .participants-table th:nth-child(5),
-            .participants-table td:nth-child(5) { display: none; }
         }
     </style>
     <script src="/api-config.js"></script>
@@ -347,6 +349,7 @@
                             <div class="detail-meta" id="seminarMeta"></div>
                         </div>
                         <div class="detail-actions">
+                            <button type="button" class="action-btn view" id="exportCsvBtn">Exporter CSV</button>
                             <button type="button" class="action-btn subtle" id="refreshBtn">Actualiser</button>
                         </div>
                     </div>
@@ -366,16 +369,7 @@
                         <div id="participantsEmpty" class="empty-state" style="display:none;">Aucune inscription pour ce séminaire.</div>
                         <div class="participants-table-wrap" id="participantsTableWrap">
                             <table class="participants-table">
-                                <thead>
-                                    <tr>
-                                        <th>Candidat</th>
-                                        <th>Téléphone</th>
-                                        <th>Statut</th>
-                                        <th>Reçus</th>
-                                        <th>Inscrit le</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
+                                <thead id="participantsHead"></thead>
                                 <tbody id="participantsBody"></tbody>
                             </table>
                         </div>
@@ -453,6 +447,7 @@
 
             init() {
                 document.getElementById('refreshBtn').addEventListener('click', () => this.load());
+                document.getElementById('exportCsvBtn').addEventListener('click', () => this.exportCsv());
                 document.getElementById('participantSearch').addEventListener('input', (event) => {
                     this.filterParticipants(event.target.value);
                 });
@@ -542,7 +537,7 @@
                     this.filteredRegistrations = this.registrations;
                 } else {
                     this.filteredRegistrations = this.registrations.filter((item) => {
-                        return [item.full_name, item.email, item.phone]
+                        return this.getRegistrationSearchValues(item)
                             .some(value => String(value || '').toLowerCase().includes(query));
                     });
                 }
@@ -552,41 +547,42 @@
             renderParticipants() {
                 const empty = document.getElementById('participantsEmpty');
                 const tableWrap = document.getElementById('participantsTableWrap');
+                const head = document.getElementById('participantsHead');
                 const body = document.getElementById('participantsBody');
 
                 if (!this.filteredRegistrations.length) {
                     empty.style.display = '';
                     tableWrap.style.display = 'none';
+                    head.innerHTML = '';
                     body.innerHTML = '';
                     return;
                 }
 
                 empty.style.display = 'none';
                 tableWrap.style.display = '';
+                head.innerHTML = `
+                    <tr>
+                        <th>Nom / prénom</th>
+                        <th>Email</th>
+                        <th>Téléphone</th>
+                        <th>Actions</th>
+                    </tr>
+                `;
                 body.innerHTML = this.filteredRegistrations.map((registration) => {
                     const index = this.registrations.findIndex(item => item.id === registration.id);
-                    const files = this.getFiles(registration);
                     const isApproved = registration.status === 'approved';
-                    const statusBadge = isApproved
-                        ? '<span class="status-badge approved">Approuvée</span>'
-                        : '<span class="status-badge pending">Paiement à vérifier</span>';
-                    const date = registration.registered_at
-                        ? new Date(registration.registered_at).toLocaleString('fr-FR')
-                        : '-';
+                    const fullName = this.getParticipantName(registration);
+                    const email = this.getParticipantEmail(registration);
+                    const phone = this.getParticipantPhone(registration);
 
                     const approveAction = isApproved
                         ? ''
                         : `<button type="button" class="action-btn approve" onclick="event.stopPropagation(); detailPage.approveRegistration(${registration.id})">Approuver</button>`;
                     return `
                         <tr class="participant-row" tabindex="0" onclick="detailPage.openParticipantModal(${index})" onkeydown="if(event.key==='Enter'){detailPage.openParticipantModal(${index})}">
-                            <td>
-                                <div class="participant-name">${escapeHtml(registration.full_name || '-')}</div>
-                                <div class="participant-email">${escapeHtml(registration.email || '-')}</div>
-                            </td>
-                            <td>${registration.phone ? escapeHtml(registration.phone) : '-'}</td>
-                            <td>${statusBadge}</td>
-                            <td><span class="receipt-count">${files.length ? `${files.length} reçu(s)` : 'Aucun'}</span></td>
-                            <td>${escapeHtml(date)}</td>
+                            <td><div class="participant-name">${escapeHtml(fullName || '-')}</div></td>
+                            <td class="answer-cell">${escapeHtml(email || '-')}</td>
+                            <td class="answer-cell">${escapeHtml(phone || '-')}</td>
                             <td>
                                 <div style="display:flex;gap:0.35rem;flex-wrap:wrap;">
                                     <button type="button" class="action-btn view" onclick="event.stopPropagation(); detailPage.openParticipantModal(${index})">Voir</button>
@@ -603,24 +599,14 @@
                 const registration = this.registrations[index];
                 if (!registration) return;
                 const files = this.getFiles(registration);
-                document.getElementById('participantModalTitle').textContent = registration.full_name || 'Participant';
+                const title = this.getQuestionValueByKeys(registration, ['full_name', 'nom_prenom', 'nom_complet']) || registration.full_name || 'Participant';
+                document.getElementById('participantModalTitle').textContent = title;
                 document.getElementById('participantModalMeta').innerHTML = [
-                    registration.email,
-                    registration.phone,
                     registration.status === 'approved' ? 'Approuvée' : 'Paiement à vérifier',
                     registration.registered_at ? new Date(registration.registered_at).toLocaleString('fr-FR') : null
                 ].filter(Boolean).map(item => `<span>${escapeHtml(item)}</span>`).join('<span>·</span>');
 
                 document.getElementById('participantModalBody').innerHTML = `
-                    <section class="popover-section">
-                        <h3>Informations du candidat</h3>
-                        <div class="answer-grid">
-                            <div class="answer-item"><span>Nom</span><strong>${escapeHtml(registration.full_name || '-')}</strong></div>
-                            <div class="answer-item"><span>Email</span><strong>${escapeHtml(registration.email || '-')}</strong></div>
-                            <div class="answer-item"><span>Téléphone</span><strong>${escapeHtml(registration.phone || '-')}</strong></div>
-                            <div class="answer-item"><span>Statut</span><strong>${registration.status === 'approved' ? 'Approuvée' : 'Paiement à vérifier'}</strong></div>
-                        </div>
-                    </section>
                     <section class="popover-section">
                         <h3>Réponses</h3>
                         <div class="answer-grid">
@@ -661,6 +647,41 @@
                         <strong>${escapeHtml(this.formatAnswerValue(answer))}</strong>
                     </div>
                 `).join('');
+            }
+
+            getQuestionValueByKeys(registration, keys) {
+                const normalizedKeys = keys.map(key => String(key).toLowerCase());
+                const answers = Array.isArray(registration.answers) ? registration.answers : [];
+                const answer = answers.find(item => normalizedKeys.includes(String(item.question_key || '').toLowerCase()));
+                if (answer) return this.formatAnswerValue(answer);
+                if (normalizedKeys.some(key => ['full_name', 'nom_prenom', 'nom_complet'].includes(key))) return registration.full_name || '';
+                return '';
+            }
+
+            getParticipantName(registration) {
+                return this.getQuestionValueByKeys(registration, ['full_name', 'nom_prenom', 'nom_complet'])
+                    || registration.full_name
+                    || '';
+            }
+
+            getParticipantEmail(registration) {
+                return this.getQuestionValueByKeys(registration, ['email', 'adresse_email', 'adresse_e_mail'])
+                    || registration.email
+                    || '';
+            }
+
+            getParticipantPhone(registration) {
+                return this.getQuestionValueByKeys(registration, ['phone', 'telephone', 'telephones', 'telephone_valide'])
+                    || registration.phone
+                    || '';
+            }
+
+            getRegistrationSearchValues(registration) {
+                return [
+                    this.getParticipantName(registration),
+                    this.getParticipantEmail(registration),
+                    this.getParticipantPhone(registration)
+                ];
             }
 
             renderReceiptCard(registration, file, fileIndex) {
@@ -746,6 +767,44 @@
                     URL.revokeObjectURL(url);
                 } catch (error) {
                     this.showNotification(error.message || 'Erreur lors du téléchargement.', 'error');
+                }
+            }
+
+            async exportCsv() {
+                const button = document.getElementById('exportCsvBtn');
+                button.disabled = true;
+                const previousText = button.textContent;
+                button.textContent = 'Export...';
+
+                try {
+                    const response = await fetch(`${API_BASE}/api/admin/seminaires/${seminarId}/registrations/export.csv`, {
+                        headers: adminHeaders()
+                    });
+
+                    if (!response.ok) {
+                        const result = await response.json().catch(() => ({}));
+                        if (handleAuthError(response, result)) return;
+                        throw new Error(result.message || 'Export CSV impossible.');
+                    }
+
+                    const blob = await response.blob();
+                    const disposition = response.headers.get('content-disposition') || '';
+                    const match = disposition.match(/filename="([^"]+)"/);
+                    const filename = match ? match[1] : `inscriptions-seminaire-${seminarId}.csv`;
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = filename;
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                    URL.revokeObjectURL(url);
+                    this.showNotification('Export CSV téléchargé.');
+                } catch (error) {
+                    this.showNotification(error.message || "Erreur lors de l'export CSV.", 'error');
+                } finally {
+                    button.disabled = false;
+                    button.textContent = previousText;
                 }
             }
 

@@ -259,10 +259,29 @@ class Database {
                 established_year INTEGER,
                 submitted_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
                 approved BOOLEAN DEFAULT false,
-                admin_notes TEXT
+                admin_notes TEXT,
+                record_type TEXT DEFAULT 'lab',
+                full_name TEXT,
+                wilaya TEXT,
+                qualifications_json JSONB DEFAULT '[]'::jsonb,
+                specialist_specialty TEXT,
+                qualification_other TEXT,
+                practices_json JSONB DEFAULT '[]'::jsonb,
+                practice_other TEXT
             )
         `);
         await this.ensureIdSequence('labs');
+        await this.pool.query("ALTER TABLE labs ADD COLUMN IF NOT EXISTS record_type TEXT DEFAULT 'lab'");
+        await this.pool.query('ALTER TABLE labs ADD COLUMN IF NOT EXISTS full_name TEXT');
+        await this.pool.query('ALTER TABLE labs ADD COLUMN IF NOT EXISTS wilaya TEXT');
+        await this.pool.query("ALTER TABLE labs ADD COLUMN IF NOT EXISTS qualifications_json JSONB DEFAULT '[]'::jsonb");
+        await this.pool.query('ALTER TABLE labs ADD COLUMN IF NOT EXISTS specialist_specialty TEXT');
+        await this.pool.query('ALTER TABLE labs ADD COLUMN IF NOT EXISTS qualification_other TEXT');
+        await this.pool.query("ALTER TABLE labs ADD COLUMN IF NOT EXISTS practices_json JSONB DEFAULT '[]'::jsonb");
+        await this.pool.query('ALTER TABLE labs ADD COLUMN IF NOT EXISTS practice_other TEXT');
+        await this.pool.query("UPDATE labs SET record_type = 'lab' WHERE record_type IS NULL");
+        await this.pool.query("UPDATE labs SET qualifications_json = '[]'::jsonb WHERE qualifications_json IS NULL");
+        await this.pool.query("UPDATE labs SET practices_json = '[]'::jsonb WHERE practices_json IS NULL");
 
         console.log('📊 PostgreSQL tables ready');
     }
@@ -285,10 +304,26 @@ class Database {
         `);
     }
 
+    parseJsonField(value, fallback = []) {
+        if (Array.isArray(value)) return value;
+        if (value && typeof value === 'object') return value;
+        try {
+            return JSON.parse(value || JSON.stringify(fallback));
+        } catch {
+            return fallback;
+        }
+    }
+
     parseLab(row) {
+        const practices = this.parseJsonField(row.practices_json, this.parseJsonField(row.research_areas, []));
+        const qualifications = this.parseJsonField(row.qualifications_json, []);
         return {
             ...row,
-            researchAreas: JSON.parse(row.research_areas || '[]')
+            full_name: row.full_name || row.lab_name,
+            wilaya: row.wilaya || row.city,
+            qualifications,
+            practices,
+            researchAreas: practices
         };
     }
 
@@ -302,9 +337,13 @@ class Database {
             INSERT INTO labs (
                 lab_name, institution_name, contact_person, contact_email,
                 phone, website, address, city, country, coordinates_lat,
-                coordinates_lng, research_areas, description, established_year
+                coordinates_lng, research_areas, description, established_year,
+                record_type, full_name, wilaya, qualifications_json,
+                specialist_specialty, qualification_other, practices_json,
+                practice_other
             ) VALUES (
-                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14
+                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14,
+                $15, $16, $17, $18::jsonb, $19, $20, $21::jsonb, $22
             )
             RETURNING id
         `;
@@ -323,7 +362,15 @@ class Database {
             labData.coordinates_lng,
             labData.research_areas,
             labData.description,
-            labData.established_year
+            labData.established_year,
+            labData.record_type || 'cabinet',
+            labData.full_name,
+            labData.wilaya,
+            labData.qualifications_json || '[]',
+            labData.specialist_specialty,
+            labData.qualification_other,
+            labData.practices_json || '[]',
+            labData.practice_other
         ];
 
         const result = await this.pool.query(sql, values);
@@ -335,24 +382,34 @@ class Database {
             SELECT
                 id, lab_name, institution_name, contact_email, phone, website,
                 address, city, country, coordinates_lat, coordinates_lng,
-                research_areas, description, established_year, submitted_at
+                research_areas, description, established_year, submitted_at,
+                record_type, full_name, wilaya, qualifications_json,
+                specialist_specialty, qualification_other, practices_json,
+                practice_other
             FROM labs
-            WHERE approved = true
+            WHERE approved = true AND record_type = 'cabinet'
         `;
         const params = [];
 
         if (searchParams.search) {
             const term = `%${searchParams.search}%`;
-            const placeholders = Array.from({ length: 7 }, () => this.nextParam(params, term));
+            const placeholders = Array.from({ length: 10 }, () => this.nextParam(params, term));
             sql += ` AND (
-                lab_name ILIKE ${placeholders[0]} OR
-                institution_name ILIKE ${placeholders[1]} OR
-                contact_person ILIKE ${placeholders[2]} OR
-                city ILIKE ${placeholders[3]} OR
-                country ILIKE ${placeholders[4]} OR
-                address ILIKE ${placeholders[5]} OR
-                description ILIKE ${placeholders[6]}
+                full_name ILIKE ${placeholders[0]} OR
+                lab_name ILIKE ${placeholders[1]} OR
+                wilaya ILIKE ${placeholders[2]} OR
+                contact_person ILIKE ${placeholders[3]} OR
+                city ILIKE ${placeholders[4]} OR
+                country ILIKE ${placeholders[5]} OR
+                address ILIKE ${placeholders[6]} OR
+                description ILIKE ${placeholders[7]} OR
+                qualifications_json::text ILIKE ${placeholders[8]} OR
+                practices_json::text ILIKE ${placeholders[9]}
             )`;
+        }
+
+        if (searchParams.wilaya) {
+            sql += ` AND wilaya ILIKE ${this.nextParam(params, `%${searchParams.wilaya}%`)}`;
         }
 
         if (searchParams.country) {
@@ -371,6 +428,26 @@ class Database {
             sql += ` AND research_areas ILIKE ${this.nextParam(params, `%${searchParams.researchArea}%`)}`;
         }
 
+        if (searchParams.qualification) {
+            const qualifications = String(searchParams.qualification)
+                .split(',')
+                .map(item => item.trim())
+                .filter(Boolean);
+            qualifications.forEach(qualification => {
+                sql += ` AND qualifications_json::text ILIKE ${this.nextParam(params, `%${qualification}%`)}`;
+            });
+        }
+
+        if (searchParams.practice) {
+            const practices = String(searchParams.practice)
+                .split(',')
+                .map(item => item.trim())
+                .filter(Boolean);
+            practices.forEach(practice => {
+                sql += ` AND practices_json::text ILIKE ${this.nextParam(params, `%${practice}%`)}`;
+            });
+        }
+
         if (searchParams.yearFrom) {
             sql += ` AND established_year >= ${this.nextParam(params, parseInt(searchParams.yearFrom, 10))}`;
         }
@@ -379,7 +456,7 @@ class Database {
             sql += ` AND established_year <= ${this.nextParam(params, parseInt(searchParams.yearTo, 10))}`;
         }
 
-        const validSortColumns = ['lab_name', 'institution_name', 'city', 'country', 'established_year', 'submitted_at'];
+        const validSortColumns = ['full_name', 'lab_name', 'wilaya', 'city', 'country', 'submitted_at'];
         const sortBy = validSortColumns.includes(searchParams.sortBy) ? searchParams.sortBy : 'submitted_at';
         const sortOrder = searchParams.sortOrder === 'asc' ? 'ASC' : 'DESC';
         sql += ` ORDER BY ${sortBy} ${sortOrder}`;
@@ -399,7 +476,7 @@ class Database {
         const result = await this.pool.query(`
             SELECT *
             FROM labs
-            WHERE approved = false
+            WHERE approved = false AND record_type = 'cabinet'
             ORDER BY submitted_at DESC
         `);
         return result.rows.map((lab) => this.parseLab(lab));
@@ -411,9 +488,11 @@ class Database {
                 id, lab_name, institution_name, contact_person, contact_email,
                 phone, website, address, city, country, coordinates_lat,
                 coordinates_lng, research_areas, description, established_year,
-                submitted_at, approved, admin_notes
+                submitted_at, approved, admin_notes, record_type, full_name,
+                wilaya, qualifications_json, specialist_specialty,
+                qualification_other, practices_json, practice_other
             FROM labs
-            WHERE id = $1 ${includeUnapproved ? '' : 'AND approved = true'}
+            WHERE id = $1 AND record_type = 'cabinet' ${includeUnapproved ? '' : 'AND approved = true'}
         `;
         const result = await this.pool.query(sql, [labId]);
         return result.rows[0] ? this.parseLab(result.rows[0]) : null;
@@ -428,7 +507,7 @@ class Database {
     }
 
     async getSearchSuggestions(field, query = '', limit = 10) {
-        const validFields = ['lab_name', 'institution_name', 'city', 'country', 'research_areas'];
+        const validFields = ['lab_name', 'full_name', 'wilaya', 'city', 'country', 'research_areas', 'qualifications_json', 'practices_json'];
 
         if (!validFields.includes(field)) {
             throw new Error('Invalid search field');
@@ -438,7 +517,7 @@ class Database {
             `
                 SELECT DISTINCT ${field} AS suggestion
                 FROM labs
-                WHERE approved = true AND ${field} ILIKE $1
+                WHERE approved = true AND record_type = 'cabinet' AND ${field}::text ILIKE $1
                 ORDER BY ${field}
                 LIMIT $2
             `,
@@ -453,12 +532,12 @@ class Database {
             SELECT
                 COUNT(*)::int AS total,
                 COUNT(DISTINCT country)::int AS countries,
-                COUNT(DISTINCT city)::int AS cities,
-                COUNT(DISTINCT institution_name)::int AS institutions,
-                MIN(established_year) AS "oldestYear",
-                MAX(established_year) AS "newestYear"
+                COUNT(DISTINCT wilaya)::int AS cities,
+                COUNT(DISTINCT wilaya)::int AS institutions,
+                NULL AS "oldestYear",
+                NULL AS "newestYear"
             FROM labs
-            WHERE approved = true
+            WHERE approved = true AND record_type = 'cabinet'
         `);
         return result.rows[0];
     }
@@ -991,6 +1070,30 @@ class Database {
             [id]
         );
         return result.rows[0] || null;
+    }
+
+    async getApprovedRegistrationsWithSeminar(seminarId) {
+        const result = await this.pool.query(
+            `
+                SELECT
+                    r.*,
+                    COALESCE(r.answers_json, '[]'::jsonb) AS answers,
+                    COALESCE(r.files_json, '[]'::jsonb) AS files,
+                    s.title AS seminar_title,
+                    s.date AS seminar_date,
+                    s.location AS seminar_location,
+                    s.delivery_mode AS seminar_delivery_mode,
+                    s.virtual_room_url AS seminar_virtual_room_url,
+                    s.description AS seminar_description
+                FROM registrations r
+                JOIN seminaires s ON s.id = r.seminar_id
+                WHERE r.seminar_id = $1
+                  AND r.status = 'approved'
+                ORDER BY r.registered_at DESC
+            `,
+            [seminarId]
+        );
+        return result.rows;
     }
 
     async markRegistrationEmailSent(id) {

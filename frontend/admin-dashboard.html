@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Tableau de bord administrateur - AANM</title>
-    <meta name="description" content="Tableau d'administration de l'annuaire des laboratoires de l'AANM" />
+    <meta name="description" content="Tableau d'administration de l'annuaire des cabinets de l'AANM" />
     
     <!-- Performance Optimizations -->
     <meta name="theme-color" content="#2e7d32" />
@@ -695,9 +695,9 @@
                 <a href="./activities.html" class="navbar__link">Activités</a>
                 <a href="./news.html" class="navbar__link">Actualités</a>
                 <a href="./contact.html" class="navbar__link">Contact</a>
-                <a href="./lab-submission.html" class="navbar__link">Soumettre un labo</a>
-                <a href="./lab-directory.html" class="navbar__link">Annuaire des labos</a>
-                <a href="./lab-map.html" class="navbar__link">Carte des labos</a>
+                <a href="./lab-submission.html" class="navbar__link">Soumettre un cabinet</a>
+                <a href="./lab-directory.html" class="navbar__link">Annuaire des cabinets</a>
+                <a href="./lab-map.html" class="navbar__link">Carte des cabinets</a>
                 <a href="./admin-dashboard.html" class="navbar__link navbar__link--active">Administration</a>
                 <a href="./contact.html" class="navbar__cta">Nous Rejoindre →</a>
             </div>
@@ -714,7 +714,7 @@
             <div class="container">
                 <span class="section-label">Administration</span>
                 <h1 class="page-header__title">Tableau de bord administrateur</h1>
-                <p class="page-header__subtitle">Gérez les soumissions et validations des laboratoires</p>
+                <p class="page-header__subtitle">Gérez les soumissions et validations des cabinets</p>
             </div>
         </header>
 
@@ -726,7 +726,7 @@
                         <svg class="icon" viewBox="0 0 20 20">
                             <path d="M10 2L3 7v11h4v-6h6v6h4V7l-7-5z"/>
                         </svg>
-                        <h2>Gestion des laboratoires</h2>
+                        <h2>Gestion des cabinets</h2>
                     </div>
                     <div class="admin-stats">
                         <div class="stat-item">
@@ -751,7 +751,7 @@
                         Soumissions en attente
                     </button>
                     <button class="tab-button" data-tab="approved">
-                        Labos approuvés
+                        Cabinets approuvés
                     </button>
                     <button class="tab-button" data-tab="seminaires">
                         Séminaires
@@ -773,55 +773,55 @@
                             <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>
                         </svg>
                         <h3>Aucune soumission en attente</h3>
-                        <p>Toutes les soumissions de laboratoires ont été examinées.</p>
+                        <p>Toutes les soumissions de cabinets ont été examinées.</p>
                     </div>
                     <div id="pendingTable" style="display: none;">
                         <table class="labs-table">
                             <thead>
                                 <tr>
-                                    <th>Laboratoire</th>
+                                    <th>Cabinet</th>
                                     <th>Localisation</th>
                                     <th>Contact</th>
-                                    <th>Domaines de recherche</th>
+                                    <th>Qualifications / pratiques</th>
                                     <th>Soumis le</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="pendingTableBody">
-                                <!-- En attente lab rows will be inserted here -->
+                                <!-- En attente cabinet rows will be inserted here -->
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- Labos approuvés Tab -->
+                <!-- Cabinets approuvés Tab -->
                 <div id="approvedTab" class="tab-content">
                     <div id="approvedLoading" class="loading-state">
                         <div class="loading-spinner"></div>
-                        <p>Chargement des laboratoires approuvés...</p>
+                        <p>Chargement des cabinets approuvés...</p>
                     </div>
                     <div id="approvedError" class="error-state" style="display: none;"></div>
                     <div id="approvedEmpty" class="empty-state" style="display: none;">
                         <svg class="icon" viewBox="0 0 20 20">
                             <path d="M10 2C6.69 2 4 4.69 4 8c0 5.25 6 12 6 12s6-6.75 6-12c0-3.31-2.69-6-6-6zm0 8c-1.1 0-2-0.9-2-2s0.9-2 2-2 2 0.9 2 2-0.9 2-2 2z"/>
                         </svg>
-                        <h3>Aucun laboratoire approuvé</h3>
-                        <p>Aucun laboratoire n'a encore été approuvé.</p>
+                        <h3>Aucun cabinet approuvé</h3>
+                        <p>Aucun cabinet n'a encore été approuvé.</p>
                     </div>
                     <div id="approvedTable" style="display: none;">
                         <table class="labs-table">
                             <thead>
                                 <tr>
-                                    <th>Laboratoire</th>
+                                    <th>Cabinet</th>
                                     <th>Localisation</th>
                                     <th>Contact</th>
-                                    <th>Domaines de recherche</th>
+                                    <th>Qualifications / pratiques</th>
                                     <th>Approuvé</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="approvedTableBody">
-                                <!-- Approuvé lab rows will be inserted here -->
+                                <!-- Approuvé cabinet rows will be inserted here -->
                             </tbody>
                         </table>
                     </div>
@@ -1240,10 +1240,10 @@
                         this.pendingLabs = result.data.labs;
                         this.renderPendingLabs();
                     } else {
-                        throw new Error(result.message || 'Impossible de charger les labos en attente');
+                        throw new Error(result.message || 'Impossible de charger les cabinets en attente');
                     }
                 } catch (error) {
-                    console.error('Erreur lors du chargement des labos en attente :', error);
+                    console.error('Erreur lors du chargement des cabinets en attente :', error);
                     this.showError('pending', 'Impossible de charger les soumissions en attente. Vérifiez votre connexion puis réessayez.');
                 }
             }
@@ -1258,11 +1258,11 @@
                         this.approvedLabs = result.data.labs;
                         this.renderApprovedLabs();
                     } else {
-                        throw new Error(result.message || 'Impossible de charger les labos approuvés');
+                        throw new Error(result.message || 'Impossible de charger les cabinets approuvés');
                     }
                 } catch (error) {
-                    console.error('Erreur lors du chargement des labos approuvés :', error);
-                    this.showError('approved', 'Impossible de charger les laboratoires approuvés. Vérifiez votre connexion puis réessayez.');
+                    console.error('Erreur lors du chargement des cabinets approuvés :', error);
+                    this.showError('approved', 'Impossible de charger les cabinets approuvés. Vérifiez votre connexion puis réessayez.');
                 }
             }
 
@@ -1313,7 +1313,14 @@
             }
 
             createLabRow(lab, type) {
-                const researchTags = lab.researchAreas.map(area => 
+                const cabinetName = lab.full_name || lab.lab_name || 'Cabinet';
+                const wilaya = lab.wilaya || lab.city || '-';
+                const qualifications = Array.isArray(lab.qualifications) ? lab.qualifications : [];
+                const practices = Array.isArray(lab.practices) ? lab.practices : (lab.researchAreas || []);
+                const qualificationTags = qualifications.map(area => 
+                    `<span class="research-area-tag">${this.formatResearchArea(area)}</span>`
+                ).join('');
+                const practiceTags = practices.map(area => 
                     `<span class="research-area-tag">${this.formatResearchArea(area)}</span>`
                 ).join('');
 
@@ -1322,25 +1329,27 @@
                 return `
                     <tr>
                         <td>
-                            <div class="lab-name">${this.escapeHtml(lab.lab_name)}</div>
-                            ${lab.institution_name ? `<div class="lab-institution">${this.escapeHtml(lab.institution_name)}</div>` : ''}
+                            <div class="lab-name">${this.escapeHtml(cabinetName)}</div>
+                            <div class="lab-institution">${this.escapeHtml(wilaya)}</div>
                         </td>
                         <td>
                             <div class="lab-location">
                                 <svg class="icon" viewBox="0 0 20 20">
                                     <path d="M10 2C6.69 2 4 4.69 4 8c0 5.25 6 12 6 12s6-6.75 6-12c0-3.31-2.69-6-6-6zm0 8c-1.1 0-2-0.9-2-2s0.9-2 2-2 2 0.9 2 2-0.9 2-2 2z"/>
                                 </svg>
-                                <span>${this.escapeHtml(lab.city)}, ${this.escapeHtml(lab.country)}</span>
+                                <span>${this.escapeHtml(wilaya)}, ${this.escapeHtml(lab.country || 'Algérie')}</span>
                             </div>
+                            ${lab.address ? `<div style="font-size:0.8rem;color:var(--clr-text-muted);">${this.escapeHtml(lab.address)}</div>` : ''}
                         </td>
                         <td>
-                            <div>${this.escapeHtml(lab.contact_person)}</div>
+                            <div>${this.escapeHtml(lab.contact_email || '-')}</div>
                             <div style="font-size: 0.8rem; color: var(--clr-text-muted);">
-                                ${this.escapeHtml(lab.contact_email)}
+                                ${this.escapeHtml(lab.phone || '-')}
                             </div>
                         </td>
                         <td>
-                            <div class="research-area-tags">${researchTags}</div>
+                            <div class="research-area-tags">${qualificationTags || '<span class="research-area-tag">Qualification non renseignée</span>'}</div>
+                            <div class="research-area-tags" style="margin-top:0.35rem;">${practiceTags || '<span class="research-area-tag">Pratique non renseignée</span>'}</div>
                         </td>
                         <td>
                             <div>${submittedDate}</div>
@@ -1384,7 +1393,7 @@
 
             async approveLab(labId) {
                 this.showConfirmModal(
-                    'Approuver le laboratoire',
+                    'Approuver le cabinet',
                     'Voulez-vous approuver cette soumission ? Une fois approuvée, elle sera visible publiquement.',
                     'Approuver',
                     'approve',
@@ -1402,14 +1411,14 @@
                             if (handleAuthError(response, result)) return;
 
                             if (result.success) {
-                                this.showNotification('Laboratoire approuvé avec succès.', 'success');
+                                this.showNotification('Cabinet approuvé avec succès.', 'success');
                                 await this.loadData();
                             } else {
-                                throw new Error(result.message || "Impossible d'approuver le laboratoire");
+                                throw new Error(result.message || "Impossible d'approuver le cabinet");
                             }
                         } catch (error) {
-                            console.error("Erreur lors de l'approbation du laboratoire :", error);
-                            this.showNotification("Impossible d'approuver le laboratoire. Veuillez réessayer.", 'error');
+                            console.error("Erreur lors de l'approbation du cabinet :", error);
+                            this.showNotification("Impossible d'approuver le cabinet. Veuillez réessayer.", 'error');
                         }
                     }
                 );
@@ -1417,7 +1426,7 @@
 
             async rejectLab(labId) {
                 this.showConfirmModal(
-                    'Rejeter le laboratoire',
+                    'Rejeter le cabinet',
                     'Voulez-vous rejeter cette soumission ? Cette action supprimera définitivement la demande.',
                     'Rejeter',
                     'reject',
@@ -1435,11 +1444,11 @@
                                 this.showNotification('Soumission rejetée et supprimée.', 'success');
                                 await this.loadData();
                             } else {
-                                throw new Error(result.message || 'Impossible de rejeter le labo');
+                                throw new Error(result.message || 'Impossible de rejeter le cabinet');
                             }
                         } catch (error) {
-                            console.error('Erreur lors du rejet du labo :', error);
-                            this.showNotification('Impossible de rejeter le laboratoire. Veuillez réessayer.', 'error');
+                            console.error('Erreur lors du rejet du cabinet :', error);
+                            this.showNotification('Impossible de rejeter le cabinet. Veuillez réessayer.', 'error');
                         }
                     }
                 );
@@ -1791,7 +1800,22 @@
                     const result = await res.json();
                     if (handleAuthError(res, result)) return;
                     if (!result.success) throw new Error(result.message);
-                    this.showNotification(id ? 'Séminaire mis à jour.' : 'Séminaire créé avec succès.', 'success');
+                    if (id) {
+                        const notification = result.notification || {};
+                        const attempted = Number(notification.attempted || 0);
+                        const sent = Number(notification.sent || 0);
+                        const failed = Number(notification.failed || 0);
+                        const skipped = Number(notification.skipped || 0);
+                        if (attempted > 0 && failed === 0 && skipped === 0) {
+                            this.showNotification(`Séminaire mis à jour. ${sent} email(s) envoyé(s).`, 'success');
+                        } else if (attempted > 0) {
+                            this.showNotification(`Séminaire mis à jour. Emails envoyés: ${sent}, échecs: ${failed}, ignorés: ${skipped}.`, 'warning');
+                        } else {
+                            this.showNotification('Séminaire mis à jour.', 'success');
+                        }
+                    } else {
+                        this.showNotification('Séminaire créé avec succès.', 'success');
+                    }
                     this.cancelEditSeminar();
                     await this.loadSeminaires();
                 } catch (err) {
@@ -1844,8 +1868,8 @@
                 this.showConfirmModal(
                     resendEmail ? "Envoyer l'email" : "Approuver l'inscription",
                     resendEmail
-                        ? "Un email de confirmation sera envoyé si SMTP est configuré."
-                        : "Confirmez que le paiement a été vérifié. L'inscription sera approuvée et un email de confirmation sera envoyé si SMTP est configuré.",
+                        ? "Un email de confirmation sera envoyé si le service email est configuré."
+                        : "Confirmez que le paiement a été vérifié. L'inscription sera approuvée et un email de confirmation sera envoyé si le service email est configuré.",
                     resendEmail ? 'Envoyer' : 'Approuver',
                     'approve',
                     async () => {
@@ -1961,6 +1985,26 @@
             }
 
             formatResearchArea(area) {
+                const labels = {
+                    'nutritherapeute': 'Nutrithérapeute',
+                    'medecin-generaliste': 'Médecin généraliste',
+                    'medecin-specialiste': 'Médecin spécialiste',
+                    'pharmacien': 'Pharmacien',
+                    'biologiste': 'Biologiste',
+                    'chirurgien-dentiste': 'Chirurgien dentiste',
+                    'naturopathe': 'Naturopathe',
+                    'phytotherapeute': 'Phytothérapeute',
+                    'sage-femme': 'Sage femme',
+                    'hidjama': 'Hidjama',
+                    'mesotherapie': 'Mésothérapie',
+                    'nutritherapie': 'Nutrithérapie',
+                    'auriculotherapie': 'Auriculothérapie',
+                    'naturotherapie': 'Naturothérapie',
+                    'phytotherapie': 'Phytothérapie',
+                    'ozonotherapie': 'Ozonothérapie',
+                    'autre': 'Autre'
+                };
+                if (labels[area]) return labels[area];
                 return area.split('-').map(word => 
                     word.charAt(0).toUpperCase() + word.slice(1)
                 ).join(' ');
