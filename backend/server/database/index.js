@@ -1072,6 +1072,30 @@ class Database {
         return result.rows[0] || null;
     }
 
+    async getApprovedRegistrationsWithSeminar(seminarId) {
+        const result = await this.pool.query(
+            `
+                SELECT
+                    r.*,
+                    COALESCE(r.answers_json, '[]'::jsonb) AS answers,
+                    COALESCE(r.files_json, '[]'::jsonb) AS files,
+                    s.title AS seminar_title,
+                    s.date AS seminar_date,
+                    s.location AS seminar_location,
+                    s.delivery_mode AS seminar_delivery_mode,
+                    s.virtual_room_url AS seminar_virtual_room_url,
+                    s.description AS seminar_description
+                FROM registrations r
+                JOIN seminaires s ON s.id = r.seminar_id
+                WHERE r.seminar_id = $1
+                  AND r.status = 'approved'
+                ORDER BY r.registered_at DESC
+            `,
+            [seminarId]
+        );
+        return result.rows;
+    }
+
     async markRegistrationEmailSent(id) {
         const result = await this.pool.query(
             `

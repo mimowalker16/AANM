@@ -283,6 +283,65 @@ function buildRegistrationsCsv(seminar, questions, registrations) {
     return `\uFEFF${[csvLine(headers), ...rows].join('\r\n')}\r\n`;
 }
 
+function normalizeComparable(value) {
+    if (value === undefined || value === null) return '';
+    if (value instanceof Date) return value.toISOString();
+    if (typeof value === 'string') {
+        const trimmed = value.trim();
+        const date = new Date(trimmed);
+        return !Number.isNaN(date.getTime()) && /^\d{4}-\d{2}-\d{2}/.test(trimmed)
+            ? date.toISOString()
+            : trimmed;
+    }
+    return String(value);
+}
+
+function changedSeminarFields(before, afterPayload) {
+    const checks = [
+        { key: 'title', label: 'Titre' },
+        { key: 'date', label: 'Date' },
+        { key: 'location', label: 'Lieu' },
+        { key: 'delivery_mode', label: 'Mode de participation' },
+        { key: 'virtual_room_url', label: 'Lien de la salle virtuelle' },
+        { key: 'description', label: 'Description' }
+    ];
+
+    return checks
+        .filter(({ key }) => normalizeComparable(before?.[key]) !== normalizeComparable(afterPayload?.[key]))
+        .map(({ label }) => label);
+}
+
+async function notifyApprovedRegistrantsOfSeminarUpdate(seminarId, changes) {
+    if (!changes.length) {
+        return { attempted: 0, sent: 0, failed: 0, skipped: 0 };
+    }
+
+    const registrations = await database.getApprovedRegistrationsWithSeminar(seminarId);
+    const summary = { attempted: registrations.length, sent: 0, failed: 0, skipped: 0 };
+
+    for (const registration of registrations) {
+        try {
+            const status = await emailService.sendSeminarUpdateEmail(registration, changes);
+            if (status.sent) {
+                summary.sent += 1;
+            } else if (status.skipped) {
+                summary.skipped += 1;
+            } else {
+                summary.failed += 1;
+            }
+        } catch (error) {
+            summary.failed += 1;
+            console.error('Failed to send seminar update email:', {
+                seminarId,
+                registrationId: registration.id,
+                message: error.message
+            });
+        }
+    }
+
+    return summary;
+}
+
 export async function adminGetSeminaires(req, res) {
     try {
         const seminaires = await database.getSeminaires();
@@ -328,12 +387,20 @@ export async function adminUpdateSeminaire(req, res) {
     }
     try {
         const { questions, ...seminairePayload } = payload;
+        const existingSeminar = await database.getSeminaireById(req.params.id);
+        if (!existingSeminar) return res.status(404).json({ success: false, message: 'Séminaire introuvable.' });
+        const changedFields = changedSeminarFields(existingSeminar, seminairePayload);
         const result = await database.updateSeminaire(req.params.id, seminairePayload);
         if (!result.changes) return res.status(404).json({ success: false, message: 'Séminaire introuvable.' });
         if (questions) {
             await database.replaceSeminaireQuestions(req.params.id, questions);
         }
-        res.json({ success: true });
+        const notificationSummary = await notifyApprovedRegistrantsOfSeminarUpdate(req.params.id, changedFields);
+        res.json({
+            success: true,
+            notification: notificationSummary,
+            changedFields
+        });
     } catch (err) {
         console.error('Failed to update seminaire:', {
             id: req.params.id,

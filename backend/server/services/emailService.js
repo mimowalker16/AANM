@@ -190,6 +190,77 @@ class EmailService {
         };
     }
 
+    buildSeminarUpdateEmail(row, changes = []) {
+        if (!row) {
+            throw new Error('Registration data is missing');
+        }
+
+        if (!row.email) {
+            throw new Error('Recipient email is missing');
+        }
+
+        const details = this.buildSeminarDetails(row);
+        const greetingName = row.full_name || 'participant';
+        const changedItems = changes.length
+            ? changes.map((change) => `- ${change}`).join('\n')
+            : '- Les informations du séminaire ont été mises à jour.';
+        const htmlChangedItems = changes.length
+            ? changes.map((change) => `<li>${this.escapeHtml(change)}</li>`).join('')
+            : '<li>Les informations du séminaire ont été mises à jour.</li>';
+        const descriptionLine = details.description
+            ? `\nDescription : ${details.description}\n`
+            : '';
+        const participationValue = details.isVirtual && /^https?:\/\//i.test(details.participationValue)
+            ? `<a href="${this.escapeAttribute(details.participationValue)}">${this.escapeHtml(details.participationValue)}</a>`
+            : this.escapeHtml(details.participationValue);
+
+        const text = [
+            `Bonjour ${greetingName},`,
+            '',
+            "Les informations de votre séminaire AANM ont été mises à jour.",
+            '',
+            'Changements :',
+            changedItems,
+            '',
+            `Séminaire : ${details.title}`,
+            `Date : ${details.date}`,
+            `${details.participationLabel} : ${details.participationValue}`,
+            descriptionLine.trim(),
+            '',
+            "Merci de prendre en compte ces nouvelles informations.",
+            "L'équipe AANM"
+        ].filter(Boolean).join('\n');
+
+        const htmlDescription = details.description
+            ? `<p><strong>Description :</strong> ${this.escapeHtml(details.description)}</p>`
+            : '';
+        const html = `
+            <div style="font-family:Arial,sans-serif;line-height:1.6;color:#1f2937;">
+                <p>Bonjour ${this.escapeHtml(greetingName)},</p>
+                <p>Les informations de votre séminaire AANM ont été mises à jour.</p>
+                <div style="border:1px solid #fde68a;border-radius:12px;padding:16px;margin:18px 0;background:#fffbeb;">
+                    <p><strong>Changements :</strong></p>
+                    <ul>${htmlChangedItems}</ul>
+                </div>
+                <div style="border:1px solid #d8eee8;border-radius:12px;padding:16px;margin:18px 0;background:#f8fffc;">
+                    <p><strong>Séminaire :</strong> ${this.escapeHtml(details.title)}</p>
+                    <p><strong>Date :</strong> ${this.escapeHtml(details.date)}</p>
+                    <p><strong>${this.escapeHtml(details.participationLabel)} :</strong> ${participationValue}</p>
+                    ${htmlDescription}
+                </div>
+                <p>Merci de prendre en compte ces nouvelles informations.</p>
+                <p>L'équipe AANM</p>
+            </div>
+        `;
+
+        return {
+            to: row.email,
+            subject: `Mise à jour du séminaire - ${details.title}`,
+            text,
+            html
+        };
+    }
+
     async sendSeminarApprovalEmail(row) {
         const provider = this.resolveProvider();
 
@@ -208,6 +279,21 @@ class EmailService {
         }
 
         return this.sendWithSmtp(message);
+    }
+
+    async sendSeminarUpdateEmail(row, changes = []) {
+        if (!this.isConfigured()) {
+            return {
+                sent: false,
+                skipped: true,
+                reason: 'Service email non configuré'
+            };
+        }
+
+        const message = this.buildSeminarUpdateEmail(row, changes);
+        return this.resolveProvider() === 'resend'
+            ? this.sendWithResend(message)
+            : this.sendWithSmtp(message);
     }
 
     async sendTestEmail(to) {

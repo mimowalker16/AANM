@@ -1800,7 +1800,22 @@
                     const result = await res.json();
                     if (handleAuthError(res, result)) return;
                     if (!result.success) throw new Error(result.message);
-                    this.showNotification(id ? 'Séminaire mis à jour.' : 'Séminaire créé avec succès.', 'success');
+                    if (id) {
+                        const notification = result.notification || {};
+                        const attempted = Number(notification.attempted || 0);
+                        const sent = Number(notification.sent || 0);
+                        const failed = Number(notification.failed || 0);
+                        const skipped = Number(notification.skipped || 0);
+                        if (attempted > 0 && failed === 0 && skipped === 0) {
+                            this.showNotification(`Séminaire mis à jour. ${sent} email(s) envoyé(s).`, 'success');
+                        } else if (attempted > 0) {
+                            this.showNotification(`Séminaire mis à jour. Emails envoyés: ${sent}, échecs: ${failed}, ignorés: ${skipped}.`, 'warning');
+                        } else {
+                            this.showNotification('Séminaire mis à jour.', 'success');
+                        }
+                    } else {
+                        this.showNotification('Séminaire créé avec succès.', 'success');
+                    }
                     this.cancelEditSeminar();
                     await this.loadSeminaires();
                 } catch (err) {
@@ -1853,8 +1868,8 @@
                 this.showConfirmModal(
                     resendEmail ? "Envoyer l'email" : "Approuver l'inscription",
                     resendEmail
-                        ? "Un email de confirmation sera envoyé si SMTP est configuré."
-                        : "Confirmez que le paiement a été vérifié. L'inscription sera approuvée et un email de confirmation sera envoyé si SMTP est configuré.",
+                        ? "Un email de confirmation sera envoyé si le service email est configuré."
+                        : "Confirmez que le paiement a été vérifié. L'inscription sera approuvée et un email de confirmation sera envoyé si le service email est configuré.",
                     resendEmail ? 'Envoyer' : 'Approuver',
                     'approve',
                     async () => {
