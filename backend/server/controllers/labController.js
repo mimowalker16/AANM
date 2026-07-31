@@ -2,7 +2,7 @@ import { validationResult } from 'express-validator';
 import database from '../database/index.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
 
-// Submit new lab
+// Submit new cabinet
 export const submitLab = asyncHandler(async (req, res) => {
     // Check validation errors
     const errors = validationResult(req);
@@ -15,34 +15,44 @@ export const submitLab = asyncHandler(async (req, res) => {
     }
 
     const {
-        labName,
-        institutionName = null,
-        contactPerson,
-        contactEmail,
-        phone = null,
-        website = null,
-        description = null,
-        establishedYear = null,
-        researchAreas,
+        fullName,
+        email,
+        wilaya,
+        qualifications,
+        specialistSpecialty = null,
+        qualificationOther = null,
+        telephones,
+        address,
+        practices,
+        practiceOther = null,
+        comments = null,
         location
     } = req.body;
 
     // Prepare data for database
     const labData = {
-        lab_name: labName,
-        institution_name: institutionName,
-        contact_person: contactPerson,
-        contact_email: contactEmail,
-        phone,
-        website,
-        address: location.address,
-        city: location.city,
-        country: location.country,
+        record_type: 'cabinet',
+        full_name: fullName,
+        wilaya,
+        qualifications_json: JSON.stringify(qualifications),
+        specialist_specialty: specialistSpecialty || null,
+        qualification_other: qualificationOther || null,
+        practices_json: JSON.stringify(practices),
+        practice_other: practiceOther || null,
+        lab_name: fullName,
+        institution_name: wilaya,
+        contact_person: fullName,
+        contact_email: email,
+        phone: telephones,
+        website: null,
+        address,
+        city: wilaya,
+        country: location.country || 'Algérie',
         coordinates_lat: location.lat,
         coordinates_lng: location.lng,
-        research_areas: JSON.stringify(researchAreas),
-        description,
-        established_year: establishedYear
+        research_areas: JSON.stringify(practices),
+        description: comments || null,
+        established_year: null
     };
 
     try {
@@ -50,7 +60,7 @@ export const submitLab = asyncHandler(async (req, res) => {
         
         res.status(201).json({
             success: true,
-            message: 'Lab information submitted successfully',
+            message: 'Cabinet information submitted successfully',
             data: {
                 id: result.id,
                 submittedAt: new Date().toISOString()
@@ -61,7 +71,7 @@ export const submitLab = asyncHandler(async (req, res) => {
     }
 });
 
-// Get all approved labs with enhanced search and filtering
+// Get all approved cabinets with enhanced search and filtering
 export const getLabs = asyncHandler(async (req, res) => {
     try {
         const searchParams = {
@@ -70,6 +80,9 @@ export const getLabs = asyncHandler(async (req, res) => {
             city: req.query.city,
             institution: req.query.institution,
             researchArea: req.query.researchArea,
+            wilaya: req.query.wilaya,
+            qualification: req.query.qualification,
+            practice: req.query.practice,
             yearFrom: req.query.yearFrom,
             yearTo: req.query.yearTo,
             sortBy: req.query.sortBy,
@@ -89,7 +102,7 @@ export const getLabs = asyncHandler(async (req, res) => {
         
         res.json({
             success: true,
-            message: 'Labs retrieved successfully',
+            message: 'Cabinets retrieved successfully',
             data: {
                 labs,
                 count: labs.length,
@@ -101,7 +114,7 @@ export const getLabs = asyncHandler(async (req, res) => {
     }
 });
 
-// Get single lab by ID
+// Get single cabinet by ID
 export const getLabById = asyncHandler(async (req, res) => {
     const labId = parseInt(req.params.id);
     
@@ -118,13 +131,13 @@ export const getLabById = asyncHandler(async (req, res) => {
         if (!lab) {
             return res.status(404).json({
                 success: false,
-                message: 'Laboratory not found or not approved'
+                message: 'Cabinet not found or not approved'
             });
         }
 
         res.json({
             success: true,
-            message: 'Laboratory retrieved successfully',
+            message: 'Cabinet retrieved successfully',
             data: {
                 lab
             }

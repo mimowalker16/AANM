@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Annuaire des laboratoires - AANM</title>
-    <meta name="description" content="Browse African laboratoires and research institutions in our comprehensive directory." />
+    <title>Annuaire des cabinets - AANM</title>
+    <meta name="description" content="Parcourez les cabinets et praticiens référencés dans l'annuaire AANM." />
     
     <!-- Performance Optimizations -->
     <meta name="theme-color" content="#2e7d32" />
@@ -322,9 +322,9 @@
                 <a href="./activities.html" class="navbar__link">Activités</a>
                 <a href="./news.html" class="navbar__link">Actualités</a>
                 <a href="./contact.html" class="navbar__link">Contact</a>
-                <a href="./lab-submission.html" class="navbar__link">Soumettre un labo</a>
-                <a href="./lab-directory.html" class="navbar__link navbar__link--active">Annuaire des labos</a>
-                <a href="./lab-map.html" class="navbar__link">Carte des labos</a>
+                <a href="./lab-submission.html" class="navbar__link">Soumettre un cabinet</a>
+                <a href="./lab-directory.html" class="navbar__link navbar__link--active">Annuaire des cabinets</a>
+                <a href="./lab-map.html" class="navbar__link">Carte des cabinets</a>
                 <a href="./contact.html" class="navbar__cta">Nous Rejoindre →</a>
             </div>
             <button class="navbar__toggle" id="navToggle" aria-label="Menu">
@@ -336,9 +336,9 @@
     <main>
         <header class="page-header">
             <div class="container">
-                <span class="section-label">Annuaire des labos</span>
-                <h1 class="page-header__title">Annuaire des laboratoires</h1>
-                <p class="page-header__subtitle">Découvrez les laboratoires de recherche en Afrique du Nord</p>
+                <span class="section-label">Annuaire des cabinets</span>
+                <h1 class="page-header__title">Annuaire des cabinets</h1>
+                <p class="page-header__subtitle">Découvrez les cabinets et praticiens de nutrition référencés par l'AANM</p>
             </div>
         </header>
 
@@ -351,14 +351,14 @@
                             type="text" 
                             id="searchInput" 
                             class="filter-input" 
-                            placeholder="Rechercher des laboratoires par nom, institution ou localisation..."
+                            placeholder="Rechercher par nom, wilaya, qualification ou pratique..."
                             autocomplete="off"
                         >
                         <select id="countryFilter" class="filter-select">
-                            <option value="">Tous les pays</option>
+                            <option value="">Toutes les wilayas</option>
                         </select>
                         <select id="researchAreaFilter" class="filter-select">
-                            <option value="">Tous les domaines de recherche</option>
+                            <option value="">Toutes les pratiques</option>
                         </select>
                         <a href="/advanced-search.html" class="advanced-search-link">
                             <svg class="icon" viewBox="0 0 20 20">
@@ -375,7 +375,7 @@
 
                 <!-- Chargement State -->
                 <div id="loadingState" class="loading-state">
-                    <p>Chargement des laboratoires...</p>
+                    <p>Chargement des cabinets...</p>
                 </div>
 
                 <!-- Lab Grid -->
@@ -385,8 +385,8 @@
 
                 <!-- No Results State -->
                 <div id="noResults" class="no-results" style="display: none;">
-                    <h3>Aucun laboratoire trouvé</h3>
-                    <p>Essayez de modifier vos critères de recherche ou <a href="/lab-submission.html">soumettez un nouveau laboratoire</a>.</p>
+                    <h3>Aucun cabinet trouvé</h3>
+                    <p>Essayez de modifier vos critères de recherche ou <a href="/lab-submission.html">soumettez un nouveau cabinet</a>.</p>
                 </div>
 
                 <!-- Pagination -->
@@ -425,10 +425,10 @@
                     </div>
                     <div class="footer__column">
                         <h4 class="footer__heading">ANNUAIRE</h4>
-                        <a href="./lab-directory.html" class="footer__link">Annuaire des Labos</a>
-                        <a href="./lab-map.html" class="footer__link">Carte des Labos</a>
+                        <a href="./lab-directory.html" class="footer__link">Annuaire des Cabinets</a>
+                        <a href="./lab-map.html" class="footer__link">Carte des Cabinets</a>
                         <a href="./advanced-search.html" class="footer__link">Recherche Avancée</a>
-                        <a href="./lab-submission.html" class="footer__link">Soumettre un Labo</a>
+                        <a href="./lab-submission.html" class="footer__link">Soumettre un Cabinet</a>
                     </div>
                     <div class="footer__column">
                         <h4 class="footer__heading">CONTACT</h4>
@@ -496,7 +496,7 @@
                         this.labs = result.data.labs;
                         this.filteredLabs = [...this.labs];
                         this.searchParams = result.data.searchParams || {};
-                        console.log(`Loaded ${this.labs.length} laboratoires`);
+                        console.log(`Loaded ${this.labs.length} cabinets`);
                         
                         // Populate filters if this is the initial load
                         if (Object.keys(searchParams).length === 0) {
@@ -505,11 +505,11 @@
                         
                         return result.data;
                     } else {
-                        throw new Error(result.message || 'Impossible de charger les laboratoires');
+                        throw new Error(result.message || 'Impossible de charger les cabinets');
                     }
                 } catch (error) {
-                    console.error('Erreur lors du chargement des labos :', error);
-                    this.showError('Impossible de charger les laboratoires. Please check your connection and try again.');
+                    console.error('Erreur lors du chargement des cabinets :', error);
+                    this.showError('Impossible de charger les cabinets. Vérifiez votre connexion puis réessayez.');
                     return null;
                 }
             }
@@ -526,36 +526,7 @@
 
             async populateFilters() {
                 try {
-                    // Get suggestions for countries and research areas
-                    const [countriesResponse, researchAreasResponse] = await Promise.all([
-                        fetch(`${API_BASE}/api/labs/suggestions?field=country&limit=20`),
-                        fetch(`${API_BASE}/api/labs/suggestions?field=research_areas&limit=30`)
-                    ]);
-                    
-                    const countriesResult = await countriesResponse.json();
-                    const researchAreasResult = await researchAreasResponse.json();
-                    
-                    // Populate country filter
-                    if (countriesResult.success) {
-                        const countrySelect = document.getElementById('countryFilter');
-                        countriesResult.data.suggestions.forEach(country => {
-                            const option = document.createElement('option');
-                            option.value = country;
-                            option.textContent = country;
-                            countrySelect.appendChild(option);
-                        });
-                    }
-                    
-                    // Populate research area filter
-                    if (researchAreasResult.success) {
-                        const researchAreaSelect = document.getElementById('researchAreaFilter');
-                        researchAreasResult.data.suggestions.forEach(area => {
-                            const option = document.createElement('option');
-                            option.value = area;
-                            option.textContent = this.formatResearchArea(area);
-                            researchAreaSelect.appendChild(option);
-                        });
-                    }
+                    this.populateFiltersFromData();
                 } catch (error) {
                     console.error('Erreur lors du chargement des filtres :', error);
                     // Fallback to basic filter population if API fails
@@ -565,7 +536,7 @@
 
             populateFiltersFromData() {
                 // Fallback method using loaded data
-                const countries = [...new Set(this.labs.map(lab => lab.country))].sort();
+                const countries = [...new Set(this.labs.map(lab => lab.wilaya || lab.city).filter(Boolean))].sort();
                 const countrySelect = document.getElementById('countryFilter');
                 countries.forEach(country => {
                     const option = document.createElement('option');
@@ -575,7 +546,7 @@
                 });
 
                 // Populate research area filter
-                const allResearchAreas = this.labs.flatMap(lab => lab.researchAreas);
+                const allResearchAreas = this.labs.flatMap(lab => lab.practices || lab.researchAreas || []);
                 const uniqueResearchAreas = [...new Set(allResearchAreas)].sort();
                 const researchAreaSelect = document.getElementById('researchAreaFilter');
                 uniqueResearchAreas.forEach(area => {
@@ -594,8 +565,8 @@
                 // Build search parameters
                 const searchParams = {};
                 if (searchTerm) searchParams.search = searchTerm;
-                if (selectedPays) searchParams.country = selectedPays;
-                if (selectedResearchArea) searchParams.researchArea = selectedResearchArea;
+                if (selectedPays) searchParams.wilaya = selectedPays;
+                if (selectedResearchArea) searchParams.practice = selectedResearchArea;
                 
                 // Show loading state
                 this.showLoading();
@@ -636,7 +607,7 @@
                 const labsToShow = this.filteredLabs.slice(startIndex, endIndex);
 
                 // Update results count
-                resultsCount.textContent = `Showing ${startIndex + 1}-${Math.min(endIndex, this.filteredLabs.length)} of ${this.filteredLabs.length} laboratoires`;
+                resultsCount.textContent = `${startIndex + 1}-${Math.min(endIndex, this.filteredLabs.length)} sur ${this.filteredLabs.length} cabinets`;
 
                 // Render lab cards
                 labGrid.innerHTML = labsToShow.map(lab => this.createLabCard(lab)).join('');
@@ -646,27 +617,37 @@
             }
 
             createLabCard(lab) {
-                const researchTags = lab.researchAreas.map(area => 
+                const qualificationTags = (lab.qualifications || []).map(area =>
                     `<span class="research-tag">${this.formatResearchArea(area)}</span>`
                 ).join('');
+                const practiceTags = (lab.practices || lab.researchAreas || []).map(area => 
+                    `<span class="research-tag">${this.formatResearchArea(area)}</span>`
+                ).join('');
+                const cabinetName = lab.full_name || lab.lab_name || 'Cabinet';
+                const wilaya = lab.wilaya || lab.city || '-';
 
                 return `
                     <div class="lab-card">
                         <div class="lab-header">
-                            <h3 class="lab-name">${this.escapeHtml(lab.lab_name)}</h3>
-                            ${lab.institution_name ? `<p class="lab-institution">${this.escapeHtml(lab.institution_name)}</p>` : ''}
+                            <h3 class="lab-name">${this.escapeHtml(cabinetName)}</h3>
+                            <p class="lab-institution">${this.escapeHtml(wilaya)}</p>
                         </div>
                         
                         <div class="lab-location">
                             <svg class="icon" viewBox="0 0 20 20">
                                 <path d="M10 2C6.69 2 4 4.69 4 8c0 5.25 6 12 6 12s6-6.75 6-12c0-3.31-2.69-6-6-6zm0 8c-1.1 0-2-0.9-2-2s0.9-2 2-2 2 0.9 2 2-0.9 2-2 2z"/>
                             </svg>
-                            <span>${this.escapeHtml(lab.city)}, ${this.escapeHtml(lab.country)}</span>
+                            <span>${this.escapeHtml(wilaya)}, ${this.escapeHtml(lab.country || 'Algérie')}</span>
                         </div>
 
                         <div class="lab-research-areas">
-                            <h4>Domaines de recherche</h4>
-                            <div class="research-tags">${researchTags}</div>
+                            <h4>Qualifications</h4>
+                            <div class="research-tags">${qualificationTags || '<span class="research-tag">Non renseigné</span>'}</div>
+                        </div>
+
+                        <div class="lab-research-areas">
+                            <h4>Pratiques</h4>
+                            <div class="research-tags">${practiceTags || '<span class="research-tag">Non renseigné</span>'}</div>
                         </div>
 
                         ${lab.description ? `<p class="lab-description">${this.escapeHtml(lab.description)}</p>` : ''}
@@ -678,8 +659,7 @@
                                 </svg>
                                 Voir le profil
                             </a>
-                            <a href="${this.escapeAttribute(this.safeMailto(lab.contact_email))}" class="lab-contact">Contacter le labo</a>
-                            ${lab.established_year ? `<span class="lab-established">Est. ${lab.established_year}</span>` : ''}
+                            <a href="${this.escapeAttribute(this.safeMailto(lab.contact_email))}" class="lab-contact">Contacter le cabinet</a>
                         </div>
                     </div>
                 `;
@@ -741,7 +721,27 @@
             }
 
             formatResearchArea(area) {
-                return area.split('-').map(word => 
+                const labels = {
+                    'nutritherapeute': 'Nutrithérapeute',
+                    'medecin-generaliste': 'Médecin généraliste',
+                    'medecin-specialiste': 'Médecin spécialiste',
+                    'pharmacien': 'Pharmacien',
+                    'biologiste': 'Biologiste',
+                    'chirurgien-dentiste': 'Chirurgien dentiste',
+                    'naturopathe': 'Naturopathe',
+                    'phytotherapeute': 'Phytothérapeute',
+                    'sage-femme': 'Sage femme',
+                    'hidjama': 'Hidjama',
+                    'mesotherapie': 'Mésothérapie',
+                    'nutritherapie': 'Nutrithérapie',
+                    'auriculotherapie': 'Auriculothérapie',
+                    'naturotherapie': 'Naturothérapie',
+                    'phytotherapie': 'Phytothérapie',
+                    'ozonotherapie': 'Ozonothérapie',
+                    'autre': 'Autre'
+                };
+                if (labels[area]) return labels[area];
+                return String(area || '').split('-').map(word =>
                     word.charAt(0).toUpperCase() + word.slice(1)
                 ).join(' ');
             }
@@ -781,7 +781,7 @@
                 const pagination = document.getElementById('pagination');
                 
                 loadingState.style.display = 'block';
-                loadingState.innerHTML = '<p>Chargement des laboratoires...</p>';
+                loadingState.innerHTML = '<p>Chargement des cabinets...</p>';
                 labGrid.style.display = 'none';
                 noResults.style.display = 'none';
                 pagination.style.display = 'none';

@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Carte des laboratoires - AANM</title>
-    <meta name="description" content="Interactive map of African laboratoires and research institutions." />
+    <title>Carte des cabinets - AANM</title>
+    <meta name="description" content="Carte interactive des cabinets et praticiens référencés par l'AANM." />
     
     <!-- Performance Optimizations -->
     <meta name="theme-color" content="#2e7d32" />
@@ -449,9 +449,9 @@
                 <a href="./activities.html" class="navbar__link">Activités</a>
                 <a href="./news.html" class="navbar__link">Actualités</a>
                 <a href="./contact.html" class="navbar__link">Contact</a>
-                <a href="./lab-submission.html" class="navbar__link">Soumettre un labo</a>
-                <a href="./lab-directory.html" class="navbar__link">Annuaire des labos</a>
-                <a href="./lab-map.html" class="navbar__link navbar__link--active">Carte des labos</a>
+                <a href="./lab-submission.html" class="navbar__link">Soumettre un cabinet</a>
+                <a href="./lab-directory.html" class="navbar__link">Annuaire des cabinets</a>
+                <a href="./lab-map.html" class="navbar__link navbar__link--active">Carte des cabinets</a>
                 <a href="./contact.html" class="navbar__cta">Nous Rejoindre →</a>
             </div>
             <button class="navbar__toggle" id="navToggle" aria-label="Menu">
@@ -463,9 +463,9 @@
     <main>
         <header class="page-header">
             <div class="container">
-                <span class="section-label">Carte des labos</span>
-                <h1 class="page-header__title">Carte des laboratoires</h1>
-                <p class="page-header__subtitle">Explorez les laboratoires de recherche en Afrique du Nord sur une carte interactive</p>
+                <span class="section-label">Carte des cabinets</span>
+                <h1 class="page-header__title">Carte des cabinets</h1>
+                <p class="page-header__subtitle">Explorez les cabinets et praticiens référencés sur une carte interactive</p>
             </div>
         </header>
 
@@ -475,10 +475,10 @@
                 <div class="map-controls">
                     <div class="map-filters">
                         <select id="countryFilter" class="map-filter-select">
-                            <option value="">Tous les pays</option>
+                            <option value="">Toutes les wilayas</option>
                         </select>
                         <select id="researchAreaFilter" class="map-filter-select">
-                            <option value="">Tous les domaines de recherche</option>
+                            <option value="">Toutes les pratiques</option>
                         </select>
                         <a href="/advanced-search.html" class="advanced-search-link">
                             <svg class="icon" viewBox="0 0 20 20">
@@ -514,13 +514,13 @@
                                     <path d="M10 2C6.69 2 4 4.69 4 8c0 5.25 6 12 6 12s6-6.75 6-12c0-3.31-2.69-6-6-6zm0 8c-1.1 0-2-0.9-2-2s0.9-2 2-2 2 0.9 2 2-0.9 2-2 2z"/>
                                 </svg>
                             </div>
-                            <span>Laboratoire individuel</span>
+                            <span>Cabinet individuel</span>
                         </div>
                         <div class="legend-item">
                             <div class="legend-marker cluster">
                                 <span style="color: white; font-weight: bold; font-size: 0.7rem;">5</span>
                             </div>
-                            <span>Plusieurs laboratoires (cliquez pour zoomer)</span>
+                            <span>Plusieurs cabinets (cliquez pour zoomer)</span>
                         </div>
                     </div>
                 </div>
@@ -535,9 +535,9 @@
 
                 <!-- No Labs Message -->
                 <div id="noLabsMessage" class="no-labs-message" style="display: none;">
-                    <h3>Aucun laboratoire à afficher</h3>
-                    <p>Aucun laboratoire approuvé n’est actuellement disponible sur la carte.</p>
-                    <p><a href="/lab-submission.html">Soumettre un laboratoire</a> pour contribuer à notre réseau de recherche.</p>
+                    <h3>Aucun cabinet à afficher</h3>
+                    <p>Aucun cabinet approuvé n’est actuellement disponible sur la carte.</p>
+                    <p><a href="/lab-submission.html">Soumettre un cabinet</a> pour contribuer à l'annuaire.</p>
                 </div>
 
                 <!-- Map Actions -->
@@ -552,7 +552,7 @@
                         <svg class="icon" viewBox="0 0 20 20" style="width: 16px; height: 16px; fill: currentColor;">
                             <path d="M10 2a1 1 0 011 1v6h6a1 1 0 110 2h-6v6a1 1 0 11-2 0v-6H3a1 1 0 110-2h6V3a1 1 0 011-1z"/>
                         </svg>
-                        Soumettre un labo
+                        Soumettre un cabinet
                     </a>
                 </div>
             </div>
@@ -587,10 +587,10 @@
                     </div>
                     <div class="footer__column">
                         <h4 class="footer__heading">ANNUAIRE</h4>
-                        <a href="./lab-directory.html" class="footer__link">Annuaire des Labos</a>
-                        <a href="./lab-map.html" class="footer__link">Carte des Labos</a>
+                        <a href="./lab-directory.html" class="footer__link">Annuaire des Cabinets</a>
+                        <a href="./lab-map.html" class="footer__link">Carte des Cabinets</a>
                         <a href="./advanced-search.html" class="footer__link">Recherche Avancée</a>
-                        <a href="./lab-submission.html" class="footer__link">Soumettre un Labo</a>
+                        <a href="./lab-submission.html" class="footer__link">Soumettre un Cabinet</a>
                     </div>
                     <div class="footer__column">
                         <h4 class="footer__heading">CONTACT</h4>
@@ -683,7 +683,7 @@
                     if (result.success) {
                         this.labs = result.data.labs;
                         this.filteredLabs = [...this.labs];
-                        console.log(`Loaded ${this.labs.length} laboratoires`);
+                        console.log(`Loaded ${this.labs.length} cabinets`);
                         
                         if (this.labs.length === 0) {
                             this.showNoLabsMessage();
@@ -691,11 +691,11 @@
                             this.hideNoLabsMessage();
                         }
                     } else {
-                        throw new Error(result.message || 'Impossible de charger les laboratoires');
+                        throw new Error(result.message || 'Impossible de charger les cabinets');
                     }
                 } catch (error) {
-                    console.error('Erreur lors du chargement des labos :', error);
-                    this.showError('Impossible de charger les laboratoires. Please check your connection and try again.');
+                    console.error('Erreur lors du chargement des cabinets :', error);
+                    this.showError('Impossible de charger les cabinets. Vérifiez votre connexion puis réessayez.');
                 } finally {
                     this.hideMapLoading();
                 }
@@ -712,8 +712,8 @@
             populateFilters() {
                 if (this.labs.length === 0) return;
 
-                // Populate country filter
-                const countries = [...new Set(this.labs.map(lab => lab.country))].sort();
+                // Populate wilaya filter
+                const countries = [...new Set(this.labs.map(lab => lab.wilaya || lab.city).filter(Boolean))].sort();
                 const countrySelect = document.getElementById('countryFilter');
                 countries.forEach(country => {
                     const option = document.createElement('option');
@@ -722,8 +722,8 @@
                     countrySelect.appendChild(option);
                 });
 
-                // Populate research area filter
-                const allResearchAreas = this.labs.flatMap(lab => lab.researchAreas);
+                // Populate practice filter
+                const allResearchAreas = this.labs.flatMap(lab => lab.practices || lab.researchAreas || []);
                 const uniqueResearchAreas = [...new Set(allResearchAreas)].sort();
                 const researchAreaSelect = document.getElementById('researchAreaFilter');
                 uniqueResearchAreas.forEach(area => {
@@ -739,9 +739,9 @@
                 const selectedResearchArea = document.getElementById('researchAreaFilter').value;
 
                 this.filteredLabs = this.labs.filter(lab => {
-                    const matchesPays = !selectedPays || lab.country === selectedPays;
+                    const matchesPays = !selectedPays || (lab.wilaya || lab.city) === selectedPays;
                     const matchesResearchArea = !selectedResearchArea || 
-                        lab.researchAreas.includes(selectedResearchArea);
+                        (lab.practices || lab.researchAreas || []).includes(selectedResearchArea);
                     return matchesPays && matchesResearchArea;
                 });
 
@@ -790,25 +790,35 @@
             }
 
             createPopupContent(lab) {
-                const researchTags = lab.researchAreas.map(area => 
+                const qualificationTags = (lab.qualifications || []).map(area =>
                     `<span class="research-tag">${this.formatResearchArea(area)}</span>`
                 ).join('');
+                const practiceTags = (lab.practices || lab.researchAreas || []).map(area =>
+                    `<span class="research-tag">${this.formatResearchArea(area)}</span>`
+                ).join('');
+                const cabinetName = lab.full_name || lab.lab_name || 'Cabinet';
+                const wilaya = lab.wilaya || lab.city || '-';
 
                 return `
                     <div class="lab-popup">
-                        <h3>${this.escapeHtml(lab.lab_name)}</h3>
-                        ${lab.institution_name ? `<p class="institution">${this.escapeHtml(lab.institution_name)}</p>` : ''}
+                        <h3>${this.escapeHtml(cabinetName)}</h3>
+                        <p class="institution">${this.escapeHtml(wilaya)}</p>
                         
                         <div class="location">
                             <svg class="icon" viewBox="0 0 20 20">
                                 <path d="M10 2C6.69 2 4 4.69 4 8c0 5.25 6 12 6 12s6-6.75 6-12c0-3.31-2.69-6-6-6zm0 8c-1.1 0-2-0.9-2-2s0.9-2 2-2 2 0.9 2 2-0.9 2-2 2z"/>
                             </svg>
-                            <span>${this.escapeHtml(lab.city)}, ${this.escapeHtml(lab.country)}</span>
+                            <span>${this.escapeHtml(wilaya)}, ${this.escapeHtml(lab.country || 'Algérie')}</span>
                         </div>
 
                         <div class="research-areas">
-                            <h4>Domaines de recherche</h4>
-                            <div class="research-tags">${researchTags}</div>
+                            <h4>Qualifications</h4>
+                            <div class="research-tags">${qualificationTags || '<span class="research-tag">Non renseigné</span>'}</div>
+                        </div>
+
+                        <div class="research-areas">
+                            <h4>Pratiques</h4>
+                            <div class="research-tags">${practiceTags || '<span class="research-tag">Non renseigné</span>'}</div>
                         </div>
 
                         <div class="actions">
@@ -824,10 +834,10 @@
                 const countryCountEl = document.getElementById('countryCount');
 
                 const visibleLabs = this.filteredLabs.length;
-                const visiblePays = [...new Set(this.filteredLabs.map(lab => lab.country))].length;
+                const visiblePays = [...new Set(this.filteredLabs.map(lab => lab.wilaya || lab.city).filter(Boolean))].length;
 
-                labCountEl.textContent = `${visibleLabs} ${visibleLabs === 1 ? 'Laboratory' : 'Laboratories'}`;
-                countryCountEl.textContent = `${visiblePays} ${visiblePays === 1 ? 'Pays' : 'Pays'}`;
+                labCountEl.textContent = `${visibleLabs} ${visibleLabs === 1 ? 'cabinet' : 'cabinets'}`;
+                countryCountEl.textContent = `${visiblePays} ${visiblePays === 1 ? 'wilaya' : 'wilayas'}`;
             }
 
             showNoLabsMessage() {
@@ -854,7 +864,27 @@
             }
 
             formatResearchArea(area) {
-                return area.split('-').map(word => 
+                const labels = {
+                    'nutritherapeute': 'Nutrithérapeute',
+                    'medecin-generaliste': 'Médecin généraliste',
+                    'medecin-specialiste': 'Médecin spécialiste',
+                    'pharmacien': 'Pharmacien',
+                    'biologiste': 'Biologiste',
+                    'chirurgien-dentiste': 'Chirurgien dentiste',
+                    'naturopathe': 'Naturopathe',
+                    'phytotherapeute': 'Phytothérapeute',
+                    'sage-femme': 'Sage femme',
+                    'hidjama': 'Hidjama',
+                    'mesotherapie': 'Mésothérapie',
+                    'nutritherapie': 'Nutrithérapie',
+                    'auriculotherapie': 'Auriculothérapie',
+                    'naturotherapie': 'Naturothérapie',
+                    'phytotherapie': 'Phytothérapie',
+                    'ozonotherapie': 'Ozonothérapie',
+                    'autre': 'Autre'
+                };
+                if (labels[area]) return labels[area];
+                return String(area || '').split('-').map(word =>
                     word.charAt(0).toUpperCase() + word.slice(1)
                 ).join(' ');
             }
