@@ -36,6 +36,26 @@ function parseJsonField(value, fallback) {
     }
 }
 
+function isValidAlgerianPhone(value) {
+    const normalized = String(value || '')
+        .trim()
+        .replace(/[()\s.-]/g, '')
+        .replace(/^00/, '+');
+
+    if (!normalized) return false;
+
+    let significantNumber = normalized;
+    if (significantNumber.startsWith('+213')) {
+        significantNumber = significantNumber.slice(4);
+    } else if (significantNumber.startsWith('213')) {
+        significantNumber = significantNumber.slice(3);
+    } else if (significantNumber.startsWith('0')) {
+        significantNumber = significantNumber.slice(1);
+    }
+
+    return /^([567]\d{8}|[234]\d{7})$/.test(significantNumber);
+}
+
 function validateAnswer(question, rawValue) {
     const type = question.field_type;
 
@@ -61,8 +81,8 @@ function validateAnswer(question, rawValue) {
 
     if (type === 'phone') {
         const value = normalizeString(rawValue);
-        if (!/^\+?[0-9\s\-().]{7,25}$/.test(value)) {
-            return { ok: false, message: `Numéro de téléphone invalide pour "${question.label}".` };
+        if (!isValidAlgerianPhone(value)) {
+            return { ok: false, message: `Numéro algérien invalide pour "${question.label}".` };
         }
         return { ok: true, answerText: value, answerJson: null };
     }

@@ -28,6 +28,33 @@ function containsOnlyAllowed(value, allowed) {
     return Array.isArray(value) && value.every((item) => allowed.includes(item));
 }
 
+function isValidAlgerianPhone(value) {
+    const normalized = String(value || '')
+        .trim()
+        .replace(/[()\s.-]/g, '')
+        .replace(/^00/, '+');
+
+    if (!normalized) return false;
+
+    let significantNumber = normalized;
+    if (significantNumber.startsWith('+213')) {
+        significantNumber = significantNumber.slice(4);
+    } else if (significantNumber.startsWith('213')) {
+        significantNumber = significantNumber.slice(3);
+    } else if (significantNumber.startsWith('0')) {
+        significantNumber = significantNumber.slice(1);
+    }
+
+    return /^([567]\d{8}|[234]\d{7})$/.test(significantNumber);
+}
+
+function splitPhoneList(value) {
+    return String(value || '')
+        .split(/[,;/\n\r]+/)
+        .map((item) => item.trim())
+        .filter(Boolean);
+}
+
 export const validateLabSubmission = [
     body('fullName')
         .trim()
@@ -47,7 +74,14 @@ export const validateLabSubmission = [
     body('telephones')
         .trim()
         .isLength({ min: 6, max: 60 })
-        .withMessage('Téléphone requis (6 à 60 caractères)'),
+        .withMessage('Téléphone requis (6 à 60 caractères)')
+        .custom((value) => {
+            const phones = splitPhoneList(value);
+            if (!phones.length || phones.some((phone) => !isValidAlgerianPhone(phone))) {
+                throw new Error('Ajoutez un numéro algérien valide, ex. 0551 23 45 67 ou +213 551 23 45 67');
+            }
+            return true;
+        }),
 
     body('address')
         .trim()

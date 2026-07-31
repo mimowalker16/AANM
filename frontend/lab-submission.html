@@ -199,6 +199,13 @@
             box-shadow: 0 0 0 3px rgba(27, 94, 58, 0.1);
         }
 
+        .form-group input.error,
+        .form-group textarea.error,
+        .form-group select.error {
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+        }
+
         .form-group input::placeholder,
         .form-group textarea::placeholder {
             color: var(--clr-text-light);
@@ -824,6 +831,32 @@
             }
         }
 
+        function isValidAlgerianPhone(value) {
+            let normalized = String(value || '')
+                .trim()
+                .replace(/[()\s.-]/g, '')
+                .replace(/^00/, '+');
+
+            if (!normalized) return false;
+            if (normalized.startsWith('+213')) {
+                normalized = normalized.slice(4);
+            } else if (normalized.startsWith('213')) {
+                normalized = normalized.slice(3);
+            } else if (normalized.startsWith('0')) {
+                normalized = normalized.slice(1);
+            }
+
+            return /^([567]\d{8}|[234]\d{7})$/.test(normalized);
+        }
+
+        function areValidAlgerianPhones(value) {
+            const phones = String(value || '')
+                .split(/[,;/\n\r]+/)
+                .map(item => item.trim())
+                .filter(Boolean);
+            return phones.length > 0 && phones.every(isValidAlgerianPhone);
+        }
+
         function validateForm() {
             const fullName = document.getElementById("fullName").value.trim();
             const email = document.getElementById("email").value.trim();
@@ -843,10 +876,12 @@
             const hasSpecialty = !specialistSelected || document.getElementById('specialistSpecialty').value.trim();
             const hasQualificationOther = !qualificationOtherSelected || document.getElementById('qualificationOther').value.trim();
             const hasPracticeOther = !practiceOtherSelected || document.getElementById('practiceOther').value.trim();
-            const isValid = fullName && email && wilaya && telephones && address && selectedLocation
+            const hasValidPhones = areValidAlgerianPhones(telephones);
+            const isValid = fullName && email && wilaya && hasValidPhones && address && selectedLocation
                 && qualifications.length > 0 && practices.length > 0
                 && hasSpecialty && hasQualificationOther && hasPracticeOther;
             
+            document.getElementById("telephones").classList.toggle("error", Boolean(telephones && !hasValidPhones));
             document.getElementById("submitBtn").disabled = !isValid;
         }
 
@@ -864,6 +899,11 @@
             
             if (!selectedLocation) {
                 alert("Veuillez sélectionner la localisation de votre cabinet sur la carte.");
+                return;
+            }
+
+            if (!areValidAlgerianPhones(document.getElementById("telephones").value)) {
+                alert("Veuillez saisir un numéro algérien valide, par exemple 0551 23 45 67 ou +213 551 23 45 67.");
                 return;
             }
 
