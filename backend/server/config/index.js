@@ -101,7 +101,12 @@ export const config = {
         resendApiKey: process.env.RESEND_API_KEY || '',
         resendApiUrl: process.env.RESEND_API_URL || 'https://api.resend.com/emails',
         from: process.env.EMAIL_FROM || process.env.SMTP_USER || 'AANM <no-reply@aanm-assal.org>',
-        replyTo: process.env.EMAIL_REPLY_TO || process.env.EMAIL_FROM || process.env.SMTP_USER || ''
+        replyTo: process.env.EMAIL_REPLY_TO || process.env.EMAIL_FROM || process.env.SMTP_USER || '',
+        adminPendingReminderEnabled: process.env.ADMIN_PENDING_REMINDER_ENABLED !== 'false',
+        adminPendingReminderAfterHours: parseInt(process.env.ADMIN_PENDING_REMINDER_AFTER_HOURS || '5', 10),
+        adminPendingReminderIntervalMinutes: parseInt(process.env.ADMIN_PENDING_REMINDER_INTERVAL_MINUTES || '15', 10),
+        adminPendingReminderRetryMinutes: parseInt(process.env.ADMIN_PENDING_REMINDER_RETRY_MINUTES || '60', 10),
+        adminPendingReminderBatchSize: parseInt(process.env.ADMIN_PENDING_REMINDER_BATCH_SIZE || '25', 10)
     },
     supabase: {
         url: deriveSupabaseUrl(process.env.SUPABASE_URL || '', databaseUrl),
