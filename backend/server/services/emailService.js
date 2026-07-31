@@ -261,6 +261,63 @@ class EmailService {
         };
     }
 
+    buildAdminPendingRegistrationReminderEmail(row) {
+        if (!row) {
+            throw new Error('Registration data is missing');
+        }
+
+        if (!config.email.replyTo) {
+            throw new Error('Admin reply-to email is missing');
+        }
+
+        const details = this.buildSeminarDetails(row);
+        const registeredAt = row.registered_at
+            ? this.formatDate(row.registered_at)
+            : 'Date inconnue';
+        const phoneLine = row.phone ? `Téléphone : ${row.phone}` : 'Téléphone : -';
+
+        const text = [
+            'Bonjour,',
+            '',
+            "Une inscription est en attente d'approbation depuis plus de 5 heures.",
+            '',
+            `Séminaire : ${details.title}`,
+            `Date du séminaire : ${details.date}`,
+            `Candidat : ${row.full_name || '-'}`,
+            `Email : ${row.email || '-'}`,
+            phoneLine,
+            `Inscrit le : ${registeredAt}`,
+            '',
+            "Connectez-vous au tableau de bord administrateur pour vérifier le paiement et approuver ou supprimer l'inscription.",
+            '',
+            "L'équipe AANM"
+        ].join('\n');
+
+        const html = `
+            <div style="font-family:Arial,sans-serif;line-height:1.6;color:#1f2937;">
+                <p>Bonjour,</p>
+                <p>Une inscription est en attente d'approbation depuis plus de 5 heures.</p>
+                <div style="border:1px solid #fde68a;border-radius:12px;padding:16px;margin:18px 0;background:#fffbeb;">
+                    <p><strong>Séminaire :</strong> ${this.escapeHtml(details.title)}</p>
+                    <p><strong>Date du séminaire :</strong> ${this.escapeHtml(details.date)}</p>
+                    <p><strong>Candidat :</strong> ${this.escapeHtml(row.full_name || '-')}</p>
+                    <p><strong>Email :</strong> ${this.escapeHtml(row.email || '-')}</p>
+                    <p><strong>Téléphone :</strong> ${this.escapeHtml(row.phone || '-')}</p>
+                    <p><strong>Inscrit le :</strong> ${this.escapeHtml(registeredAt)}</p>
+                </div>
+                <p>Connectez-vous au tableau de bord administrateur pour vérifier le paiement et approuver ou supprimer l'inscription.</p>
+                <p>L'équipe AANM</p>
+            </div>
+        `;
+
+        return {
+            to: config.email.replyTo,
+            subject: `Inscription en attente - ${details.title}`,
+            text,
+            html
+        };
+    }
+
     async sendSeminarApprovalEmail(row) {
         const provider = this.resolveProvider();
 
@@ -291,6 +348,29 @@ class EmailService {
         }
 
         const message = this.buildSeminarUpdateEmail(row, changes);
+        return this.resolveProvider() === 'resend'
+            ? this.sendWithResend(message)
+            : this.sendWithSmtp(message);
+    }
+
+    async sendAdminPendingRegistrationReminder(row) {
+        if (!config.email.replyTo) {
+            return {
+                sent: false,
+                skipped: true,
+                reason: 'EMAIL_REPLY_TO non configuré'
+            };
+        }
+
+        if (!this.isConfigured()) {
+            return {
+                sent: false,
+                skipped: true,
+                reason: 'Service email non configuré'
+            };
+        }
+
+        const message = this.buildAdminPendingRegistrationReminderEmail(row);
         return this.resolveProvider() === 'resend'
             ? this.sendWithResend(message)
             : this.sendWithSmtp(message);

@@ -1,6 +1,7 @@
 import express from 'express';
 import { config } from './config/index.js';
 import database from './database/index.js';
+import pendingRegistrationReminderService from './services/pendingRegistrationReminderService.js';
 
 // Middleware
 import { securityHeaders, corsOptions, publicReadRateLimiter, adminRateLimiter } from './middleware/security.js';
@@ -65,6 +66,7 @@ async function startServer() {
 └─────────────────────────────────────┘
             `);
         });
+        pendingRegistrationReminderService.start();
     } catch (error) {
         console.error('❌ Failed to start server:', error);
         process.exit(1);
@@ -76,6 +78,7 @@ process.on('SIGINT', async () => {
     console.log('\n🛑 Shutting down server gracefully...');
     
     try {
+        pendingRegistrationReminderService.stop();
         await database.close();
         console.log('✅ Server shutdown complete');
         process.exit(0);

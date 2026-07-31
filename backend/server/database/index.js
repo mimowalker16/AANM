@@ -151,6 +151,9 @@ class Database {
                 approved_at TIMESTAMPTZ,
                 confirmation_email_sent_at TIMESTAMPTZ,
                 confirmation_email_error TEXT,
+                admin_pending_reminder_sent_at TIMESTAMPTZ,
+                admin_pending_reminder_attempted_at TIMESTAMPTZ,
+                admin_pending_reminder_error TEXT,
                 registered_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
                 UNIQUE(seminar_id, email)
             )
@@ -161,6 +164,9 @@ class Database {
         await this.pool.query('ALTER TABLE registrations ADD COLUMN IF NOT EXISTS approved_at TIMESTAMPTZ');
         await this.pool.query('ALTER TABLE registrations ADD COLUMN IF NOT EXISTS confirmation_email_sent_at TIMESTAMPTZ');
         await this.pool.query('ALTER TABLE registrations ADD COLUMN IF NOT EXISTS confirmation_email_error TEXT');
+        await this.pool.query('ALTER TABLE registrations ADD COLUMN IF NOT EXISTS admin_pending_reminder_sent_at TIMESTAMPTZ');
+        await this.pool.query('ALTER TABLE registrations ADD COLUMN IF NOT EXISTS admin_pending_reminder_attempted_at TIMESTAMPTZ');
+        await this.pool.query('ALTER TABLE registrations ADD COLUMN IF NOT EXISTS admin_pending_reminder_error TEXT');
         await this.pool.query("ALTER TABLE registrations ADD COLUMN IF NOT EXISTS answers_json JSONB DEFAULT '[]'::jsonb");
         await this.pool.query("ALTER TABLE registrations ADD COLUMN IF NOT EXISTS files_json JSONB DEFAULT '[]'::jsonb");
         await this.pool.query("UPDATE registrations SET status = 'approved' WHERE status IS NULL");
@@ -1094,6 +1100,75 @@ class Database {
             [seminarId]
         );
         return result.rows;
+    }
+
+    async claimPendingRegistrationsForAdminReminder({ afterHours = 5, retryMinutes = 60, limit = 25 } = {}) {
+        const result = await this.pool.query(
+            `
+                WITH due AS (
+                    SELECT r.id
+                    FROM registrations r
+                    WHERE r.status = 'pending'
+                      AND r.admin_pending_reminder_sent_at IS NULL
+                      AND r.registered_at <= CURRENT_TIMESTAMP - ($1::int * INTERVAL '1 hour')
+                      AND (
+                          r.admin_pending_reminder_attempted_at IS NULL
+                          OR r.admin_pending_reminder_attempted_at <= CURRENT_TIMESTAMP - ($2::int * INTERVAL '1 minute')
+                      )
+                    ORDER BY r.registered_at ASC
+                    LIMIT $3
+                    FOR UPDATE SKIP LOCKED
+                ),
+                claimed AS (
+                    UPDATE registrations r
+                    SET admin_pending_reminder_attempted_at = CURRENT_TIMESTAMP,
+                        admin_pending_reminder_error = NULL
+                    FROM due
+                    WHERE r.id = due.id
+                    RETURNING r.*
+                )
+                SELECT
+                    claimed.*,
+                    COALESCE(claimed.answers_json, '[]'::jsonb) AS answers,
+                    COALESCE(claimed.files_json, '[]'::jsonb) AS files,
+                    s.title AS seminar_title,
+                    s.date AS seminar_date,
+                    s.location AS seminar_location,
+                    s.delivery_mode AS seminar_delivery_mode,
+                    s.virtual_room_url AS seminar_virtual_room_url,
+                    s.description AS seminar_description
+                FROM claimed
+                JOIN seminaires s ON s.id = claimed.seminar_id
+                ORDER BY claimed.registered_at ASC
+            `,
+            [afterHours, retryMinutes, limit]
+        );
+        return result.rows;
+    }
+
+    async markAdminPendingReminderSent(id) {
+        const result = await this.pool.query(
+            `
+                UPDATE registrations
+                SET admin_pending_reminder_sent_at = CURRENT_TIMESTAMP,
+                    admin_pending_reminder_error = NULL
+                WHERE id = $1
+            `,
+            [id]
+        );
+        return { changes: result.rowCount };
+    }
+
+    async markAdminPendingReminderError(id, errorMessage) {
+        const result = await this.pool.query(
+            `
+                UPDATE registrations
+                SET admin_pending_reminder_error = $1
+                WHERE id = $2
+            `,
+            [String(errorMessage || 'Erreur rappel admin').slice(0, 500), id]
+        );
+        return { changes: result.rowCount };
     }
 
     async markRegistrationEmailSent(id) {
