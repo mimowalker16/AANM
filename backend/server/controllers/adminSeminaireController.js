@@ -184,6 +184,146 @@ function withRegistrationFiles(registration) {
     };
 }
 
+function csvEscape(value) {
+    const text = value === null || value === undefined ? '' : String(value);
+    return `"${text.replace(/"/g, '""')}"`;
+}
+
+function csvLine(values) {
+    return values.map(csvEscape).join(';');
+}
+
+function csvDate(value) {
+    if (!value) return '';
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return '';
+    return date.toISOString();
+}
+
+function csvStatus(status) {
+    return status === 'approved' ? 'Approuvée' : 'Paiement à vérifier';
+}
+
+function slugifyFilename(value) {
+    return String(value || 'seminaire')
+        .trim()
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+        .slice(0, 80) || 'seminaire';
+}
+
+function compactJson(value) {
+    try {
+        return JSON.stringify(value);
+    } catch {
+        return '';
+    }
+}
+
+function fileNamesFromValue(value) {
+    const list = Array.isArray(value) ? value : [value];
+    return list
+        .map((item) => {
+            if (!item || typeof item !== 'object') return typeof item === 'string' ? item : '';
+            return item.original_name || item.name || item.filename || '';
+        })
+        .filter(Boolean);
+}
+
+function formatAnswerForCsv(question, answer, registrationFiles) {
+    if (!answer) return '';
+
+    if (question.field_type === 'file') {
+        const matchingFiles = registrationFiles.filter((file) => (
+            String(file.question_id || '') === String(question.id)
+            || (file.question_key && file.question_key === question.question_key)
+        ));
+        const names = matchingFiles.length
+            ? matchingFiles.map((file) => file.original_name || 'recu-inscription')
+            : fileNamesFromValue(answer.answer_json);
+        return names.join(' | ');
+    }
+
+    if (Array.isArray(answer.answer_json)) {
+        return answer.answer_json.map((item) => (
+            item && typeof item === 'object' ? compactJson(item) : String(item)
+        )).join(' | ');
+    }
+
+    if (answer.answer_json && typeof answer.answer_json === 'object') {
+        return compactJson(answer.answer_json);
+    }
+
+    return answer.answer_text || '';
+}
+
+function registrationAnswerLookup(registration) {
+    const answers = Array.isArray(registration.answers) ? registration.answers : [];
+    const byKey = new Map();
+    const byId = new Map();
+
+    answers.forEach((answer) => {
+        if (answer.question_key && !byKey.has(answer.question_key)) {
+            byKey.set(answer.question_key, answer);
+        }
+        if (answer.question_id !== undefined && answer.question_id !== null && !byId.has(String(answer.question_id))) {
+            byId.set(String(answer.question_id), answer);
+        }
+    });
+
+    return { byKey, byId };
+}
+
+function buildRegistrationsCsv(seminar, questions, registrations) {
+    const fixedHeaders = [
+        'ID',
+        'Nom complet',
+        'Email',
+        'Téléphone',
+        'Statut',
+        'Inscrit le',
+        'Approuvé le',
+        'Email de confirmation envoyé le',
+        'Erreur email',
+        'Nombre de reçus',
+        'Reçus'
+    ];
+    const activeQuestions = questions.filter((question) => question.is_active !== false);
+    const headers = [
+        ...fixedHeaders,
+        ...activeQuestions.map((question) => question.label || question.question_key || `Question ${question.id}`)
+    ];
+
+    const rows = registrations.map((registration) => {
+        const registrationFiles = extractRegistrationFiles(registration);
+        const receiptNames = registrationFiles.map((file) => file.original_name || 'recu-inscription');
+        const { byKey, byId } = registrationAnswerLookup(registration);
+        const fixedValues = [
+            registration.id,
+            registration.full_name,
+            registration.email,
+            registration.phone,
+            csvStatus(registration.status),
+            csvDate(registration.registered_at),
+            csvDate(registration.approved_at),
+            csvDate(registration.confirmation_email_sent_at),
+            registration.confirmation_email_error,
+            registrationFiles.length,
+            receiptNames.join(' | ')
+        ];
+        const dynamicValues = activeQuestions.map((question) => {
+            const answer = byKey.get(question.question_key) || byId.get(String(question.id));
+            return formatAnswerForCsv(question, answer, registrationFiles);
+        });
+        return csvLine([...fixedValues, ...dynamicValues]);
+    });
+
+    return `\uFEFF${[csvLine(headers), ...rows].join('\r\n')}\r\n`;
+}
+
 export async function adminGetSeminaires(req, res) {
     try {
         const seminaires = await database.getSeminaires();
@@ -277,6 +417,28 @@ export async function adminGetRegistrations(req, res) {
             .map(withRegistrationFiles);
         res.json({ success: true, data: registrations, seminar });
     } catch (err) {
+        res.status(500).json({ success: false, message: 'Erreur serveur.' });
+    }
+}
+
+export async function adminExportRegistrationsCsv(req, res) {
+    try {
+        const seminar = await database.getSeminaireById(req.params.id);
+        if (!seminar) return res.status(404).json({ success: false, message: 'Séminaire introuvable.' });
+
+        const [questions, registrations] = await Promise.all([
+            database.getSeminaireQuestions(req.params.id),
+            database.getRegistrationsBySeminar(req.params.id)
+        ]);
+        const csv = buildRegistrationsCsv(seminar, questions, registrations);
+        const today = new Date().toISOString().slice(0, 10);
+        const filename = `inscriptions-${slugifyFilename(seminar.title)}-${today}.csv`;
+
+        res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+        res.send(csv);
+    } catch (err) {
+        console.error('Failed to export registrations CSV:', err);
         res.status(500).json({ success: false, message: 'Erreur serveur.' });
     }
 }

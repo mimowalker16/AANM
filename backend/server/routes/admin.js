@@ -9,7 +9,8 @@ import {
     adminGetRegistrations, adminApproveRegistration, adminDeleteRegistration,
     adminGetSeminaireQuestions, adminCreateSeminaireQuestion,
     adminUpdateSeminaireQuestion, adminReorderSeminaireQuestions,
-    adminDeleteSeminaireQuestion, adminDownloadRegistrationFile
+    adminDeleteSeminaireQuestion, adminDownloadRegistrationFile,
+    adminExportRegistrationsCsv
 } from '../controllers/adminSeminaireController.js';
 
 const router = express.Router();
@@ -50,6 +51,7 @@ router.post('/seminaires/:id/questions', requireAdminAuth, adminCreateSeminaireQ
 router.put('/seminaires/:id/questions/reorder', requireAdminAuth, adminReorderSeminaireQuestions);
 router.put('/seminaires/:id/questions/:questionId', requireAdminAuth, adminUpdateSeminaireQuestion);
 router.delete('/seminaires/:id/questions/:questionId', requireAdminAuth, adminDeleteSeminaireQuestion);
+router.get('/seminaires/:id/registrations/export.csv', requireAdminAuth, adminExportRegistrationsCsv);
 router.get('/seminaires/:id/registrations', requireAdminAuth, adminGetRegistrations);
 router.put('/registrations/:id/approve', requireAdminAuth, adminApproveRegistration);
 router.get('/registrations/:id/files/:fileIndex', requireAdminAuth, adminDownloadRegistrationFile);

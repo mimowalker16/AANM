@@ -347,6 +347,7 @@
                             <div class="detail-meta" id="seminarMeta"></div>
                         </div>
                         <div class="detail-actions">
+                            <button type="button" class="action-btn view" id="exportCsvBtn">Exporter CSV</button>
                             <button type="button" class="action-btn subtle" id="refreshBtn">Actualiser</button>
                         </div>
                     </div>
@@ -453,6 +454,7 @@
 
             init() {
                 document.getElementById('refreshBtn').addEventListener('click', () => this.load());
+                document.getElementById('exportCsvBtn').addEventListener('click', () => this.exportCsv());
                 document.getElementById('participantSearch').addEventListener('input', (event) => {
                     this.filterParticipants(event.target.value);
                 });
@@ -746,6 +748,44 @@
                     URL.revokeObjectURL(url);
                 } catch (error) {
                     this.showNotification(error.message || 'Erreur lors du téléchargement.', 'error');
+                }
+            }
+
+            async exportCsv() {
+                const button = document.getElementById('exportCsvBtn');
+                button.disabled = true;
+                const previousText = button.textContent;
+                button.textContent = 'Export...';
+
+                try {
+                    const response = await fetch(`${API_BASE}/api/admin/seminaires/${seminarId}/registrations/export.csv`, {
+                        headers: adminHeaders()
+                    });
+
+                    if (!response.ok) {
+                        const result = await response.json().catch(() => ({}));
+                        if (handleAuthError(response, result)) return;
+                        throw new Error(result.message || 'Export CSV impossible.');
+                    }
+
+                    const blob = await response.blob();
+                    const disposition = response.headers.get('content-disposition') || '';
+                    const match = disposition.match(/filename="([^"]+)"/);
+                    const filename = match ? match[1] : `inscriptions-seminaire-${seminarId}.csv`;
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = filename;
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                    URL.revokeObjectURL(url);
+                    this.showNotification('Export CSV téléchargé.');
+                } catch (error) {
+                    this.showNotification(error.message || "Erreur lors de l'export CSV.", 'error');
+                } finally {
+                    button.disabled = false;
+                    button.textContent = previousText;
                 }
             }
 
