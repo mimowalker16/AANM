@@ -111,11 +111,27 @@
             padding: var(--space-lg);
             margin-bottom: var(--space-lg);
         }
+        .sem-form-card__header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--space-sm);
+            flex-wrap: wrap;
+        }
         .sem-form-card__title {
             font-size: 1rem;
             font-weight: 700;
             color: var(--clr-primary);
-            margin-bottom: var(--space-md);
+            margin: 0;
+        }
+        .sem-form-card__toggle {
+            flex: 0 0 auto;
+        }
+        .sem-form-card__body {
+            margin-top: var(--space-md);
+        }
+        .sem-form-card.is-collapsed .sem-form-card__body {
+            display: none;
         }
         .sem-form-grid {
             display: grid;
@@ -265,6 +281,7 @@
             .seminar-card__header { flex-direction: column; align-items: flex-start; }
             .seminar-card__actions { width: 100%; }
             .seminar-card__actions .action-btn { flex: 1 1 46%; }
+            .sem-form-card__toggle { width: 100%; }
         }
 
         @media (max-width: 370px) {
@@ -637,8 +654,17 @@
                 justify-content: space-around;
             }
 
+            #pendingTable,
+            #approvedTable {
+                max-width: 100%;
+                overflow-x: auto;
+                overflow-y: hidden;
+                -webkit-overflow-scrolling: touch;
+            }
+
             .labs-table {
                 font-size: var(--fs-small);
+                min-width: 860px;
             }
 
             .labs-table th,
@@ -830,60 +856,65 @@
                 <!-- Séminaires Tab -->
                 <div id="seminairesTab" class="tab-content">
                     <!-- Create / Edit Form -->
-                    <div class="sem-form-card" id="semFormCard">
-                        <h3 class="sem-form-card__title" id="semFormTitle">Créer un séminaire</h3>
-                        <form id="semForm" novalidate>
-                            <input type="hidden" id="semEditId" value="" />
-                            <div class="sem-form-grid">
-                                <div class="sem-field">
-                                    <label for="semTitle">Titre <span style="color:#e53e3e">*</span></label>
-                                    <input type="text" id="semTitle" placeholder="ex. 5ème Séminaire National de Nutrition" />
-                                </div>
-                                <div class="sem-field">
-                                    <label for="semDate">Date &amp; Heure <span style="color:#e53e3e">*</span></label>
-                                    <input type="datetime-local" id="semDate" />
-                                </div>
-                                <div class="sem-field">
-                                    <label for="semDeliveryMode">Format <span style="color:#e53e3e">*</span></label>
-                                    <select id="semDeliveryMode">
-                                        <option value="in_person">Présentiel</option>
-                                        <option value="virtual">Virtuel</option>
-                                    </select>
-                                </div>
-                                <div class="sem-field">
-                                    <label for="semLocation">Lieu présentiel</label>
-                                    <input type="text" id="semLocation" placeholder="ex. Centre de Conférences, Alger" />
-                                </div>
-                                <div class="sem-field">
-                                    <label for="semVirtualRoomUrl">Lien salle virtuelle</label>
-                                    <input type="url" id="semVirtualRoomUrl" placeholder="https://..." />
-                                </div>
-                                <div class="sem-field">
-                                    <label for="semCapacity">Capacité (places)</label>
-                                    <input type="number" id="semCapacity" min="1" placeholder="Laisser vide pour illimité" />
-                                </div>
-                                <div class="sem-field sem-field--full">
-                                    <label for="semDesc">Description</label>
-                                    <textarea id="semDesc" rows="3" placeholder="Description du séminaire…"></textarea>
-                                </div>
-                                <div class="sem-question-builder">
-                                    <div class="sem-question-builder__header">
-                                        <div>
-                                            <div class="sem-question-builder__title">Questions d'inscription</div>
-                                        </div>
-                                        <div class="sem-form-actions" style="margin:0;">
-                                            <button type="button" class="action-btn" id="semDefaultQuestionsBtn">Modèle par défaut</button>
-                                            <button type="button" class="action-btn approve" id="semAddQuestionBtn">Ajouter une question</button>
-                                        </div>
+                    <div class="sem-form-card is-collapsed" id="semFormCard">
+                        <div class="sem-form-card__header">
+                            <h3 class="sem-form-card__title" id="semFormTitle">Créer un séminaire</h3>
+                            <button type="button" class="action-btn view sem-form-card__toggle" id="semFormToggle" aria-expanded="false" aria-controls="semFormBody">Afficher le formulaire</button>
+                        </div>
+                        <div class="sem-form-card__body" id="semFormBody">
+                            <form id="semForm" novalidate>
+                                <input type="hidden" id="semEditId" value="" />
+                                <div class="sem-form-grid">
+                                    <div class="sem-field">
+                                        <label for="semTitle">Titre <span style="color:#e53e3e">*</span></label>
+                                        <input type="text" id="semTitle" placeholder="ex. 5ème Séminaire National de Nutrition" />
                                     </div>
-                                    <div class="sem-question-list" id="semQuestionsList"></div>
+                                    <div class="sem-field">
+                                        <label for="semDate">Date &amp; Heure <span style="color:#e53e3e">*</span></label>
+                                        <input type="datetime-local" id="semDate" />
+                                    </div>
+                                    <div class="sem-field">
+                                        <label for="semDeliveryMode">Format <span style="color:#e53e3e">*</span></label>
+                                        <select id="semDeliveryMode">
+                                            <option value="in_person">Présentiel</option>
+                                            <option value="virtual">Virtuel</option>
+                                        </select>
+                                    </div>
+                                    <div class="sem-field">
+                                        <label for="semLocation">Lieu présentiel</label>
+                                        <input type="text" id="semLocation" placeholder="ex. Centre de Conférences, Alger" />
+                                    </div>
+                                    <div class="sem-field">
+                                        <label for="semVirtualRoomUrl">Lien salle virtuelle</label>
+                                        <input type="url" id="semVirtualRoomUrl" placeholder="https://..." />
+                                    </div>
+                                    <div class="sem-field">
+                                        <label for="semCapacity">Capacité (places)</label>
+                                        <input type="number" id="semCapacity" min="1" placeholder="Laisser vide pour illimité" />
+                                    </div>
+                                    <div class="sem-field sem-field--full">
+                                        <label for="semDesc">Description</label>
+                                        <textarea id="semDesc" rows="3" placeholder="Description du séminaire…"></textarea>
+                                    </div>
+                                    <div class="sem-question-builder">
+                                        <div class="sem-question-builder__header">
+                                            <div>
+                                                <div class="sem-question-builder__title">Questions d'inscription</div>
+                                            </div>
+                                            <div class="sem-form-actions" style="margin:0;">
+                                                <button type="button" class="action-btn" id="semDefaultQuestionsBtn">Modèle par défaut</button>
+                                                <button type="button" class="action-btn approve" id="semAddQuestionBtn">Ajouter une question</button>
+                                            </div>
+                                        </div>
+                                        <div class="sem-question-list" id="semQuestionsList"></div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="sem-form-actions">
-                                <button type="submit" class="action-btn approve" id="semSubmitBtn">Créer le séminaire</button>
-                                <button type="button" class="action-btn" id="semCancelBtn" style="display:none;" onclick="adminDashboard.cancelEditSeminar()">Annuler</button>
-                            </div>
-                        </form>
+                                <div class="sem-form-actions">
+                                    <button type="submit" class="action-btn approve" id="semSubmitBtn">Créer le séminaire</button>
+                                    <button type="button" class="action-btn" id="semCancelBtn" style="display:none;" onclick="adminDashboard.cancelEditSeminar()">Annuler</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
 
                     <!-- Seminaires List -->
@@ -1081,8 +1112,10 @@
                 document.getElementById('semDeliveryMode').addEventListener('change', () => this.updateSeminarModeFields());
                 document.getElementById('semAddQuestionBtn').addEventListener('click', () => this.addSeminarQuestion());
                 document.getElementById('semDefaultQuestionsBtn').addEventListener('click', () => this.setDefaultSeminarQuestions());
+                document.getElementById('semFormToggle').addEventListener('click', () => this.toggleSeminarForm());
                 this.updateSeminarModeFields();
                 this.renderSeminarQuestionsEditor();
+                this.setSeminarFormCollapsed(true);
 
                 document.getElementById('emailTestForm').addEventListener('submit', (e) => this.sendTestEmail(e));
                 document.getElementById('emailRefreshBtn').addEventListener('click', () => this.loadEmailStatus(true));
@@ -1136,6 +1169,20 @@
                     locationField.closest('.sem-field').style.display = '';
                     virtualField.closest('.sem-field').style.display = 'none';
                 }
+            }
+
+            setSeminarFormCollapsed(collapsed) {
+                const card = document.getElementById('semFormCard');
+                const toggle = document.getElementById('semFormToggle');
+
+                card.classList.toggle('is-collapsed', collapsed);
+                toggle.setAttribute('aria-expanded', String(!collapsed));
+                toggle.textContent = collapsed ? 'Afficher le formulaire' : 'Masquer le formulaire';
+            }
+
+            toggleSeminarForm() {
+                const card = document.getElementById('semFormCard');
+                this.setSeminarFormCollapsed(!card.classList.contains('is-collapsed'));
             }
 
             async loadData() {
@@ -1731,6 +1778,7 @@
                 document.getElementById('semFormTitle').textContent = 'Modifier le séminaire';
                 document.getElementById('semSubmitBtn').textContent = 'Enregistrer les modifications';
                 document.getElementById('semCancelBtn').style.display = '';
+                this.setSeminarFormCollapsed(false);
                 document.querySelector('[data-tab="seminaires"]').scrollIntoView({ behavior: 'smooth', block: 'start' });
                 try {
                     const res = await fetch(`${API_BASE}/api/admin/seminaires/${seminarId}/questions`, { headers: adminHeaders() });
@@ -1754,6 +1802,7 @@
                 this.currentSeminarQuestions = this.defaultSeminarQuestions();
                 this.renderSeminarQuestionsEditor();
                 this.updateSeminarModeFields();
+                this.setSeminarFormCollapsed(true);
             }
 
             async submitSeminarForm(e) {
