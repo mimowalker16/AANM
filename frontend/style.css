@@ -2221,11 +2221,15 @@ h1, h2, h3, h4, h5, h6 {
 
   /* Hero adjustments for small screens */
   .hero {
-    min-height: 70vh;
+    min-height: 100vh;
+    min-height: 100svh;
+    padding-top: calc(var(--nav-height) + env(safe-area-inset-top) + var(--space-sm));
+    box-sizing: border-box;
   }
 
   .hero__content {
     padding: var(--space-lg);
+    padding-top: var(--space-md);
     text-align: center;
   }
 
