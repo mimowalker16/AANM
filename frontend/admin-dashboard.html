@@ -772,14 +772,14 @@
 
                 <!-- Tabs -->
                 <div class="admin-tabs">
-                    <button class="tab-button active" data-tab="pending">
-                        Soumissions en attente
+                    <button class="tab-button active" data-tab="seminaires">
+                        Séminaires
                     </button>
                     <button class="tab-button" data-tab="approved">
                         Cabinets approuvés
                     </button>
-                    <button class="tab-button" data-tab="seminaires">
-                        Séminaires
+                    <button class="tab-button" data-tab="pending">
+                        Soumissions en attente
                     </button>
                     <button class="tab-button" data-tab="email">
                         Email
@@ -787,7 +787,7 @@
                 </div>
 
                 <!-- Soumissions en attente Tab -->
-                <div id="pendingTab" class="tab-content active">
+                <div id="pendingTab" class="tab-content">
                     <div id="pendingLoading" class="loading-state">
                         <div class="loading-spinner"></div>
                         <p>Chargement des soumissions en attente...</p>
@@ -853,7 +853,7 @@
                 </div>
 
                 <!-- Séminaires Tab -->
-                <div id="seminairesTab" class="tab-content">
+                <div id="seminairesTab" class="tab-content active">
                     <!-- Create / Edit Form -->
                     <div class="sem-form-card is-collapsed" id="semFormCard">
                         <div class="sem-form-card__header">
@@ -1186,7 +1186,8 @@
             async loadData() {
                 await Promise.all([
                     this.loadPendingLabs(),
-                    this.loadApprovedLabs()
+                    this.loadApprovedLabs(),
+                    this.loadSeminaires()
                 ]);
                 this.updateStats();
             }
