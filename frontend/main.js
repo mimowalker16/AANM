@@ -58,7 +58,7 @@ function initNavbar() {
 
     // Scroll behavior
     const handleScroll = () => {
-        if (window.scrollY > 60) {
+        if (navbar.hasAttribute('data-navbar-solid') || window.scrollY > 60) {
             navbar.classList.remove('navbar--transparent');
             navbar.classList.add('navbar--scrolled');
         } else {

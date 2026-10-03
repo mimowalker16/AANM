@@ -15,6 +15,8 @@ export default defineConfig({
                 main: resolve(__dirname, 'index.html'),
                 activities: resolve(__dirname, 'activities.html'),
                 news: resolve(__dirname, 'news.html'),
+                article: resolve(__dirname, 'article.html'),
+                adminArticleEdit: resolve(__dirname, 'admin-article-edit.html'),
                 contact: resolve(__dirname, 'contact.html'),
                 labSubmission: resolve(__dirname, 'lab-submission.html'),
                 labDirectory: resolve(__dirname, 'lab-directory.html'),

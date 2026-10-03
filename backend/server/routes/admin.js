@@ -1,4 +1,5 @@
 import express from 'express';
+import { createArticleRouter } from './articles.js';
 import { getPendingLabs, approveLab, deleteLab, getAdminStats } from '../controllers/adminController.js';
 import { adminGetEmailStatus, adminSendTestEmail } from '../controllers/adminEmailController.js';
 import { requireAdminAuth, createAdminToken } from '../middleware/auth.js';
@@ -14,6 +15,7 @@ import {
 } from '../controllers/adminSeminaireController.js';
 
 const router = express.Router();
+router.use('/articles', createArticleRouter({ admin: true }));
 
 // ─── Public: Admin Login ────────────────────────────────────────────────────
 router.post('/login', loginRateLimiter, (req, res) => {

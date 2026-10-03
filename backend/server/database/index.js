@@ -1,4 +1,5 @@
 import pg from 'pg';
+import { readFile } from 'node:fs/promises';
 import { config } from '../config/index.js';
 
 const { Pool } = pg;
@@ -97,6 +98,7 @@ class Database {
     }
 
     async initializeTables() {
+        await this.pool.query(await readFile(new URL('./articles.sql', import.meta.url), 'utf8'));
         await this.pool.query(`
             CREATE TABLE IF NOT EXISTS seminaires (
                 id SERIAL PRIMARY KEY,

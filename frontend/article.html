@@ -1,22 +1,18 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Actualités — AANM</title>
-    <meta name="description"
-        content="Les dernières actualités et articles de l'Association Algérienne de Nutrition Maghrébine." />
-    <link rel="stylesheet" href="./style.css" />
-    <link rel="icon" type="image/png" href="./assets/images/logo.png" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article - AANM</title>
+    <meta name="description" content="Les articles de l'AANM.">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="icon" type="image/png" href="./assets/images/logo.png">
     <script src="/api-config.js"></script>
 </head>
-
 <body>
-
     <!-- NAVBAR -->
     <div class="navbar__overlay" id="navOverlay"></div>
-    <nav class="navbar navbar--transparent" id="navbar">
+    <nav class="navbar navbar--scrolled" id="navbar" data-navbar-solid>
         <div class="navbar__inner">
             <div class="navbar__logo-container">
                 <a href="/" class="navbar__logo" aria-label="Accueil">
@@ -26,7 +22,7 @@
             <div class="navbar__links" id="navLinks">
                 <a href="/" class="navbar__link">Accueil</a>
                 <a href="./activities.html" class="navbar__link">Activités</a>
-                <a href="./news.html" class="navbar__link navbar__link--active">Actualités</a>
+                <a href="./news.html" class="navbar__link navbar__link--active" aria-current="location">Actualités</a>
                 <a href="./contact.html" class="navbar__link">Contact</a>
                 <a href="./lab-submission.html" class="navbar__link">Soumettre un cabinet</a>
                 <a href="./lab-directory.html" class="navbar__link">Annuaire des cabinets</a>
@@ -38,24 +34,11 @@
         </div>
     </nav>
 
-    <!-- PAGE HEADER -->
-    <header class="page-header">
-        <div class="container">
-            <span class="section-label">Blog & Actualités</span>
-            <h1 class="page-header__title">Nos Dernières Nouvelles</h1>
-            <p class="page-header__subtitle">Articles, publications et mises à jour de l'AANM sur la nutrition et la
-                santé publique.</p>
-        </div>
-    </header>
 
-    <main class="section">
-        <div class="container">
-            <div id="articlesState" class="article-state" role="status">Chargement des articles...</div>
-            <div id="articlesList" class="article-list"></div>
-            <nav id="articlesPagination" class="cms-pagination" aria-label="Pagination des articles"></nav>
-        </div>
+    <main class="article-page">
+        <a href="./news.html" class="article-card__link">&larr; Toutes les actualit&eacute;s</a>
+        <article id="articleContent" aria-live="polite"></article>
     </main>
-
     <!-- FOOTER -->
     <footer class="footer" id="footer">
         <div class="container">
@@ -119,8 +102,9 @@
         </div>
     </footer>
 
-    <script src="./main.js" type="module"></script>
-    <script src="./news.js" type="module"></script>
-</body>
 
+    <script src="./main.js" type="module"></script>
+    <script src="./article.js" type="module"></script>
+</body>
 </html>
+

@@ -36,10 +36,10 @@ class SupabaseStorageService {
         return config.supabase.storageBucket;
     }
 
-    async uploadBuffer(path, buffer, contentType) {
+    async uploadBuffer(path, buffer, contentType, bucket = this.bucket) {
         requireStorageConfig();
 
-        const url = `${config.supabase.url}/storage/v1/object/${encodeURIComponent(this.bucket)}/${encodeStoragePath(path)}`;
+        const url = `${config.supabase.url}/storage/v1/object/${encodeURIComponent(bucket)}/${encodeStoragePath(path)}`;
         const response = await fetch(url, {
             method: 'POST',
             headers: {
@@ -54,7 +54,7 @@ class SupabaseStorageService {
         }
 
         return {
-            bucket: this.bucket,
+            bucket,
             path
         };
     }

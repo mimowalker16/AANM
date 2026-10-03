@@ -111,7 +111,8 @@ export const config = {
     supabase: {
         url: deriveSupabaseUrl(process.env.SUPABASE_URL || '', databaseUrl),
         serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY || '',
-        storageBucket: process.env.SUPABASE_REGISTRATION_FILES_BUCKET || 'seminar-registration-files'
+        storageBucket: process.env.SUPABASE_REGISTRATION_FILES_BUCKET || 'seminar-registration-files',
+        articleMediaBucket: process.env.SUPABASE_ARTICLE_MEDIA_BUCKET || 'article-media'
     }
     // Note: No API keys needed! Using free OpenStreetMap + Leaflet
 };

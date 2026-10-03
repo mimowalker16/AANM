@@ -775,6 +775,7 @@
                     <button class="tab-button active" data-tab="seminaires">
                         Séminaires
                     </button>
+                    <button class="tab-button" data-tab="articles">Articles</button>
                     <button class="tab-button" data-tab="approved">
                         Cabinets approuvés
                     </button>
@@ -785,6 +786,8 @@
                         Email
                     </button>
                 </div>
+
+                <div id="articlesTab" class="tab-content"></div>
 
                 <!-- Soumissions en attente Tab -->
                 <div id="pendingTab" class="tab-content">
@@ -1046,6 +1049,7 @@
     </footer>
 
     <script src="./main.js" type="module"></script>
+    <script src="./admin-articles.js" type="module"></script>
     <script>
         const API_BASE = window.AANM_API_BASE;
         // ─── Auth Guard ────────────────────────────────────────────────────────────

@@ -46,6 +46,8 @@ services:
 
       - key: SUPABASE_REGISTRATION_FILES_BUCKET
         value: seminar-registration-files
+      - key: SUPABASE_ARTICLE_MEDIA_BUCKET
+        value: article-media
 
       # ── CORS ─────────────────────────────────────────────────────────────────
       # Replace with your actual Sevalla Pages URL once you have it.

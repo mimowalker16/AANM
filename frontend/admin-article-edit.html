@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>R&eacute;diger un article - AANM</title>
+    <meta name="robots" content="noindex,nofollow">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="icon" type="image/png" href="./assets/images/logo.png">
+    <script src="/api-config.js"></script>
+</head>
+<body>
+    <!-- Navbar Overlay -->
+    <div class="navbar__overlay" id="navOverlay"></div>
+    <nav class="navbar navbar--scrolled" id="navbar" data-navbar-solid>
+        <div class="navbar__inner">
+            <div class="navbar__logo-container">
+                <a href="/" class="navbar__logo" aria-label="Accueil">
+                    <img src="./assets/images/logo.png" alt="Logo AANM" class="navbar__logo-img">
+                </a>
+            </div>
+            <div class="navbar__links" id="navLinks">
+                <a href="/" class="navbar__link">Accueil</a>
+                <a href="./activities.html" class="navbar__link">Activités</a>
+                <a href="./news.html" class="navbar__link">Actualités</a>
+                <a href="./contact.html" class="navbar__link">Contact</a>
+                <a href="./lab-submission.html" class="navbar__link">Soumettre un cabinet</a>
+                <a href="./lab-directory.html" class="navbar__link">Annuaire des cabinets</a>
+                <a href="./lab-map.html" class="navbar__link">Carte des cabinets</a>
+                <a href="./admin-dashboard.html" class="navbar__link navbar__link--active" aria-current="location">Administration</a>
+                <a href="./contact.html" class="navbar__cta">Nous Rejoindre →</a>
+            </div>
+            <button class="navbar__toggle" id="navToggle" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <main class="editor-page cms">
+        <header class="editor-header">
+            <div><a href="./admin-dashboard.html#articles">&larr; Articles</a><h1 id="editorHeading">Nouvel article</h1></div>
+            <div class="cms-actions">
+                <button class="cms-button" id="previewButton" type="button" aria-pressed="false"><i data-lucide="eye"></i>Aper&ccedil;u</button>
+                <button class="cms-button" id="saveButton" type="submit" form="articleForm"><i data-lucide="save"></i><span id="saveLabel">Enregistrer le brouillon</span></button>
+                <button class="cms-button cms-button--primary" id="publishButton" type="button"><i data-lucide="send"></i>Publier</button>
+            </div>
+        </header>
+        <p id="editorMessage" class="editor-message" role="status" aria-live="polite"></p>
+        <button id="retryLoad" class="cms-button" type="button" hidden>R&eacute;essayer</button>
+        <button id="loginAgain" class="cms-button" type="button" hidden>Se reconnecter</button>
+        <form id="articleForm" novalidate>
+            <fieldset id="editorFields" style="border:0;padding:0;margin:0;min-width:0">
+                <div class="editor-grid">
+                    <div class="editor-main">
+                        <label for="articleTitle">Titre<input class="editor-title" id="articleTitle" maxlength="200" required></label>
+                        <label for="articleSummary">R&eacute;sum&eacute;<textarea id="articleSummary" maxlength="600" rows="3"></textarea></label>
+                        <div>
+                            <label id="bodyLabel">Contenu</label>
+                            <div class="editor-tools" id="editorTools" role="toolbar" aria-label="Mise en forme"></div>
+                            <div class="editor-surface"><div id="bodyEditor" class="article-body"></div></div>
+                        </div>
+                    </div>
+                    <aside class="editor-details">
+                        <div><span id="articleState" class="cms-status">Brouillon</span><p id="publicationDate" class="article-meta"></p></div>
+                        <label for="articleAuthor">Auteur<input id="articleAuthor" maxlength="120" value="AANM"></label>
+                        <label for="coverUpload">Image de couverture<input class="cms-upload" type="file" id="coverUpload" accept="image/jpeg,image/png,image/webp"></label>
+                        <img id="coverPreview" class="editor-cover" alt="" hidden>
+                        <button class="cms-button" id="removeCover" type="button" hidden><i data-lucide="image-off"></i>Retirer l'image</button>
+                        <label for="coverAlt">Description de l'image<input id="coverAlt" maxlength="300"></label>
+                        <a class="cms-button" id="publicLink" target="_blank" rel="noopener" hidden>Voir l'article publi&eacute;</a>
+                        <button class="cms-button" id="unpublishButton" type="button" hidden>Retirer de la publication</button>
+                        <button class="cms-button cms-button--danger" id="deleteButton" type="button" hidden><i data-lucide="trash-2"></i>Supprimer le brouillon</button>
+                    </aside>
+                </div>
+            </fieldset>
+        </form>
+        <input type="file" id="bodyUpload" accept="image/jpeg,image/png,image/webp" hidden>
+        <section id="articlePreview" class="article-preview" aria-label="Aper&ccedil;u de l'article" hidden></section>
+        <dialog id="reauthDialog" class="cms-dialog" aria-labelledby="reauthTitle">
+            <form id="reauthForm">
+                <h2 id="reauthTitle">Se reconnecter</h2>
+                <label>Identifiant<input id="reauthUsername" autocomplete="username" required></label>
+                <label>Mot de passe<input id="reauthPassword" type="password" autocomplete="current-password" required></label>
+                <p id="reauthMessage" role="status"></p>
+                <div class="cms-actions"><button class="cms-button" type="button" id="reauthCancel">Annuler</button><button class="cms-button cms-button--primary" type="submit" id="reauthSubmit">Connexion</button></div>
+            </form>
+        </dialog>
+    </main>
+    <script type="module" src="./main.js"></script>
+    <script type="module" src="./admin-article-edit.js"></script>
+</body>
+</html>

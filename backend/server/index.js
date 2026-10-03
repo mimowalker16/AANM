@@ -12,6 +12,7 @@ import systemRoutes from './routes/system.js';
 import labRoutes from './routes/labs.js';
 import adminRoutes from './routes/admin.js';
 import seminaireRoutes from './routes/seminaires.js';
+import articleRoutes from './routes/articles.js';
 
 const app = express();
 
@@ -43,6 +44,7 @@ app.use('/api', systemRoutes);
 app.use('/api/labs', publicReadRateLimiter, labRoutes);
 app.use('/api/admin', adminRateLimiter, adminRoutes);
 app.use('/api/seminaires', publicReadRateLimiter, seminaireRoutes);
+app.use('/api/articles', publicReadRateLimiter, articleRoutes);
 
 // Error handling
 app.use('*', notFoundHandler);

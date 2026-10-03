@@ -1,0 +1,105 @@
+.cms [hidden], [hidden].article-preview, [hidden].cms-button { display: none !important; }
+.cms { color: var(--clr-text); }
+.cms h1 { font-family: var(--ff-body); }
+.cms, .article-page, .article-list { letter-spacing: 0; }
+.cms-button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 42px; padding: 9px 15px; background: #fff; border: 1px solid #cfd7d3; border-radius: 6px; color: #24362c; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none; line-height: 1.4; }
+.cms-button:hover { background: #edf3ef; }
+.cms-button:disabled { opacity: .5; cursor: wait; }
+.cms-button--primary { background: #1b5e3a; color: #fff; border-color: #1b5e3a; }
+.cms-button--primary:hover { background: #14492c; }
+.cms-button--danger { color: #a43139; border-color: #e0b9bd; }
+.cms-button svg { width: 18px; height: 18px; flex-shrink: 0; }
+.cms input, .cms textarea, .cms select { width: 100%; min-width: 0; padding: 10px 12px; border: 1px solid #cfd7d3; border-radius: 5px; background: #fff; color: #24362c; font: inherit; font-size: 16px; }
+.cms textarea { resize: vertical; }
+.cms :focus-visible { outline: 3px solid #609fcd; outline-offset: 3px; }
+.cms [aria-invalid="true"] { border-color: #a43139; outline: 2px solid #a43139; outline-offset: 2px; }
+.cms label { display: grid; gap: 7px; font-size: 14px; font-weight: 600; }
+.cms-toolbar, .cms-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.cms-toolbar { justify-content: space-between; margin-bottom: 22px; }
+.cms-filters { display: flex; gap: 10px; flex: 1; max-width: 640px; }
+.cms-filters input { flex: 2; }
+.cms-filters select { flex: 1; }
+.cms-table-wrap { overflow-x: auto; }
+.cms-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
+.cms-table th { background: #f0f4f2; font-weight: 600; color: #506258; }
+.cms-table th, .cms-table td { padding: 16px 12px; border-bottom: 1px solid #e1e7e3; }
+.cms-table td:first-child { min-width: 190px; overflow-wrap: anywhere; }
+.cms-table td:last-child { width: 70px; }
+.cms-status { display: inline-block; font-size: 12px; font-weight: 600; padding: 4px 9px; border-radius: 4px; background: #edf0f4; color: #4c586e; white-space: nowrap; }
+.cms-status--published { background: #e0f1e6; color: #1b5e3a; }
+.cms-pagination { display: flex; align-items: center; justify-content: center; gap: 16px; margin: 26px 0; font-size: 14px; }
+.article-state { padding: 45px 20px; text-align: center; color: #526459; }
+.article-state p { margin-bottom: 16px; }
+.article-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 26px; }
+.article-card { border: 1px solid #e0e7e2; border-radius: 8px; overflow: hidden; background: white; min-width: 0; }
+.article-card img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; display: block; }
+.article-card__content { padding: 22px; }
+.article-card h2 { font-size: 22px; line-height: 1.3; margin: 10px 0; overflow-wrap: anywhere; }
+.article-card p { color: #526459; font-size: 15px; }
+.article-card__link { display: inline-block; margin-top: 18px; font-weight: 600; color: #1b5e3a; }
+.article-card--featured { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; margin-bottom: 12px; }
+.article-card--featured .article-card__content { padding: 32px; align-self: center; }
+.article-card--featured h2 { font-size: 32px; }
+.article-card--featured img { height: 100%; max-height: 460px; }
+.article-card--featured:not(:has(img)) { display: block; }
+.article-meta { font-size: 14px; color: #657269; }
+.article-page { padding: calc(var(--nav-height) + 50px) 24px 70px; max-width: 960px; margin: auto; }
+.article-heading { margin: 30px auto; max-width: 760px; }
+.article-heading h1 { font-size: 42px; line-height: 1.15; margin: 12px 0 20px; overflow-wrap: anywhere; letter-spacing: 0; }
+.article-summary { font-size: 20px; line-height: 1.6; color: #526459; margin-bottom: 20px; }
+.article-cover { width: 100%; max-height: 600px; object-fit: contain; margin: 0 auto 36px; display: block; }
+.article-body { max-width: 760px; margin: auto; font-size: 18px; line-height: 1.8; overflow-wrap: anywhere; }
+.article-body p, .article-body ul, .article-body ol, .article-body blockquote { margin: 0 0 20px; }
+.article-body h2 { font-size: 28px; margin: 30px 0 16px; line-height: 1.3; }
+.article-body h3 { font-size: 23px; margin: 24px 0 14px; line-height: 1.4; }
+.article-body ul { list-style: disc; padding-left: 28px; }
+.article-body ol { list-style: decimal; padding-left: 28px; }
+.article-body li p { margin: 0; }
+.article-body a { color: #1b5e3a; text-decoration: underline; }
+.article-body blockquote { border-left: 3px solid #619e79; padding-left: 20px; color: #526459; }
+.article-body img { max-width: 100%; height: auto; display: block; margin: 24px auto; }
+.article-body hr { border: 0; border-top: 1px solid #d6e1d9; margin: 28px 0; }
+.editor-page { max-width: 1240px; padding: calc(var(--nav-height) + 28px) 28px 70px; margin: auto; }
+.editor-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; border-bottom: 1px solid #dce3df; padding-bottom: 20px; flex-wrap: wrap; }
+.editor-header h1 { font-size: 26px; margin: 12px 0 0; }
+.editor-grid { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 32px; margin-top: 28px; }
+.editor-main, .editor-details { display: grid; align-content: start; gap: 22px; min-width: 0; }
+.editor-title { font-size: 24px !important; font-weight: 600; }
+.editor-tools { display: flex; flex-wrap: wrap; gap: 4px; background: #f2f5f3; padding: 8px; border: 1px solid #cfd7d3; border-bottom: 0; border-radius: 6px 6px 0 0; }
+.editor-tools button { width: 36px; height: 36px; padding: 8px; border: 0; background: transparent; border-radius: 4px; color: #42584b; cursor: pointer; }
+.editor-tools button:hover, .editor-tools button[aria-pressed="true"] { background: #d9e9df; color: #174c2f; }
+.editor-tools svg { width: 20px; height: 20px; }
+.editor-tools button:disabled { opacity: .35; cursor: default; }
+.editor-surface { border: 1px solid #cfd7d3; border-radius: 0 0 6px 6px; background: #fff; }
+.editor-surface .tiptap { padding: 24px; min-height: 420px; outline: none; }
+.editor-surface .tiptap:focus { box-shadow: inset 0 0 0 2px #609fcd; }
+.editor-cover { width: 100%; aspect-ratio: 16 / 10; object-fit: contain; background: #f0f4f2; border-radius: 5px; }
+.editor-message { min-height: 28px; font-size: 14px; margin-top: 16px; color: #1b5e3a; overflow-wrap: anywhere; }
+.editor-message[data-error="true"] { color: #a43139; }
+.article-preview { margin-top: 28px; border-top: 1px solid #dce3df; padding-top: 20px; }
+.cms-upload { max-width: 100%; font-size: 13px !important; padding: 7px !important; }
+.cms-dialog { width: min(420px, calc(100% - 32px)); padding: 28px; margin: auto; border: 1px solid #cfd7d3; border-radius: 8px; }
+.cms-dialog::backdrop { background: rgb(20 30 24 / 45%); }
+.cms-dialog form { display: grid; gap: 18px; }
+.cms-dialog h2 { font: 600 22px var(--ff-body); }
+.editor-details a { overflow-wrap: anywhere; }
+@media (max-width: 900px) {
+    .article-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .editor-grid { grid-template-columns: minmax(0, 1fr); }
+    .editor-details { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) {
+    .article-list, .article-card--featured { grid-template-columns: minmax(0, 1fr); }
+    .article-card--featured .article-card__content { padding: 22px; }
+    .article-card--featured h2 { font-size: 27px; }
+    .article-heading h1 { font-size: 30px; }
+    .article-summary { font-size: 18px; }
+    .article-page { padding: calc(var(--nav-height) + 30px) 18px 50px; }
+    .editor-page { padding: calc(var(--nav-height) + 20px) 16px 50px; }
+    .editor-details { grid-template-columns: minmax(0, 1fr); }
+    .editor-surface .tiptap { padding: 16px; }
+    .cms-filters { flex-direction: column; flex-basis: 100%; }
+    .cms-actions { width: 100%; }
+    .cms-actions .cms-button { flex: 1; }
+    .cms-table th, .cms-table td { padding: 12px 8px; }
+}

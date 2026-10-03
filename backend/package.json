@@ -7,7 +7,8 @@
   "scripts": {
     "start": "node server/index.js",
     "dev": "nodemon server/index.js",
-    "check": "node --check server/index.js"
+    "check": "node --check server/index.js",
+    "test:articles": "node --test tests/articles.test.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
@@ -20,7 +21,9 @@
     "jsonwebtoken": "^9.0.3",
     "multer": "^2.2.0",
     "nodemailer": "^9.0.0",
-    "pg": "^8.13.1"
+    "pg": "^8.13.1",
+    "sanitize-html": "2.18.0",
+    "sharp": "0.35.5"
   },
   "devDependencies": {
     "nodemon": "^3.0.3"
